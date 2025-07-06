@@ -169,14 +169,15 @@ pynew() {
 
 # Activate virtual environment (searches for .venv or venv)
 va() {
-  if [[ -f ".venv/bin/activate" ]]; then
-    source .venv/bin/activate
-  elif [[ -f "venv/bin/activate" ]]; then
-    source venv/bin/activate
-  else
-    echo "No virtual environment found. Create one with 'uv venv'"
-    return 1
-  fi
+  local venv_paths=(".venv/bin/activate" "venv/bin/activate" "env/bin/activate")
+  for venv_path in "${venv_paths[@]}"; do
+    if [[ -f "$venv_path" ]]; then
+      source "$venv_path"
+      return 0
+    fi
+  done
+  echo "No virtual environment found in common locations"
+  return 1
 }
 
 # Deactivate virtual environment
@@ -366,6 +367,26 @@ extract() {
     echo "'$1' is not a valid file"
   fi
 }
+
+# ============================================================================
+# Git helpers
+# ============================================================================
+
+# Git account context detection
+git-context() {
+  local email=$(git config user.email 2>/dev/null)
+  case "$email" in
+    *lument.com) echo "🏢 Lument" ;;
+    *pollex.com.au) echo "🔧 Pollex" ;;
+    *exley.com.au) echo "👤 Personal" ;;
+    *) echo "❓ Unknown ($email)" ;;
+  esac
+}
+
+# Git account switcher
+git-lument() { git config user.email "andrew.exley@lument.com"; git config user.name "Andrew Exley"; }
+git-pollex() { git config user.email "andrew@pollex.com.au"; git config user.name "Andrew Exley"; }
+git-personal() { git config user.email "andrew@exley.com.au"; git config user.name "Andrew Exley"; }
 
 # ============================================================================
 # Load local configuration if it exists

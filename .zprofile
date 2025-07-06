@@ -8,7 +8,10 @@ fi
 # SSH agent (if not already running)
 if [ -z "$SSH_AUTH_SOCK" ]; then
   eval "$(ssh-agent -s)"
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519 2>/dev/null
+  # Try multiple common key names
+  for key in ~/.ssh/id_{ed25519,rsa,ecdsa}; do
+    [[ -f "$key" ]] && ssh-add --apple-use-keychain "$key" 2>/dev/null
+  done
 fi
 
 # Set macOS defaults (only on login)
