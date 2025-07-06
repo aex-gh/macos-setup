@@ -1,0 +1,374 @@
+# Note: Homebrew setup is in .zprofile
+
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Load pure prompt
+zinit ice pick"async.zsh" src"pure.zsh"
+zinit light sindresorhus/pure
+
+# Pure prompt configuration
+zstyle :prompt:pure:path color blue
+zstyle :prompt:pure:prompt:success color green
+zstyle :prompt:pure:git:branch color cyan
+zstyle :prompt:pure:git:dirty color yellow
+zstyle :prompt:pure:git:stash color magenta
+zstyle ':prompt:pure:prompt:continuation' color yellow
+
+# Add in zsh plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+
+# Add in snippets
+zinit snippet OMZL::git.zsh
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
+zinit snippet OMZP::command-not-found
+
+# Load completions
+autoload -Uz compinit && compinit
+zinit cdreplay -q
+
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey '^[w' kill-region
+
+# History
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+# ============================================================================
+# Environment Variables
+# ============================================================================
+
+# Note: Editor and PATH configuration is in .zshenv
+
+# Terminal-specific settings
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+  export GHOSTTY_RESOURCES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty"
+fi
+
+# ============================================================================
+# Aliases - Modern CLI replacements
+# ============================================================================
+
+# Core utilities (with fallbacks)
+if command -v eza &> /dev/null; then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -la --icons --group-directories-first'
+  alias lt='eza --tree --icons'
+  alias la='eza -a --icons'
+else
+  alias ls='ls --color'
+  alias ll='ls -la'
+  alias la='ls -a'
+fi
+
+if command -v bat &> /dev/null; then
+  alias cat='bat'
+  export BAT_THEME="Catppuccin-mocha"
+fi
+
+if command -v rg &> /dev/null; then
+  alias grep='rg'
+fi
+
+if command -v fd &> /dev/null; then
+  alias find='fd'
+fi
+
+if command -v procs &> /dev/null; then
+  alias ps='procs'
+fi
+
+if command -v btop &> /dev/null; then
+  alias top='btop'
+elif command -v htop &> /dev/null; then
+  alias top='htop'
+fi
+
+# Git enhancements
+if command -v delta &> /dev/null; then
+  alias gd='git diff | delta'
+  alias gdca='git diff --cached | delta'
+  export GIT_PAGER='delta'
+fi
+
+# Editor shortcuts
+alias zed='zed .'
+alias zedf='zed $(fzf)'  # Open file with fzf selection
+alias vim='nvim'
+alias c='clear'
+
+# Path utilities
+alias path='echo $PATH | tr ":" "\n" | nl'  # Display PATH entries on separate lines with numbers
+
+# ============================================================================
+# Python/uv specific aliases and functions
+# ============================================================================
+
+# UV shortcuts
+alias uv='uv'
+alias uvx='uv tool run'  # Run tools without installing
+alias uvi='uv tool install'  # Install a tool globally
+alias uvl='uv tool list'  # List installed tools
+alias uvup='uv self update'  # Update uv itself
+
+# Python project management
+alias py='python'
+alias py3='python3'
+alias pip='uv pip'
+alias venv='uv venv'
+alias sync='uv sync'
+alias lock='uv lock'
+
+# Create new Python project with uv
+pynew() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: pynew <project-name>"
+    return 1
+  fi
+
+  mkdir -p "$1" && cd "$1"
+  uv init
+  uv venv
+  echo "# $1" > README.md
+  echo "Created new Python project: $1"
+}
+
+# Activate virtual environment (searches for .venv or venv)
+va() {
+  if [[ -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
+  elif [[ -f "venv/bin/activate" ]]; then
+    source venv/bin/activate
+  else
+    echo "No virtual environment found. Create one with 'uv venv'"
+    return 1
+  fi
+}
+
+# Deactivate virtual environment
+vd() {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    deactivate
+  else
+    echo "No virtual environment is active"
+  fi
+}
+
+# Quick install and activate
+vquick() {
+  uv venv && va
+}
+
+# List all Python environments with fzf selection
+venv-select() {
+  local venv_dir
+  venv_dir=$(find . -type d -name ".venv" -o -name "venv" 2>/dev/null | fzf)
+  if [[ -n "$venv_dir" ]]; then
+    source "$venv_dir/bin/activate"
+  fi
+}
+
+# ============================================================================
+# Data Science specific aliases
+# ============================================================================
+
+# Jupyter shortcuts
+alias jl='jupyter lab'
+alias jn='jupyter notebook'
+alias jlhere='jupyter lab --notebook-dir="$(pwd)"'
+
+# IPython
+alias ipy='ipython'
+alias ipynb='jupyter nbconvert'
+
+# Data science project template
+ds-new() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: ds-new <project-name>"
+    return 1
+  fi
+
+  pynew "$1"
+
+  # Create data science directory structure
+  mkdir -p data/{raw,processed,external}
+  mkdir -p notebooks
+  mkdir -p src
+  mkdir -p reports/figures
+
+  # Create .gitignore
+  cat > .gitignore <<EOF
+# Virtual Environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data - often too large for git
+data/raw/*
+data/processed/*
+data/external/*
+!data/*/.gitkeep
+
+# OS
+.DS_Store
+*.swp
+
+# IDEs
+.vscode/
+.idea/
+.zed/
+
+# Environment
+.env
+.envrc
+EOF
+
+  # Create .gitkeep files
+  touch data/{raw,processed,external}/.gitkeep
+
+  # Install common data science packages
+  echo "Installing data science packages..."
+  uv pip install jupyter ipykernel pandas numpy matplotlib seaborn scikit-learn
+
+  echo "Data science project '$1' created!"
+}
+
+# ============================================================================
+# macOS specific settings
+# ============================================================================
+
+# Prevent .DS_Store files on network drives
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+
+# Quick Look plugins helper
+alias ql='qlmanage -p 2>/dev/null'
+
+# Flush DNS cache
+alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder'
+
+# Show/hide hidden files in Finder
+alias show='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
+alias hide='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
+
+# ============================================================================
+# Shell integrations
+# ============================================================================
+
+# FZF
+eval "$(fzf --zsh)"
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --preview 'bat --style=numbers --color=always --line-range :500 {}' --preview-window=right:60%:wrap"
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Zoxide (smart cd)
+eval "$(zoxide init --cmd cd zsh)"
+
+# Atuin for better shell history (if installed)
+if command -v atuin &> /dev/null; then
+  eval "$(atuin init zsh)"
+fi
+
+# ============================================================================
+# Auto-activate Python virtual environments
+# ============================================================================
+
+# Auto-activate venv when entering directory
+auto_activate_venv() {
+  if [[ -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
+  elif [[ -f "venv/bin/activate" ]]; then
+    source venv/bin/activate
+  elif [[ -n "$VIRTUAL_ENV" ]] && [[ "$PWD" != "$(dirname $VIRTUAL_ENV)"* ]]; then
+    deactivate
+  fi
+}
+
+# Add to chpwd hook (runs on directory change)
+autoload -U add-zsh-hook
+add-zsh-hook chpwd auto_activate_venv
+
+# Run on startup for current directory
+auto_activate_venv
+
+# ============================================================================
+# Quick functions
+# ============================================================================
+
+# Create directory and cd into it
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# Clean duplicate entries from PATH
+pathclean() {
+  export PATH=$(echo "$PATH" | tr ':' '\n' | awk '!seen[$0]++' | tr '\n' ':' | sed 's/:$//')
+  echo "PATH cleaned. Run 'path' to see the result."
+}
+
+# Extract archives
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2)   tar xjf "$1"   ;;
+      *.tar.gz)    tar xzf "$1"   ;;
+      *.bz2)       bunzip2 "$1"   ;;
+      *.rar)       unrar x "$1"   ;;
+      *.gz)        gunzip "$1"    ;;
+      *.tar)       tar xf "$1"    ;;
+      *.tbz2)      tar xjf "$1"   ;;
+      *.tgz)       tar xzf "$1"   ;;
+      *.zip)       unzip "$1"     ;;
+      *.Z)         uncompress "$1";;
+      *.7z)        7z x "$1"      ;;
+      *)           echo "'$1' cannot be extracted" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# ============================================================================
+# Load local configuration if it exists
+# ============================================================================
+
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
