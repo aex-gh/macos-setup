@@ -1,0 +1,86 @@
+# Base Homebrew Bundle
+# Essential tools and utilities for all macOS setups
+# This Brewfile contains the core packages needed for basic functionality
+
+#=============================================================================
+# TAPS - Third-party repositories
+#=============================================================================
+
+tap "homebrew/bundle"
+tap "homebrew/services"
+
+#=============================================================================
+# FORMULAE - Command-line tools
+#=============================================================================
+
+# Essential system tools
+brew "git"                    # Version control system
+brew "zsh"                    # Modern shell (may be system default)
+brew "curl"                   # HTTP client
+brew "wget"                   # File downloader
+brew "openssh"                # SSH client/server
+
+# Modern CLI replacements
+brew "eza"                    # Modern ls replacement
+brew "bat"                    # Better cat with syntax highlighting
+brew "fd"                     # Modern find replacement
+brew "ripgrep"                # Fast grep replacement
+brew "fzf"                    # Fuzzy finder for everything
+brew "zoxide"                 # Smart cd replacement
+
+# Essential utilities
+brew "jq"                     # JSON processor
+brew "yq"                     # YAML processor
+brew "tree"                   # Directory tree visualizer
+brew "htop"                   # Better top/process viewer
+brew "ncdu"                   # Disk usage analyzer
+brew "tldr"                   # Simplified man pages
+
+# Archive and compression
+brew "unzip"                  # ZIP file extraction
+brew "p7zip"                  # 7-Zip archive utility
+brew "xz"                     # XZ compression
+
+# Network tools
+brew "nmap"                   # Network mapping tool
+brew "speedtest-cli"          # Internet speed test
+
+# Text processing
+brew "grep"                   # GNU grep (better than BSD)
+brew "sed"                    # GNU sed (better than BSD)
+brew "awk"                    # GNU awk (better than BSD)
+
+# Shell enhancements
+brew "shellcheck"             # Shell script linter
+brew "shfmt"                  # Shell script formatter
+
+#=============================================================================
+# CASKS - GUI Applications
+#=============================================================================
+
+# Essential productivity
+cask "1password"              # Password manager
+cask "rectangle"              # Window management
+cask "alfred"                 # Application launcher and productivity
+
+# Communication
+cask "zoom"                   # Video conferencing
+cask "slack"                  # Team communication
+
+# Utilities
+cask "appcleaner"             # Application uninstaller
+cask "the-unarchiver"         # Archive extraction utility
+cask "keka"                   # Archive creation utility
+
+# System utilities
+cask "coconutbattery"         # Battery health monitoring
+cask "disk-utility"           # Advanced disk management
+
+#=============================================================================
+# MAS - Mac App Store Applications
+#=============================================================================
+
+# System utilities from App Store
+mas "Amphetamine", id: 937984704                    # Keep Mac awake utility
+mas "Hidden Bar", id: 1452453066                    # Menu bar organization
+mas "System Preferences", id: 1496833156            # System settings access

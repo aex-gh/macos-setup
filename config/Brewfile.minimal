@@ -1,0 +1,50 @@
+# Minimal Homebrew Bundle
+# Absolute essentials only for basic macOS functionality
+# Perfect for servers, minimal installs, or testing environments
+
+#=============================================================================
+# TAPS - Essential repositories only
+#=============================================================================
+
+tap "homebrew/bundle"
+
+#=============================================================================
+# ESSENTIAL FORMULAE - Absolute necessities
+#=============================================================================
+
+# Core system tools
+brew "git"                    # Version control (essential for development)
+brew "curl"                   # HTTP client (often needed)
+brew "openssh"                # SSH client/server
+
+# Modern CLI improvements (high value, low overhead)
+brew "eza"                    # Better ls (small, high impact)
+brew "bat"                    # Better cat with syntax highlighting
+brew "fzf"                    # Fuzzy finder (incredibly useful)
+
+# Essential utilities
+brew "jq"                     # JSON processor (essential for modern systems)
+brew "tree"                   # Directory visualization
+
+# Archive support
+brew "unzip"                  # ZIP extraction
+
+# Text processing
+brew "grep"                   # GNU grep (better than BSD version)
+
+#=============================================================================
+# MINIMAL CASKS - Only true essentials
+#=============================================================================
+
+# Security and productivity (non-negotiable)
+cask "1password"              # Password manager (security essential)
+
+# Basic productivity
+cask "rectangle"              # Window management (quality of life)
+
+#=============================================================================
+# NO MAS APPS - Keep App Store installs manual for minimal profile
+#=============================================================================
+
+# Note: For minimal installs, we avoid automatic App Store installations
+# Users can manually install what they need from the App Store

@@ -1,0 +1,42 @@
+Host *
+        IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# Personal GitHub
+Host gh-Personal
+        Hostname github.com
+        User git
+        IdentityFile ~/.ssh/gh-Personal.pub
+        IdentitiesOnly yes
+
+# Lument GitHub
+Host gh-Lument
+        Hostname github.com
+        User git
+        IdentityFile ~/.ssh/gh-Lument.pub
+        IdentitiesOnly yes
+
+# Lument Pollex
+Host gh-Pollex
+        Hostname github.com
+        User git
+        IdentityFile ~/.ssh/gh-Pollex.pub
+        IdentitiesOnly yes
+
+# Personal Computers
+Host mac-mini
+        HostName mac-mini.local
+        User andrew
+        IdentitiesOnly yes
+        IdentityAgent $SSH_AUTH_SOCK
+
+Host macbook
+        Hostname macbook-pro.local
+        User andrew
+        IdentitiesOnly yes
+        IdentityAgent $SSH_AUTH_SOCK
+
+Host mac-studio
+        Hostname mac-studio.local
+        User andrew
+        IdentitiesOnly yes
+        IdentityAgent $SSH_AUTH_SOCK

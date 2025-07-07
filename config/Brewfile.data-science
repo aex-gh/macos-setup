@@ -1,0 +1,148 @@
+# Data Science Homebrew Bundle
+# Comprehensive data science and machine learning environment
+# Includes Python ML stack, R, Julia, databases, and visualization tools
+
+#=============================================================================
+# TAPS - Data science repositories
+#=============================================================================
+
+tap "homebrew/bundle"
+tap "homebrew/services"
+tap "r-lib/rig"               # R installation manager
+
+#=============================================================================
+# CORE DATA SCIENCE LANGUAGES
+#=============================================================================
+
+# Python with scientific computing focus
+brew "python@3.11"           # Python 3.11 (stable for ML/DS)
+brew "python@3.12"           # Python 3.12 (latest)
+brew "uv"                     # Fast Python package installer
+brew "pipx"                   # Isolated Python app installation
+
+# R statistical computing
+brew "r"                      # R programming language
+brew "r-lib/rig/rig"          # R installation manager
+
+# Julia high-performance computing
+brew "julia"                  # Julia programming language
+
+# Scala for big data
+brew "scala"                  # Scala programming language
+brew "sbt"                    # Scala build tool
+
+#=============================================================================
+# DATA SCIENCE TOOLS & UTILITIES
+#=============================================================================
+
+# Scientific computing dependencies
+brew "openblas"               # Optimized BLAS library
+brew "lapack"                 # Linear algebra package
+brew "fftw"                   # Fast Fourier Transform library
+brew "gsl"                    # GNU Scientific Library
+
+# Data processing and ETL
+brew "apache-spark"           # Large-scale data processing
+brew "apache-airflow"         # Workflow management
+brew "duckdb"                 # In-process analytical database
+
+# File format support
+brew "hdf5"                   # HDF5 scientific data format
+brew "netcdf"                 # NetCDF scientific data format
+brew "protobuf"               # Protocol Buffers
+
+# Image and video processing
+brew "imagemagick"            # Image manipulation library
+brew "ffmpeg"                 # Video/audio processing
+brew "opencv"                 # Computer vision library
+
+# Geographic data
+brew "gdal"                   # Geospatial data abstraction library
+brew "proj"                   # Cartographic projections library
+brew "geos"                   # Geometry engine
+
+#=============================================================================
+# DATABASES & DATA STORES
+#=============================================================================
+
+# Relational databases
+brew "postgresql@15"          # PostgreSQL with PostGIS support
+brew "mysql"                  # MySQL database
+brew "sqlite"                 # Lightweight SQL database
+
+# NoSQL and document stores
+brew "mongodb/brew/mongodb-community" # MongoDB
+brew "redis"                  # In-memory data store
+brew "elasticsearch"          # Search and analytics engine
+
+# Time-series and analytics
+brew "influxdb"               # Time-series database
+brew "clickhouse"             # Columnar analytics database
+
+# Graph databases
+brew "neo4j"                  # Graph database
+
+#=============================================================================
+# BIG DATA & DISTRIBUTED COMPUTING
+#=============================================================================
+
+# Apache ecosystem
+brew "apache-spark"           # Unified analytics engine
+brew "kafka"                  # Distributed streaming platform
+brew "zookeeper"              # Distributed coordination service
+
+# Hadoop ecosystem (if needed)
+# brew "hadoop"               # Distributed storage and computing
+
+#=============================================================================
+# DATA SCIENCE CASKS - GUI Applications
+#=============================================================================
+
+# IDEs and development environments
+cask "visual-studio-code"     # Code editor with great data science extensions
+cask "zed"                    # Fast modern editor
+cask "rstudio"                # R IDE
+cask "anaconda"               # Python data science distribution
+
+# Jupyter and notebooks
+cask "jupyter-notebook-viewer" # Notebook viewer
+
+# Database management
+cask "tableplus"              # Universal database tool
+cask "mongodb-compass"        # MongoDB GUI
+cask "pgadmin4"               # PostgreSQL administration
+
+# Data visualization and BI
+cask "tableau-public"         # Data visualization (free version)
+cask "power-bi"               # Microsoft Business Intelligence
+
+# Scientific computing and modeling
+cask "octave"                 # GNU Octave (MATLAB alternative)
+
+# Reference management
+cask "zotero"                 # Reference manager for research
+
+# File converters
+cask "pandoc"                 # Universal document converter
+
+#=============================================================================
+# CLOUD AND MACHINE LEARNING PLATFORMS
+#=============================================================================
+
+# Cloud CLI tools
+brew "awscli"                 # AWS Command Line Interface
+brew "google-cloud-sdk"       # Google Cloud Platform tools
+brew "azure-cli"              # Microsoft Azure CLI
+
+# MLOps and model deployment
+brew "mlflow"                 # ML lifecycle management (if available)
+
+#=============================================================================
+# DATA SCIENCE MAS APPS
+#=============================================================================
+
+# Productivity and research tools from App Store
+mas "Papers 3", id: 1290358394                      # Reference manager
+mas "Notebooks – Write and Organize", id: 1490960046 # Note-taking for research
+mas "Numbers", id: 409203825                         # Spreadsheet application
+mas "Grapher", id: 449179988                         # Mathematical graphing

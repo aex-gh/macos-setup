@@ -335,6 +335,44 @@ A well-crafted installation script simplifies the setup process on new machines.
 *   **Backup Private Keys:** Your SSH keys should NOT be in your dotfiles repo. Manage them separately and securely. While `stow` can create symlinks for `.ssh/config`, ensure you understand the implications and permissions.
 *   **Handle Conflicts:** If a file or directory already exists in your home directory where Stow tries to create a symlink, Stow will report an error. You'll need to manually move or delete the existing item before stowing.
 
-## 9. Conclusion
+## 9. Current Implementation Notes
+
+This dotfiles repository includes a `.stowrc` configuration file for future GNU Stow usage. The current setup works with direct symlinks, but can be migrated to Stow when needed.
+
+### Quick Stow Commands (for future use):
+```bash
+# Install GNU Stow
+brew install stow
+
+# From dotfiles directory, stow specific packages
+stow zsh    # Would symlink shell configurations
+stow ssh    # Would symlink SSH configuration
+
+# Remove stowed packages
+stow -D zsh ssh
+
+# Restow (useful after updates)
+stow -R zsh ssh
+```
+
+### Current Repository Structure:
+- **Shell configs**: `zsh/` package with `dot-zshrc`, `dot-zshenv`, `dot-zprofile`
+- **SSH config**: `ssh/dot-ssh/config` package structure
+- **Documentation**: `spec.md`, `CLAUDE.md`, role definitions
+- **Examples**: Reference implementations in `examples/`
+
+### Package Structure (using --dotfiles mode):
+```
+~/dotfiles/
+├── zsh/                    # Shell configuration package
+│   ├── dot-zshrc          # → ~/.zshrc
+│   ├── dot-zshenv         # → ~/.zshenv
+│   └── dot-zprofile       # → ~/.zprofile
+└── ssh/                    # SSH configuration package
+    └── dot-ssh/           # → ~/.ssh/
+        └── config         # → ~/.ssh/config
+```
+
+## 10. Conclusion
 
 By following this specification and leveraging GNU Stow, you can establish a systematic and efficient way to manage your macOS dotfiles. This approach promotes modularity, keeps your home directory clean, and ensures your development environment is consistent, portable, and easily reproducible across different machines.

@@ -1,0 +1,228 @@
+# Mac Mini Hardware-Specific Brewfile
+# Compact desktop optimized for 16GB RAM - balanced performance and efficiency
+# Home productivity and light development workstation
+
+#=============================================================================
+# TAPS - Balanced tools for home office
+#=============================================================================
+
+tap "homebrew/services"
+tap "plex/plex-media-server"
+tap "mas-cli/tap"
+
+#=============================================================================
+# LIGHTWEIGHT DEVELOPMENT TOOLS
+#=============================================================================
+
+# Essential development (memory conscious)
+brew "sqlite"                 # Lightweight database
+brew "redis"                  # In-memory store (conservative config)
+
+# Web development (resource efficient)
+brew "nginx"                  # Lightweight web server
+brew "caddy"                  # Modern web server with auto-HTTPS
+brew "mkcert"                 # Local HTTPS certificates
+
+# API and testing tools
+brew "httpie"                 # HTTP client
+brew "ngrok"                  # Secure tunnels
+brew "localtunnel"            # Alternative tunneling
+
+#=============================================================================
+# HOME MEDIA CENTER & PRODUCTIVITY
+#=============================================================================
+
+# Media server capabilities
+brew "ffmpeg"                 # Video/audio processing
+brew "youtube-dl"             # Video downloader
+brew "imagemagick"            # Image processing
+cask "plex-media-server"      # Media server
+cask "jellyfin-media-player"  # Open source media center
+
+# Home automation and IoT
+brew "mosquitto"              # MQTT broker
+brew "node-red"               # Flow-based programming
+brew "homebridge"             # HomeKit integration
+
+# Network attached storage features
+brew "netatalk"               # Apple Filing Protocol
+brew "samba"                  # SMB/CIFS file sharing
+brew "nfs-utils"              # Network File System
+
+# Network share mounting and access
+brew "cifs-utils"             # SMB/CIFS mounting utilities
+brew "sshfs"                  # SSH filesystem mounting
+brew "wake"                   # Wake-on-LAN for Mac Studio
+
+#=============================================================================
+# MEMORY-EFFICIENT APPLICATIONS
+#=============================================================================
+
+# Lightweight editors and IDEs
+cask "zed"                    # Fast, memory-efficient editor
+cask "sublime-text"           # Lightweight text editor
+cask "visual-studio-code"     # Efficient code editor
+
+# Productivity (memory conscious)
+cask "raycast"                # Efficient Spotlight replacement
+cask "rectangle"              # Window management
+cask "appcleaner"             # Clean uninstalls
+
+# Communication (lightweight options)
+cask "zoom"                   # Video conferencing
+cask "slack"                  # Team communication
+cask "discord"                # Community chat
+
+#=============================================================================
+# FILE MANAGEMENT & BACKUP
+#=============================================================================
+
+# Backup and sync (home network)
+brew "rsync"                  # File synchronization
+brew "rclone"                 # Cloud storage sync
+cask "carbon-copy-cloner"     # Disk backup
+cask "time-machine"           # System backup
+
+# Network file sharing
+cask "cyberduck"              # FTP/SFTP client
+cask "transmit"               # File transfer client
+
+#=============================================================================
+# SYSTEM MONITORING (LIGHTWEIGHT)
+#=============================================================================
+
+# Resource monitoring for 16GB system
+brew "htop"                   # Process monitoring
+brew "iotop"                  # I/O monitoring
+cask "stats"                  # Menu bar system stats
+cask "memory-clean"           # Memory optimization
+
+# Network monitoring
+brew "iftop"                  # Network bandwidth
+brew "nload"                  # Network usage
+cask "wifi-explorer-lite"     # WiFi analysis
+
+#=============================================================================
+# HOME OFFICE PRODUCTIVITY
+#=============================================================================
+
+# Office and productivity suites
+cask "libreoffice"            # Free office suite
+cask "onlyoffice"             # Document collaboration
+
+# PDF and document management
+cask "pdf-expert"             # PDF editor
+cask "skim"                   # PDF reader and note-taker
+
+# Note-taking and organization
+cask "obsidian"               # Knowledge management
+cask "notion"                 # All-in-one workspace
+cask "bear"                   # Markdown notes
+
+#=============================================================================
+# CREATIVE & MEDIA TOOLS (EFFICIENT)
+#=============================================================================
+
+# Image editing (lightweight)
+cask "pixelmator-pro"         # Image editor
+cask "imageoptim"             # Image optimization
+cask "canva"                  # Quick design
+
+# Audio editing
+cask "audacity"               # Audio editor
+cask "garage-band"            # Music creation
+
+# Video editing (efficient)
+cask "handbrake"              # Video transcoding
+cask "iina"                   # Modern media player
+cask "vlc"                    # Universal media player
+
+#=============================================================================
+# SECURITY & PRIVACY (HOME NETWORK)
+#=============================================================================
+
+# Network security
+cask "little-snitch"          # Network monitor
+brew "nmap"                   # Network scanning
+brew "wireshark"              # Network analysis
+
+# Password and authentication
+cask "1password"              # Password manager
+cask "authy"                  # Two-factor authentication
+
+#=============================================================================
+# DEVELOPMENT DATABASES (LIGHTWEIGHT)
+#=============================================================================
+
+# Database management (memory efficient)
+cask "tableplus"              # Database GUI
+cask "sequel-pro"             # MySQL management
+cask "redis-desktop-manager"  # Redis GUI
+
+# Development tools (resource conscious)
+cask "github-desktop"         # Git GUI
+cask "sourcetree"             # Git client
+cask "insomnia"               # API client
+
+#=============================================================================
+# WEB BROWSERS (MEMORY MANAGED)
+#=============================================================================
+
+# Browser selection (memory efficient)
+cask "safari"                 # System default (most efficient)
+cask "firefox"                # Memory-conscious alternative
+cask "brave-browser"          # Privacy-focused, efficient
+
+#=============================================================================
+# UTILITIES FOR COMPACT DESKTOP
+#=============================================================================
+
+# System utilities
+cask "onyx"                   # System maintenance
+cask "disk-utility"           # Disk management
+cask "coconutbattery"         # System health (UPS monitoring)
+
+# Automation and scheduling
+brew "cron"                   # Task scheduling
+cask "chronosync"             # File synchronization
+cask "hazel"                  # File automation
+
+#=============================================================================
+# MAC APP STORE (HOME PRODUCTIVITY)
+#=============================================================================
+
+# Productivity
+mas "Amphetamine", id: 937984704           # Keep system awake
+mas "Hidden Bar", id: 1452453066          # Menu bar organization
+mas "The Unarchiver", id: 425424353       # Archive handling
+
+# Office and creativity
+mas "Pages", id: 409201541                # Document creation
+mas "Numbers", id: 409203825              # Spreadsheets
+mas "Keynote", id: 409183694              # Presentations
+
+# Media and entertainment
+mas "WWDC for macOS", id: 1295039596      # Developer content
+mas "Photos", id: 1519213151              # Photo management
+
+# System utilities
+mas "Disk Utility", id: 1339170533        # Disk management
+mas "System Information", id: 1278956628   # System details
+
+#=============================================================================
+# SERVICES CONFIGURATION (16GB OPTIMIZED)
+#=============================================================================
+
+# Auto-start services (memory conscious)
+# - nginx (lightweight web server)
+# - redis (with memory limits)
+# - mosquitto (IoT communication)
+
+# Manual start services (resource intensive)
+# - plex-media-server (start when needed)
+# - ffmpeg processing (on-demand)
+
+# Scheduled services
+# - Time Machine backups (daily)
+# - System maintenance (weekly)
+# - Cloud sync (off-peak hours)

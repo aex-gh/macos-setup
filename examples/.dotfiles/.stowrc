@@ -1,0 +1,43 @@
+# ~/.dotfiles/.stowrc - GNU Stow configuration file
+# This file configures default options for the stow command
+
+# Set the target directory (your home directory)
+--target=$HOME
+
+# Use verbose output by default (level 1)
+# Levels: 0 = errors only, 1 = basic info, 2+ = debugging
+--verbose=1
+
+# Don't fold directories when stowing
+# This prevents stow from creating symlinks to directories
+# Instead, it creates the directory structure and symlinks files
+--no-folding
+
+# Ignore these files and directories when stowing
+# These patterns are Perl regular expressions
+--ignore=\.git
+--ignore=\.gitignore
+--ignore=\.gitmodules
+--ignore=.*\.md
+--ignore=.*\.MD
+--ignore=LICENSE.*
+--ignore=LICENCE.*
+--ignore=README.*
+--ignore=\.stowrc
+--ignore=\.DS_Store
+--ignore=.*\.swp
+--ignore=.*\.swo
+--ignore=.*~
+--ignore=\#.*\#
+--ignore=\..*\.example
+--ignore=\..*\.sample
+--ignore=\..*\.template
+
+# Defer to existing files/directories
+# This prevents stow from complaining about existing non-stow files
+--defer=dircolors
+
+# Override certain system directories
+# Useful when you want stow to manage files that might conflict
+--override=\.zsh.*
+--override=\.bash.*
