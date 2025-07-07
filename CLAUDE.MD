@@ -122,3 +122,4 @@ When you are using /compact, please focus on our conversation, your most recent 
 
 - @macos-zsh-standards.md
 - @role-macos-specialist.md
+- @README.md

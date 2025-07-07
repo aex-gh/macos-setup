@@ -40,7 +40,7 @@ brew "grep"                   # GNU grep (better than BSD version)
 cask "1password"              # Password manager (security essential)
 
 # Basic productivity
-cask "rectangle"              # Window management (quality of life)
+cask "raycast"
 
 #=============================================================================
 # NO MAS APPS - Keep App Store installs manual for minimal profile

@@ -60,12 +60,9 @@ brew "wake"                   # Wake-on-LAN for Mac Studio
 
 # Lightweight editors and IDEs
 cask "zed"                    # Fast, memory-efficient editor
-cask "sublime-text"           # Lightweight text editor
-cask "visual-studio-code"     # Efficient code editor
 
 # Productivity (memory conscious)
 cask "raycast"                # Efficient Spotlight replacement
-cask "rectangle"              # Window management
 cask "appcleaner"             # Clean uninstalls
 
 # Communication (lightweight options)

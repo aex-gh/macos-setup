@@ -60,8 +60,7 @@ brew "shfmt"                  # Shell script formatter
 
 # Essential productivity
 cask "1password"              # Password manager
-cask "rectangle"              # Window management
-cask "alfred"                 # Application launcher and productivity
+cask "raycast"                 # Application launcher and productivity
 
 # Communication
 cask "zoom"                   # Video conferencing
@@ -81,6 +80,5 @@ cask "disk-utility"           # Advanced disk management
 #=============================================================================
 
 # System utilities from App Store
-mas "Amphetamine", id: 937984704                    # Keep Mac awake utility
 mas "Hidden Bar", id: 1452453066                    # Menu bar organization
 mas "System Preferences", id: 1496833156            # System settings access

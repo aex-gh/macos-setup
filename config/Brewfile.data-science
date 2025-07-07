@@ -77,7 +77,8 @@ brew "elasticsearch"          # Search and analytics engine
 
 # Time-series and analytics
 brew "influxdb"               # Time-series database
-brew "clickhouse"             # Columnar analytics database
+#brew "clickhouse"             # Columnar analytics database
+brew "duckdb"                 # Columnar analytics database
 
 # Graph databases
 brew "neo4j"                  # Graph database
@@ -102,7 +103,6 @@ brew "zookeeper"              # Distributed coordination service
 cask "visual-studio-code"     # Code editor with great data science extensions
 cask "zed"                    # Fast modern editor
 cask "rstudio"                # R IDE
-cask "anaconda"               # Python data science distribution
 
 # Jupyter and notebooks
 cask "jupyter-notebook-viewer" # Notebook viewer
@@ -114,7 +114,6 @@ cask "pgadmin4"               # PostgreSQL administration
 
 # Data visualization and BI
 cask "tableau-public"         # Data visualization (free version)
-cask "power-bi"               # Microsoft Business Intelligence
 
 # Scientific computing and modeling
 cask "octave"                 # GNU Octave (MATLAB alternative)
