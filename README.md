@@ -375,7 +375,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Author**: Andrew Exley (with Claude)  
+**Author**: Andrew Exley (with Claude)
 **Co-Authored-By**: Claude <noreply@anthropic.com>
 
 For questions, issues, or contributions, please visit the [GitHub repository](https://github.com/aex-gh/dotfiles).
