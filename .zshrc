@@ -173,19 +173,23 @@ va() {
   for venv_path in "${venv_paths[@]}"; do
     if [[ -f "$venv_path" ]]; then
       source "$venv_path"
+      echo "🐍 Activated virtual environment: ${venv_path%/bin/activate}"
       return 0
     fi
   done
-  echo "No virtual environment found in common locations"
+  echo "❌ No virtual environment found in common locations (.venv, venv, env)"
+  echo "💡 Create one with: uv venv"
   return 1
 }
 
 # Deactivate virtual environment
 vd() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
+    local env_name=$(basename "$VIRTUAL_ENV")
     deactivate
+    echo "🚫 Deactivated virtual environment: $env_name"
   else
-    echo "No virtual environment is active"
+    echo "❌ No virtual environment is active"
   fi
 }
 
@@ -196,10 +200,33 @@ vquick() {
 
 # List all Python environments with fzf selection
 venv-select() {
+  # Check if fzf is available
+  if ! command -v fzf &> /dev/null; then
+    echo "❌ fzf is required for venv-select. Install with: brew install fzf"
+    return 1
+  fi
+  
   local venv_dir
-  venv_dir=$(find . -type d -name ".venv" -o -name "venv" 2>/dev/null | fzf)
+  local venv_dirs=$(find . -type d \( -name ".venv" -o -name "venv" -o -name "env" \) 2>/dev/null)
+  
+  if [[ -z "$venv_dirs" ]]; then
+    echo "❌ No virtual environments found in current directory tree"
+    echo "💡 Create one with: uv venv"
+    return 1
+  fi
+  
+  venv_dir=$(echo "$venv_dirs" | fzf --prompt="Select virtual environment: ")
   if [[ -n "$venv_dir" ]]; then
-    source "$venv_dir/bin/activate"
+    if [[ -f "$venv_dir/bin/activate" ]]; then
+      source "$venv_dir/bin/activate"
+      echo "🐍 Activated virtual environment: $venv_dir"
+    else
+      echo "❌ No activate script found in $venv_dir"
+      return 1
+    fi
+  else
+    echo "No environment selected"
+    return 1
   fi
 }
 
@@ -376,17 +403,17 @@ extract() {
 git-context() {
   local email=$(git config user.email 2>/dev/null)
   case "$email" in
-    *lument.com) echo "🏢 Lument" ;;
-    *pollex.com.au) echo "🔧 Pollex" ;;
-    *exley.com.au) echo "👤 Personal" ;;
+    *lument.com.au) echo "🏢 Lument" ;;
+    *pollex.consulting) echo "🔧 Pollex" ;;
+    *users.noreply.github.com) echo "👤 Personal" ;;
     *) echo "❓ Unknown ($email)" ;;
   esac
 }
 
 # Git account switcher
-git-lument() { git config user.email "andrew.exley@lument.com"; git config user.name "Andrew Exley"; }
-git-pollex() { git config user.email "andrew@pollex.com.au"; git config user.name "Andrew Exley"; }
-git-personal() { git config user.email "andrew@exley.com.au"; git config user.name "Andrew Exley"; }
+git-lument() { git config user.email "andrew.exley@lument.com.au"; git config user.name "Andrew Exley"; echo "Switched to $(git-context)"; }
+git-pollex() { git config user.email "andrew.exley@pollex.consulting"; git config user.name "Andrew Exley"; echo "Switched to $(git-context)"; }
+git-personal() { git config user.email "2067567+aex-gh@users.noreply.github.com"; git config user.name "Andrew Exley"; echo "Switched to $(git-context)"; }
 
 # ============================================================================
 # Load local configuration if it exists
