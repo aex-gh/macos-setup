@@ -55,8 +55,8 @@ brew "mdv"                    # Markdown viewer
 brew "mdless"                 # Markdown viewer
 brew "mandown"                # Markdown to man page converter
 brew "man2html"               # Man page to HTML converter
-brew "man2pdf"                # Man page to PDF converter
-brew "gather-cli"             # Gather CLI tool
+# brew "man2pdf"              # No longer available in Homebrew
+# brew "gather-cli"           # No longer available in Homebrew
 
 # Image and Video
 brew "yt-dlp"                 # YouTube downloader
