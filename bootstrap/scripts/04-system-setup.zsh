@@ -127,8 +127,9 @@ check_macos() {
 # Check if running as root
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        error "This script must be run as root (use sudo)"
-        exit 1
+        debug "Not running as root - sudo will be requested when needed"
+    else
+        debug "Running as root"
     fi
 }
 
