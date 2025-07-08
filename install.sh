@@ -302,10 +302,10 @@ launch_bootstrap() {
     [[ $FORCE == true ]] && bootstrap_args+=("--force")
     [[ -n $PROFILE ]] && bootstrap_args+=("--profile" "$PROFILE")
     
-    debug "Bootstrap arguments: ${bootstrap_args[*]}"
+    debug "Bootstrap arguments: ${bootstrap_args[*]:-}"
     
     if [[ $DRY_RUN == true ]]; then
-        info "DRY RUN: Would execute: ./bootstrap/scripts/00-bootstrap.zsh ${bootstrap_args[*]}"
+        info "DRY RUN: Would execute: ./bootstrap/scripts/00-bootstrap.zsh ${bootstrap_args[*]:-}"
         return 0
     fi
     
@@ -313,7 +313,7 @@ launch_bootstrap() {
     echo ""
     
     # Execute the bootstrap script
-    if ./bootstrap/scripts/00-bootstrap.zsh "${bootstrap_args[@]}"; then
+    if ./bootstrap/scripts/00-bootstrap.zsh "${bootstrap_args[@]:-}"; then
         success "Dotfiles setup completed successfully!"
     else
         error "Bootstrap script failed"
