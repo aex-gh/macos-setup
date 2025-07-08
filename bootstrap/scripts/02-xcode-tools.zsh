@@ -203,7 +203,12 @@ check_xcode_tools_updates() {
     step "Checking for Xcode Command Line Tools updates..."
     
     # Check for software updates
-    local updates=$(softwareupdate -l 2>/dev/null | grep -c "Command Line Tools" || echo "0")
+    local updates=$(softwareupdate -l 2>/dev/null | grep -c "Command Line Tools" 2>/dev/null || echo "0")
+    
+    # Ensure we have a numeric value
+    if [[ ! "$updates" =~ ^[0-9]+$ ]]; then
+        updates=0
+    fi
     
     if [[ $updates -gt 0 ]]; then
         warn "Xcode Command Line Tools updates available"
