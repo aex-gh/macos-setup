@@ -1,18 +1,109 @@
-# GNU Stow configuration file
-# This configures stow to manage dotfiles from the packages/ directory
+# GNU Stow Configuration for macOS Setup Repository
+# This file configures stow defaults for managing dotfiles packages
 
-# Target directory (where symlinks will be created)
+#=============================================================================
+# BASIC CONFIGURATION
+#=============================================================================
+
+# Target directory - where symlinks will be created (user's home directory)
 --target=$HOME
 
-# Source directory (where packages are stored)
+# Source directory - where stow packages are stored
 --dir=packages
 
-# Use dotfiles mode (transforms dot- prefix to . in target)
+# Enable dotfiles mode - transforms "dot-" prefix to "." in target
+# This allows storing .zshrc as dot-zshrc in the repository
 --dotfiles
 
-# Default to verbose output for better feedback
---verbose
+#=============================================================================
+# OUTPUT AND FEEDBACK
+#=============================================================================
 
-# Simulate mode for safe testing (comment out for actual use)
+# Verbose output level 1 - shows what stow is doing
+# Level 0: silent, Level 1: basic info, Level 2-5: increasingly detailed
+--verbose=1
+
+#=============================================================================
+# SAFETY AND SIMULATION
+#=============================================================================
+
+# Uncomment the following line to enable simulation mode by default
+# This will show what stow would do without actually creating symlinks
+# Useful for testing and verification
 # --simulate
-EOF < /dev/null
+
+#=============================================================================
+# FILE HANDLING
+#=============================================================================
+
+# Ignore common files that shouldn't be stowed
+--ignore='\.git'
+--ignore='\.gitignore'
+--ignore='\.DS_Store'
+--ignore='README\.md'
+--ignore='README\.rst'
+--ignore='README\.txt'
+--ignore='\.stow-local-ignore'
+
+# Ignore backup files
+--ignore='~$'
+--ignore='\.bak$'
+--ignore='\.swp$'
+--ignore='\.tmp$'
+
+# Ignore common development files
+--ignore='node_modules'
+--ignore='\.pytest_cache'
+--ignore='__pycache__'
+--ignore='\.venv'
+--ignore='\.env'
+
+#=============================================================================
+# PACKAGE-SPECIFIC HANDLING
+#=============================================================================
+
+# Don't stow files that begin with these patterns if they're already
+# stowed to another package (helps avoid conflicts)
+--defer='\.zshrc'
+--defer='\.gitconfig'
+--defer='\.ssh/config'
+
+# Force stowing of certain files even if they conflict
+# Use with caution - this will overwrite existing files
+# --override='\.local/bin'
+
+#=============================================================================
+# MACOS-SPECIFIC CONSIDERATIONS
+#=============================================================================
+
+# Ignore macOS-specific files
+--ignore='\.com\.apple\.'
+--ignore='Icon\r'
+--ignore='\.localized'
+
+# Ignore Finder metadata
+--ignore='\.fseventsd'
+--ignore='\.Spotlight-V100'
+--ignore='\.TemporaryItems'
+--ignore='\.Trashes'
+
+#=============================================================================
+# NOTES
+#=============================================================================
+
+# Usage examples:
+#   stow zsh                  # Stow the zsh package
+#   stow -D zsh               # Remove (delete) zsh package symlinks
+#   stow -R zsh               # Restow (delete then stow) zsh package
+#   stow --simulate zsh       # Preview what would happen
+#   stow --verbose=2 zsh      # More detailed output
+#   stow zsh git ssh          # Stow multiple packages at once
+#
+# Package structure example:
+#   packages/zsh/dot-zshrc    → ~/.zshrc
+#   packages/git/dot-gitconfig → ~/.gitconfig
+#   packages/ssh/dot-ssh/config → ~/.ssh/config
+#
+# For more information, see:
+#   man stow
+#   https://www.gnu.org/software/stow/manual/
