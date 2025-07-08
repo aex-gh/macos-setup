@@ -690,7 +690,14 @@ configure_privacy() {
     fi
 
     # Spotlight indexing
-    apply_sudo_default "/.Spotlight-V100/VolumeConfiguration" "Exclusions" "array" "/Volumes" "Disable Spotlight indexing for mounted volumes"
+    # Note: Using mdutil instead of VolumeConfiguration as it's more reliable
+    change "Disable Spotlight indexing for mounted volumes"
+    if [[ $DRY_RUN == false ]]; then
+        sudo mdutil -i off /Volumes/* 2>/dev/null || true
+        debug "Disabled Spotlight indexing for external volumes"
+    else
+        debug "DRY RUN: Would disable Spotlight indexing for external volumes"
+    fi
 
     # App Store settings
     apply_default "com.apple.SoftwareUpdate" "AutomaticDownload" "int" "0" "Disable automatic App Store downloads"

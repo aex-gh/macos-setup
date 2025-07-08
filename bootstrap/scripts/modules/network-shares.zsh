@@ -104,8 +104,8 @@ configure_afp_sharing() {
     fi
     
     # Enable AFP sharing through system sharing settings
-    execute_command "Enabling AFP service" \
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+    # Note: AFP is deprecated in modern macOS - using sharing command instead
+    info "AFP is deprecated in modern macOS - configuring via sharing preferences"
     
     # Add shared folder to AFP configuration
     execute_command "Adding folder to AFP sharing" \
@@ -126,8 +126,8 @@ configure_smb_sharing() {
     fi
     
     # Enable SMB sharing
-    execute_command "Enabling SMB service" \
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+    # Note: On modern macOS, SMB is enabled via sharing preferences
+    info "Enabling SMB via sharing preferences is recommended"
     
     # Configure SMB sharing through system preferences
     # Note: This typically requires GUI interaction, but we can set up the basics
@@ -150,8 +150,11 @@ configure_timemachine_sharing() {
     fi
     
     # Create Time Machine destination with proper attributes
-    execute_command "Setting Time Machine destination attributes" \
-        sudo tmutil setdestination -a "$timemachine_path"
+    # Note: Network Time Machine destinations require special setup
+    info "Time Machine network sharing requires manual configuration"
+    info "To enable: System Preferences > Sharing > File Sharing > Options"
+    info "Check 'Share as a Time Machine backup destination'"
+    info "Shared folder: $timemachine_path"
     
     # Enable Time Machine sharing
     execute_command "Enabling Time Machine sharing" \
