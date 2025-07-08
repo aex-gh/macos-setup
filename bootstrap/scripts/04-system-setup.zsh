@@ -561,26 +561,26 @@ configure_security() {
     
     # Enable firewall
     execute_command "Enabling firewall" \
-        defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+        sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
     
     # Enable stealth mode
     execute_command "Enabling firewall stealth mode" \
-        defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
+        sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1
     
     # Enable automatic security updates
     execute_command "Enabling automatic security updates" \
-        defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true
+        sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true
     
     execute_command "Enabling automatic security updates installation" \
-        defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+        sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
     
     # Configure login window
     execute_command "Disabling guest user account" \
-        defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+        sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
     
     # Enable secure virtual memory
     execute_command "Enabling secure virtual memory" \
-        defaults write /Library/Preferences/com.apple.virtualMemory DisableEncryptedSwap -bool false
+        sudo defaults write /Library/Preferences/com.apple.virtualMemory DisableEncryptedSwap -bool false
     
     success "Security configuration completed"
 }

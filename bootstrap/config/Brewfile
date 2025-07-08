@@ -74,7 +74,7 @@ brew "uv"                     # Ultra-fast Python package manager and project to
 brew "ruff"                   # Extremely fast Python linter and formatter
 
 # Productivity
-brew "taskwarrior"            # Task management tool
+brew "task"                   # Task management tool (formerly taskwarrior)
 brew "todo-txt"               # Todo.txt command-line wnterface
 brew "calcurse"               # Calender and task management tool
 

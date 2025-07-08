@@ -319,7 +319,8 @@ setup_node_environment() {
             brew install node
         else
             warn "Homebrew not found, skipping Node.js installation"
-            return 1
+            info "Node.js can be installed manually from https://nodejs.org"
+            return 0
         fi
     fi
     
@@ -485,6 +486,13 @@ main() {
     
     info "Starting development environment setup"
     debug "Script version: $SCRIPT_VERSION"
+    
+    # Ensure Homebrew is in PATH
+    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f "/usr/local/bin/brew" ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
     
     # Set up development environment
     setup_development_directories

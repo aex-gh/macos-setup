@@ -801,8 +801,9 @@ main() {
     # Configure applications
     configure_applications
     
-    # Set up network shares
-    setup_network_shares
+    # Network shares setup has been moved to manual configuration
+    # See bootstrap/docs/manual-setup-tasks.md for file sharing instructions
+    info "Network shares setup is now handled manually via System Preferences"
     
     success "Applications and network services setup completed"
     
