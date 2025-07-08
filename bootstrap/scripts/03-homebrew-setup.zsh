@@ -506,7 +506,8 @@ install_brewfile_packages() {
         return 0
     fi
     
-    # Install base packages first if not already using base profile
+    # Install base packages first for non-base profiles
+    # For base profile, the base packages are installed as the profile packages below
     if [[ $profile != "base" ]]; then
         local base_brewfile=$(get_brewfile_path "base")
         if [[ -f $base_brewfile ]]; then
@@ -844,9 +845,9 @@ main() {
         # Still run updates and package installation
         update_homebrew
         
-        if [[ -n $PROFILE ]]; then
-            install_brewfile_packages "$PROFILE"
-        fi
+        # Install packages (default to base profile if none specified)
+        local profile_to_use="${PROFILE:-base}"
+        install_brewfile_packages "$profile_to_use"
         
         # Configure hardware-specific services
         configure_hardware_services
@@ -871,9 +872,8 @@ main() {
         echo "${BOLD}The following will be installed:${RESET}"
         echo "  • Homebrew package manager ($HOMEBREW_PREFIX)"
         echo "  • Shell environment configuration"
-        if [[ -n $PROFILE ]]; then
-            echo "  • $PROFILE package profile"
-        fi
+        local profile_to_use="${PROFILE:-base}"
+        echo "  • $profile_to_use package profile"
         echo ""
         echo "${YELLOW}Note: Installation requires internet connection and may take several minutes.${RESET}"
         echo ""
@@ -888,10 +888,9 @@ main() {
     if install_homebrew; then
         # Verify installation
         if verify_homebrew; then
-            # Install packages if profile specified
-            if [[ -n $PROFILE ]]; then
-                install_brewfile_packages "$PROFILE"
-            fi
+            # Install packages (default to base profile if none specified)
+            local profile_to_use="${PROFILE:-base}"
+            install_brewfile_packages "$profile_to_use"
             
             # Configure hardware-specific services
             configure_hardware_services
