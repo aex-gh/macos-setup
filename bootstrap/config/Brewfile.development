@@ -17,8 +17,7 @@ tap "azure/functions"         # Azure Functions Core Tools
 # Python ecosystem
 brew "python@3.11"           # Python 3.11 (stable LTS)
 brew "python@3.12"           # Python 3.12 (latest)
-brew "uv"                     # Fast Python package manager
-brew "ruff"                   # Extremely fast Python linter and formatter
+# Note: uv and ruff are already included in base Brewfile
 
 # Node.js ecosystem
 brew "node"                   # Node.js runtime
@@ -56,7 +55,7 @@ brew "pkg-config"             # Package compiler and linker metadata toolkit
 # Container and virtualization
 brew "docker"                 # Container platform CLI (for compatibility)
 brew "docker-compose"         # Multi-container Docker applications
-brew "orbstack"               # Fast, lightweight Docker alternative
+# Note: OrbStack CLI is included with the cask installation below
 
 # Infrastructure as Code
 # brew "terraform"              # Infrastructure as code tool

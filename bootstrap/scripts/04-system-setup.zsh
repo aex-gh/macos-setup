@@ -497,25 +497,20 @@ configure_file_sharing() {
     
     print_section "FILE SHARING CONFIGURATION" "📁"
     
-    # Enable AFP (Apple File Protocol)
-    if confirm "Enable AFP (Apple File Protocol) sharing?"; then
-        info "AFP is deprecated in macOS - use SMB sharing instead"
-        info "If needed, AFP can be enabled in System Preferences > Sharing"
-        
-        success "AFP sharing configuration noted"
-    fi
+    info "File sharing setup has been moved to manual configuration for reliability."
+    info "Modern macOS file sharing is best configured through System Preferences."
+    echo ""
+    info "To configure file sharing after setup completion:"
+    info "• Open System Preferences > Sharing"
+    info "• Enable 'File Sharing' service"
+    info "• Click 'Options' to enable SMB sharing"
+    info "• Add folders you want to share"
+    info "• Configure user access permissions"
+    echo ""
+    info "Detailed instructions will be provided in the completion summary."
     
-    # Enable SMB (Server Message Block)
-    if confirm "Enable SMB (Windows File Sharing) sharing?"; then
-        info "SMB sharing must be enabled through System Preferences"
-        info "Go to: System Preferences > Sharing > File Sharing"
-        info "Click Options and check 'Share files and folders using SMB'"
-        
-        success "SMB sharing configuration noted - complete setup in System Preferences"
-    fi
-    
-    # Configure shared folders
-    if confirm "Create and share a 'Shared' folder in user home?"; then
+    # Create a basic shared folder for convenience
+    if confirm "Create a 'Shared' folder in user home for future sharing?"; then
         local shared_folder="$USER_HOME/Shared"
         
         execute_command "Creating shared folder" \
@@ -524,16 +519,11 @@ configure_file_sharing() {
         execute_command "Setting shared folder permissions" \
             chmod 755 "$shared_folder"
         
-        # Add to sharing configuration
-        execute_command "Adding folder to sharing" \
-            sudo sharing -a "$shared_folder" -S "Shared" -s 001 -g 000
-        
-        success "Shared folder created and configured: $shared_folder"
+        success "Shared folder created: $shared_folder"
+        info "Add this folder to File Sharing in System Preferences when ready"
     fi
     
-    # Show sharing status
-    info "File sharing status:"
-    sharing -l 2>/dev/null || echo "  No shares configured"
+    success "File sharing preparation completed"
 }
 
 #=============================================================================
@@ -839,10 +829,11 @@ main() {
         echo "   • Useful directories created"
         echo ""
         echo "${BOLD}🔄 Next steps:${RESET}"
-        echo "   1. Run the main dotfiles installation script"
-        echo "   2. Run scripts/macos-defaults.zsh for UI preferences"
-        echo "   3. Install development tools and applications"
-        echo "   4. Configure specific applications and services"
+        echo "   1. Complete file sharing setup via System Preferences (see manual-setup-tasks.md)"
+        echo "   2. Run the main dotfiles installation script"
+        echo "   3. Run scripts/macos-defaults.zsh for UI preferences"
+        echo "   4. Install development tools and applications"
+        echo "   5. Configure specific applications and services"
         echo ""
         echo "${BOLD}📚 Log file: $LOG_FILE${RESET}"
         echo ""

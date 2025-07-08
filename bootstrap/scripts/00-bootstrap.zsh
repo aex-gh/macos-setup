@@ -648,6 +648,8 @@ main() {
             echo "${BOLD}🔄 Next steps:${RESET}"
             echo "   • Restart your terminal or run: exec zsh"
             echo "   • Review the setup log for any warnings"
+            echo "   • Complete manual setup tasks (see bootstrap/docs/manual-setup-tasks.md)"
+            echo "   • Configure file sharing via System Preferences if needed"
             echo "   • Customize settings as needed"
             echo ""
         fi
