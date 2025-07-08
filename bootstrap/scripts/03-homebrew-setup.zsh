@@ -675,12 +675,19 @@ configure_hardware_services() {
             ;;
     esac
     
+    # Check if brew services is available
+    if ! brew services list &>/dev/null; then
+        warn "No services available to manage yet - packages need to be installed first"
+        info "Services will be configured after package installation"
+        return 0
+    fi
+    
     # Start services
     for service in "${services_to_start[@]}"; do
-        if brew services list | grep -q "^$service.*stopped"; then
+        if brew services list 2>/dev/null | grep -q "^$service.*stopped"; then
             execute_command "Starting service: $service" \
                 brew services start "$service"
-        elif brew services list | grep -q "^$service.*started"; then
+        elif brew services list 2>/dev/null | grep -q "^$service.*started"; then
             debug "Service already running: $service"
         else
             debug "Service not installed: $service"
@@ -689,7 +696,7 @@ configure_hardware_services() {
     
     # Stop services if specified
     for service in "${services_to_stop[@]}"; do
-        if brew services list | grep -q "^$service.*started"; then
+        if brew services list 2>/dev/null | grep -q "^$service.*started"; then
             execute_command "Stopping service: $service" \
                 brew services stop "$service"
         fi
@@ -700,8 +707,8 @@ configure_hardware_services() {
         echo ""
         echo "${BOLD}Service Status:${RESET}"
         for service in "${services_to_start[@]}"; do
-            local status=$(brew services list | grep "^$service" | awk '{print $2}' || echo "not installed")
-            printf "  %-20s: %s\n" "$service" "$status"
+            local service_status=$(brew services list 2>/dev/null | grep "^$service" | awk '{print $2}' || echo "not installed")
+            printf "  %-20s: %s\n" "$service" "$service_status"
         done
         echo ""
     fi
