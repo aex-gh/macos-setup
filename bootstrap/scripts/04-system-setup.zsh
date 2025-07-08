@@ -62,7 +62,7 @@ declare -g DRY_RUN=false
 declare -g FORCE=false
 declare -g SKIP_SSH=false
 declare -g SKIP_SHARING=false
-declare -g LOG_FILE="/var/log/system-setup.log"
+declare -g LOG_FILE="$HOME/.config/dotfiles-setup/system-setup.log"
 declare -g CURRENT_USER=${SUDO_USER:-$(whoami)}
 declare -g USER_HOME="/Users/$CURRENT_USER"
 
@@ -75,6 +75,9 @@ log() {
     shift
     local message="$*"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # Create log directory if it doesn't exist
+    mkdir -p "${LOG_FILE:h}"
     
     # Log to file
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE"

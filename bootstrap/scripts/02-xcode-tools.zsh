@@ -287,6 +287,12 @@ accept_xcode_license() {
         return 0
     fi
     
+    # Check if xcodebuild is available (requires full Xcode, not just Command Line Tools)
+    if ! command -v xcodebuild &>/dev/null; then
+        info "Xcode license check skipped (Command Line Tools only, no full Xcode)"
+        return 0
+    fi
+    
     # Check if license needs to be accepted
     if ! xcodebuild -license check &>/dev/null; then
         warn "Xcode license agreement needs to be accepted"

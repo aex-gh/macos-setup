@@ -433,8 +433,8 @@ export MACOS_VERSION="$MACOS_VERSION"
 export MACOS_BUILD="$MACOS_BUILD"
 export HAS_TOUCHID="$HAS_TOUCHID"
 export HAS_DISCRETE_GPU="$HAS_DISCRETE_GPU"
-export NETWORK_INTERFACES=(${NETWORK_INTERFACES[*]})
-export HARDWARE_CAPABILITIES=(${HARDWARE_CAPABILITIES[*]})
+export NETWORK_INTERFACES=($(printf '"%s" ' "${NETWORK_INTERFACES[@]}"))
+export HARDWARE_CAPABILITIES=($(printf '"%s" ' "${HARDWARE_CAPABILITIES[@]}"))
 EOF
     
     debug "Hardware profile exported to: $profile_file"
