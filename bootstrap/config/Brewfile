@@ -71,8 +71,9 @@ brew "ruff"                   # Extremely fast Python linter and formatter
 
 # Essential productivity
 cask "1password"              # Password manager
-cask "raycast"                 # Application launcher and productivity
+cask "raycast"                # Application launcher and productivity
 cask "karabiner-elements"     # Keyboard customisation
+cask "zen"                    # Firefox based browser
 
 # Communication
 cask "zoom"                   # Video conferencing

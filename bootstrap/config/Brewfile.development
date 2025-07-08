@@ -60,9 +60,9 @@ brew "docker-compose"         # Multi-container Docker applications
 brew "orbstack"               # Fast, lightweight Docker alternative
 
 # Infrastructure as Code
-brew "terraform"              # Infrastructure as code tool
-brew "ansible"                # Configuration management
-brew "vagrant"                # Virtual machine management
+# brew "terraform"              # Infrastructure as code tool
+# brew "ansible"                # Configuration management
+# brew "vagrant"                # Virtual machine management
 
 # Cloud tools
 brew "awscli"                 # AWS Command Line Interface
@@ -72,7 +72,8 @@ brew "google-cloud-sdk"       # Google Cloud SDK
 # API and HTTP tools
 brew "httpie"                 # Human-friendly HTTP client
 brew "curl"                   # Enhanced curl
-brew "postman-cli"            # Postman CLI
+# brew "postman-cli"            # Postman CLI
+
 
 # Database tools
 brew "postgresql@17"          # PostgreSQL database
@@ -99,9 +100,9 @@ cask "zed"                    # High-performance code editor
 cask "jetbrains-toolbox"      # JetBrains IDE manager
 
 # API and database tools
-cask "postman"                # API development and testing
-cask "tableplus"              # Database management GUI
-cask "sequel-pro"             # MySQL database management
+cask "bruno"                  # API development and testing
+# cask "tableplus"              # Database management GUI
+# cask "sequel-pro"             # MySQL database management
 
 # Container and virtualization GUIs
 cask "orbstack"               # Fast, lightweight container runtime (primary)
@@ -113,7 +114,7 @@ cask "sourcetree"             # Git GUI client
 
 # Terminal emulators
 cask "iterm2"                 # Enhanced terminal
-cask "warp"                   # Modern terminal
+# cask "warp"                   # Modern terminal
 cask "ghostty"                # Fast terminal emulator
 
 # Development utilities
@@ -132,4 +133,4 @@ cask "aws-vpn-client"         # AWS VPN client
 mas "Xcode", id: 497799835                          # Apple's IDE
 mas "SF Symbols", id: 1491960766                    # Apple's icon library
 mas "Core Data Lab", id: 1460684638                 # Core Data browser
-mas "JSON Peep", id: 1458969831                     # JSON viewer
+# mas "JSON Peep", id: 1458969831                     # JSON viewer
