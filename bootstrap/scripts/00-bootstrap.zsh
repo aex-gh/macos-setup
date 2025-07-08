@@ -193,8 +193,8 @@ execute_module() {
         return 0
     fi
     
-    # Source the module and execute its main function
-    if source "$module_path"; then
+    # Execute the module script directly
+    if "$module_path"; then
         success "Module completed: $module_script"
         return 0
     else
