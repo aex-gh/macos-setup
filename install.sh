@@ -13,10 +13,10 @@
 #   and profile-based configuration.
 #
 # USAGE:
-#   curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash
 #   
 #   # Or with options:
-#   curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash -s -- --profile developer --force
+#   curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash -s -- --profile developer --force
 #
 # OPTIONS:
 #   -h, --help              Show this help message
@@ -34,7 +34,7 @@
 #
 # SECURITY:
 #   This script can be inspected before execution:
-#   curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh -o install.sh
+#   curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh -o install.sh
 #   less install.sh  # Review the script
 #   chmod +x install.sh && ./install.sh
 #
@@ -49,7 +49,7 @@ readonly SCRIPT_VERSION="1.0.0"
 readonly INSTALLER_LOG="$HOME/.config/dotfiles-setup/installer_$(date +%Y%m%d_%H%M%S).log"
 
 # Repository configuration
-readonly DEFAULT_REPO="https://github.com/aex-gh/dotfiles.git"
+readonly DEFAULT_REPO="https://github.com/aex-gh/macos-setup.git"
 readonly DEFAULT_BRANCH="main"
 readonly DOTFILES_DIR="$HOME/.dotfiles"
 
@@ -199,7 +199,7 @@ check_dependencies() {
             warn "and re-run this installer when finished."
             echo ""
             echo "Run this command again:"
-            echo "  curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash"
+            echo "  curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash"
             exit 0
         else
             error "Git is required for installation. Please install Xcode Command Line Tools."
@@ -338,7 +338,7 @@ show_summary() {
         echo "${BOLD}🔍 Dry Run Complete${RESET}"
         echo "No changes were made to your system."
         echo "Run without --dry-run to apply changes:"
-        echo "  curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash"
+        echo "  curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash"
     else
         echo "${BOLD}🔄 Next Steps:${RESET}"
         echo "1. Restart your terminal or run: ${CYAN}exec zsh${RESET}"
@@ -365,8 +365,8 @@ ${BOLD}NAME${RESET}
     $SCRIPT_NAME - One-line installer for macOS dotfiles
 
 ${BOLD}SYNOPSIS${RESET}
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash -s -- [options]
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash -s -- [options]
 
 ${BOLD}DESCRIPTION${RESET}
     Downloads and installs a comprehensive macOS dotfiles setup with hardware 
@@ -389,20 +389,20 @@ ${BOLD}PROFILES${RESET}
 
 ${BOLD}EXAMPLES${RESET}
     # Interactive installation with profile selection
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash
 
     # Automated developer setup
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash -s -- --profile developer --force
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash -s -- --profile developer --force
 
     # Preview what would be installed
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash -s -- --dry-run
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash -s -- --dry-run
 
     # Install from development branch
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash -s -- --branch develop
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash -s -- --branch develop
 
 ${BOLD}SECURITY${RESET}
     To inspect this script before execution:
-    curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh -o install.sh
+    curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh -o install.sh
     less install.sh  # Review the script
     chmod +x install.sh && ./install.sh
 
@@ -527,7 +527,7 @@ cleanup() {
         error "Installation failed with exit code: $exit_code"
         error "Check the installer log for details: $INSTALLER_LOG"
         echo ""
-        echo "For help, please visit: https://github.com/aex-gh/dotfiles/issues"
+        echo "For help, please visit: https://github.com/aex-gh/macos-setup/issues"
     fi
     
     exit $exit_code
