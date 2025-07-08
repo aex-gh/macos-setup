@@ -42,7 +42,7 @@ set -euo pipefail
 readonly SCRIPT_NAME="${0:t}"
 readonly SCRIPT_DIR="${0:A:h}"
 readonly SCRIPT_VERSION="1.0.0"
-readonly DOTFILES_ROOT="${SCRIPT_DIR:h}"
+readonly DOTFILES_ROOT="${SCRIPT_DIR:h:h}"
 
 # Colour codes (using tput for compatibility)
 readonly RED=$(tput setaf 1)

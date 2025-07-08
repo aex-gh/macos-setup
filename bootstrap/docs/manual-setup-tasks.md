@@ -167,6 +167,9 @@ If you're using this Mac for development:
    - Set up 1Password browser integration
    - Configure Raycast/Alfred workflows
    - Set up Karabiner Elements keyboard customisations
+   - Add Karabiner Elements to login items if not done automatically:
+     - System Preferences > Users & Groups > Login Items
+     - Click '+' and select Karabiner-Elements from Applications
 
 2. **System Preferences Customisation**
    - Review and adjust settings applied by the bootstrap

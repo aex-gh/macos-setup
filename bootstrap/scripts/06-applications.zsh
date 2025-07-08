@@ -687,8 +687,14 @@ EOF
         fi
         
         # Add to login items for automatic startup
-        execute_command "Adding Karabiner Elements to login items" \
-            osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Karabiner-Elements.app", hidden:false}'
+        info "Adding Karabiner Elements to login items..."
+        if osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Karabiner-Elements.app", hidden:false}' 2>/dev/null; then
+            success "Karabiner Elements added to login items"
+        else
+            warn "Could not automatically add Karabiner Elements to login items"
+            info "To add manually: System Preferences > Users & Groups > Login Items"
+            info "Click '+' and select Karabiner-Elements from Applications"
+        fi
         
         success "Karabiner Elements configured with popular keyboard improvements"
         
