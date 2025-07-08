@@ -6,8 +6,7 @@
 # TAPS - Development-focused repositories
 #=============================================================================
 
-tap "homebrew/bundle"
-tap "homebrew/services"
+# Note: homebrew/bundle and homebrew/services are now part of Homebrew core
 tap "hashicorp/tap"           # Terraform, Vault, etc.
 tap "azure/functions"         # Azure Functions Core Tools
 

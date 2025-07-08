@@ -6,7 +6,7 @@
 # TAPS - Server and high-performance tools
 #=============================================================================
 
-tap "homebrew/services"
+# Note: homebrew/services is now part of Homebrew core
 tap "nginx/stable"
 tap "mongodb/brew"
 tap "elastic/tap"

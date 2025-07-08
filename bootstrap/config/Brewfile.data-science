@@ -6,8 +6,7 @@
 # TAPS - Data science repositories
 #=============================================================================
 
-tap "homebrew/bundle"
-tap "homebrew/services"
+# Note: homebrew/bundle and homebrew/services are now part of Homebrew core
 tap "r-lib/rig"               # R installation manager
 
 #=============================================================================

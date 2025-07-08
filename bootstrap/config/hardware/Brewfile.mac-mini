@@ -6,7 +6,7 @@
 # TAPS - Balanced tools for home office
 #=============================================================================
 
-tap "homebrew/services"
+# Note: homebrew/services is now part of Homebrew core
 tap "plex/plex-media-server"
 tap "mas-cli/tap"
 

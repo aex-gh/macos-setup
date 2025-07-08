@@ -6,7 +6,7 @@
 # TAPS - Full development stack
 #=============================================================================
 
-tap "homebrew/services"
+# Note: homebrew/services is now part of Homebrew core
 tap "mas-cli/tap"
 tap "hashicorp/tap"
 tap "azure/functions"

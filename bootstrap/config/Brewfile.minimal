@@ -6,7 +6,7 @@
 # TAPS - Essential repositories only
 #=============================================================================
 
-tap "homebrew/bundle"
+# Note: homebrew/bundle is now part of Homebrew core
 
 #=============================================================================
 # ESSENTIAL FORMULAE - Absolute necessities
