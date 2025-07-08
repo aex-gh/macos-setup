@@ -30,8 +30,6 @@ brew "fzf"                    # Fuzzy finder for everything
 brew "zoxide"                 # Smart cd replacement
 
 # Essential utilities
-brew "jq"                     # JSON processor
-brew "yq"                     # YAML processor
 brew "tree"                   # Directory tree visualizer
 brew "htop"                   # Better top/process viewer
 brew "gdu"                    # Disk usage analyzer
@@ -45,17 +43,28 @@ brew "xz"                     # XZ compression
 # Network tools
 brew "nmap"                   # Network mapping tool
 brew "speedtest-cli"          # Internet speed test
+brew "HTTPie"                 # HTTP client
 
 # Text processing
 brew "grep"                   # GNU grep (better than BSD)
 brew "sed"                    # GNU sed (better than BSD)
 brew "awk"                    # GNU awk (better than BSD)
+brew "jq"                     # JSON processor
+brew "yq"                     # YAML processor
+brew "csvkit"                 # CSV toolkit
 brew "mdv"                    # Markdown viewer
 brew "mdless"                 # Markdown viewer
 brew "mandown"                # Markdown to man page converter
 brew "man2html"               # Man page to HTML converter
 brew "man2pdf"                # Man page to PDF converter
 brew "gather-cli"             # Gather CLI tool
+
+# Image and Video
+brew "yt-dlp"                 # YouTube downloader
+brew "ffmpeg"                 # Video and audio converter
+brew "imagemagick"            # Image manipulation
+brew "exiftool"               # EXIF metadata editor
+brew "mpv"                    # Video player
 
 # Shell enhancements
 brew "shellcheck"             # Shell script linter
@@ -64,6 +73,12 @@ brew "shfmt"                  # Shell script formatter
 # Python development (modern toolchain)
 brew "uv"                     # Ultra-fast Python package manager and project tool
 brew "ruff"                   # Extremely fast Python linter and formatter
+
+# Productivity
+brew "taskwarrior"            # Task management tool
+brew "todo-txt"               # Todo.txt command-line wnterface
+brew "calcurse"               # Calender and task management tool
+
 
 #=============================================================================
 # CASKS - GUI Applications
@@ -74,6 +89,7 @@ cask "1password"              # Password manager
 cask "raycast"                # Application launcher and productivity
 cask "karabiner-elements"     # Keyboard customisation
 cask "zen"                    # Firefox based browser
+cask "marta"                  # Dual pane file manager
 
 # Communication
 cask "zoom"                   # Video conferencing
@@ -83,6 +99,7 @@ cask "slack"                  # Team communication
 cask "appcleaner"             # Application uninstaller
 cask "the-unarchiver"         # Archive extraction utility
 cask "keka"                   # Archive creation utility
+cask "iina"                   # Video player
 
 # System utilities
 cask "coconutbattery"         # Battery health monitoring
@@ -92,5 +109,4 @@ cask "coconutbattery"         # Battery health monitoring
 #=============================================================================
 
 # System utilities from App Store
-mas "Hidden Bar", id: 1452453066                    # Menu bar organization
-mas "System Preferences", id: 1496833156            # System settings access
+# mas "Hidden Bar", id: 1452453066                    # Menu bar organization
