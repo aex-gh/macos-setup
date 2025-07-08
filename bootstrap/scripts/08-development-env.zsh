@@ -167,7 +167,7 @@ safe_symlink() {
 setup_git_config() {
     step "Setting up Git configuration..."
     
-    local git_config_dir="$DOTFILES_ROOT/config/git"
+    local git_config_dir="$DOTFILES_ROOT/git"
     
     # Check if Git config files exist
     if [[ ! -f "$git_config_dir/dot-gitconfig" ]]; then

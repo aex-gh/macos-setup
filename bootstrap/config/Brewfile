@@ -8,6 +8,7 @@
 
 tap "homebrew/bundle"
 tap "homebrew/services"
+tap "ttscoff/thelab"
 
 #=============================================================================
 # FORMULAE - Command-line tools
@@ -33,7 +34,7 @@ brew "jq"                     # JSON processor
 brew "yq"                     # YAML processor
 brew "tree"                   # Directory tree visualizer
 brew "htop"                   # Better top/process viewer
-brew "ncdu"                   # Disk usage analyzer
+brew "gdu"                    # Disk usage analyzer
 brew "tldr"                   # Simplified man pages
 
 # Archive and compression
@@ -49,6 +50,12 @@ brew "speedtest-cli"          # Internet speed test
 brew "grep"                   # GNU grep (better than BSD)
 brew "sed"                    # GNU sed (better than BSD)
 brew "awk"                    # GNU awk (better than BSD)
+brew "mdv"                    # Markdown viewer
+brew "mdless"                 # Markdown viewer
+brew "mandown"                # Markdown to man page converter
+brew "man2html"               # Man page to HTML converter
+brew "man2pdf"                # Man page to PDF converter
+brew "gather-cli"             # Gather CLI tool
 
 # Shell enhancements
 brew "shellcheck"             # Shell script linter
@@ -65,6 +72,7 @@ brew "ruff"                   # Extremely fast Python linter and formatter
 # Essential productivity
 cask "1password"              # Password manager
 cask "raycast"                 # Application launcher and productivity
+cask "karabiner-elements"     # Keyboard customisation
 
 # Communication
 cask "zoom"                   # Video conferencing
@@ -77,7 +85,6 @@ cask "keka"                   # Archive creation utility
 
 # System utilities
 cask "coconutbattery"         # Battery health monitoring
-cask "disk-utility"           # Advanced disk management
 
 #=============================================================================
 # MAS - Mac App Store Applications

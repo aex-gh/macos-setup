@@ -43,7 +43,7 @@ set -euo pipefail
 readonly SCRIPT_NAME="${0:t}"
 readonly SCRIPT_DIR="${0:A:h}"
 readonly SCRIPT_VERSION="1.0.0"
-readonly DOTFILES_ROOT="${SCRIPT_DIR:h}"
+readonly DOTFILES_ROOT="${SCRIPT_DIR:h:h}"
 readonly LOG_DIR="$HOME/.config/dotfiles-setup"
 readonly TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
 
@@ -422,7 +422,13 @@ check_system_updates() {
     
     step "Checking for system updates..."
     
-    local updates_available=$(softwareupdate -l 2>&1 | grep -c "recommended" || echo "0")
+    local updates_available
+    updates_available=$(softwareupdate -l 2>&1 | grep -c "recommended" 2>/dev/null || echo "0")
+    
+    # Ensure we have a numeric value
+    if [[ ! "$updates_available" =~ ^[0-9]+$ ]]; then
+        updates_available=0
+    fi
     
     if [[ $updates_available -gt 0 ]]; then
         warn "$updates_available system updates available"

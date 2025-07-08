@@ -10,7 +10,8 @@
 # DESCRIPTION:
 #   Application configuration and network services setup module.
 #   Configures GUI applications, sets up network shares, and handles
-#   hardware-specific application configurations.
+#   hardware-specific application configurations including Karabiner Elements
+#   keyboard customisation.
 #
 # USAGE:
 #   ./06-applications.zsh [options]
@@ -30,6 +31,7 @@
 #   - Configures applications based on hardware type
 #   - Sets up network sharing for Mac Studio
 #   - Configures automatic mounting for MacBook Pro and Mac Mini
+#   - Installs Karabiner Elements keyboard customisation on all hardware types
 #=============================================================================
 
 # Strict mode
@@ -198,6 +200,9 @@ configure_applications() {
 configure_studio_applications() {
     step "Configuring Mac Studio server applications"
     
+    # Configure keyboard customisation (universal benefit)
+    configure_karabiner_elements
+    
     # Configure OrbStack for server use
     if command -v orb &>/dev/null || [[ -d "/Applications/OrbStack.app" ]]; then
         configure_orbstack_server_settings
@@ -216,6 +221,9 @@ configure_studio_applications() {
 configure_laptop_applications() {
     step "Configuring MacBook Pro daily driver applications"
     
+    # Configure keyboard customisation (universal benefit)
+    configure_karabiner_elements
+    
     # Configure development applications
     configure_development_applications
     
@@ -231,6 +239,9 @@ configure_laptop_applications() {
 # Configure Mac Mini applications
 configure_mini_applications() {
     step "Configuring Mac Mini home office applications"
+    
+    # Configure keyboard customisation (universal benefit)
+    configure_karabiner_elements
     
     # Configure media center applications
     configure_media_applications
@@ -459,6 +470,244 @@ configure_home_automation_applications() {
     success "Home automation applications configured"
 }
 
+# Configure Karabiner Elements keyboard customisation
+configure_karabiner_elements() {
+    step "Configuring Karabiner Elements keyboard customisation"
+    
+    # Check if Karabiner Elements is installed
+    if [[ ! -d "/Applications/Karabiner-Elements.app" ]]; then
+        warn "Karabiner Elements not found - skipping configuration"
+        return 0
+    fi
+    
+    local karabiner_config_dir="$HOME/.config/karabiner"
+    local karabiner_config_file="$karabiner_config_dir/karabiner.json"
+    local source_config_file="$SCRIPT_DIR/../config/karabiner/karabiner-popular.json"
+    
+    # Verify source configuration exists
+    if [[ ! -f "$source_config_file" ]]; then
+        error "Karabiner source configuration not found: $source_config_file"
+        return 1
+    fi
+    
+    if [[ $DRY_RUN == false ]]; then
+        # Create Karabiner config directory
+        execute_command "Creating Karabiner config directory" \
+            mkdir -p "$karabiner_config_dir"
+        
+        # Backup existing configuration if it exists
+        if [[ -f "$karabiner_config_file" ]]; then
+            local backup_file="$karabiner_config_file.backup.$(date +%Y%m%d_%H%M%S)"
+            execute_command "Backing up existing Karabiner configuration" \
+                cp "$karabiner_config_file" "$backup_file"
+            info "Existing configuration backed up to: $backup_file"
+        fi
+        
+        # Create complete Karabiner configuration structure
+        cat > "$karabiner_config_file" << 'EOF'
+{
+    "global": {
+        "ask_for_confirmation_before_quitting": true,
+        "check_for_updates_on_startup": true,
+        "show_in_menu_bar": true,
+        "show_profile_name_in_menu_bar": false,
+        "unsafe_ui": false
+    },
+    "profiles": [
+        {
+            "complex_modifications": {
+EOF
+        
+        # Extract and add the rules from our configuration
+        if command -v jq &>/dev/null; then
+            # Use jq to properly merge the rules
+            jq '.rules' "$source_config_file" >> "$karabiner_config_file"
+        else
+            # Fallback: manually extract rules section
+            sed -n '/"rules":/,/^  \]/p' "$source_config_file" | sed '1s/.*/"rules": [/' >> "$karabiner_config_file"
+        fi
+        
+        # Complete the configuration structure
+        cat >> "$karabiner_config_file" << 'EOF'
+            },
+            "devices": [],
+            "fn_function_keys": [
+                {
+                    "from": {
+                        "key_code": "f1"
+                    },
+                    "to": [
+                        {
+                            "key_code": "display_brightness_decrement"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f2"
+                    },
+                    "to": [
+                        {
+                            "key_code": "display_brightness_increment"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f3"
+                    },
+                    "to": [
+                        {
+                            "key_code": "mission_control"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f4"
+                    },
+                    "to": [
+                        {
+                            "key_code": "launchpad"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f5"
+                    },
+                    "to": [
+                        {
+                            "key_code": "illumination_decrement"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f6"
+                    },
+                    "to": [
+                        {
+                            "key_code": "illumination_increment"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f7"
+                    },
+                    "to": [
+                        {
+                            "key_code": "rewind"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f8"
+                    },
+                    "to": [
+                        {
+                            "key_code": "play_or_pause"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f9"
+                    },
+                    "to": [
+                        {
+                            "key_code": "fast_forward"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f10"
+                    },
+                    "to": [
+                        {
+                            "key_code": "mute"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f11"
+                    },
+                    "to": [
+                        {
+                            "key_code": "volume_decrement"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f12"
+                    },
+                    "to": [
+                        {
+                            "key_code": "volume_increment"
+                        }
+                    ]
+                }
+            ],
+            "name": "Popular Configuration",
+            "parameters": {
+                "delay_milliseconds_before_open_device": 1000
+            },
+            "selected": true,
+            "simple_modifications": [],
+            "virtual_hid_keyboard": {
+                "country_code": 0,
+                "indicate_sticky_modifier_keys_state": true,
+                "mouse_key_xy_scale": 100
+            }
+        }
+    ]
+}
+EOF
+        
+        # Set proper permissions
+        execute_command "Setting Karabiner configuration permissions" \
+            chmod 644 "$karabiner_config_file"
+        
+        success "Karabiner Elements configuration installed"
+        
+        # Restart Karabiner Elements to load new configuration
+        if pgrep -f "Karabiner-Elements" >/dev/null; then
+            execute_command "Restarting Karabiner Elements" \
+                osascript -e 'tell application "Karabiner-Elements" to quit' \
+                && sleep 2 \
+                && open -a "Karabiner-Elements"
+        else
+            execute_command "Starting Karabiner Elements" \
+                open -a "Karabiner-Elements"
+        fi
+        
+        # Add to login items for automatic startup
+        execute_command "Adding Karabiner Elements to login items" \
+            osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Karabiner-Elements.app", hidden:false}'
+        
+        success "Karabiner Elements configured with popular keyboard improvements"
+        
+        echo ""
+        info "Keyboard improvements enabled:"
+        info "  • Caps Lock → Escape when tapped, Control when held"
+        info "  • Right Option + HJKL → Arrow keys (Vim navigation)"
+        info "  • Windows-style shortcuts (Ctrl+C/V/X/Z → Cmd+C/V/X/Z)"
+        info "  • Function keys work without Fn key"
+        info "  • Enhanced window management shortcuts"
+        info "  • Quick app switching (Cmd+Opt+1/2/3/4)"
+        
+    else
+        info "DRY RUN: Would configure Karabiner Elements with popular keyboard improvements"
+    fi
+    
+    return 0
+}
+
 #=============================================================================
 # MAIN FUNCTIONS
 #=============================================================================
@@ -484,9 +733,9 @@ ${BOLD}OPTIONS${RESET}
     -n, --dry-run       Preview changes without applying them
 
 ${BOLD}HARDWARE CONFIGURATIONS${RESET}
-    Mac Studio          Server applications, network sharing, monitoring
-    MacBook Pro         Daily driver, development tools, auto-mounting
-    Mac Mini            Home office, media center, balanced setup
+    Mac Studio          Server applications, network sharing, monitoring, keyboard customisation
+    MacBook Pro         Daily driver, development tools, auto-mounting, keyboard customisation
+    Mac Mini            Home office, media center, balanced setup, keyboard customisation
 
 ${BOLD}AUTHOR${RESET}
     Andrew Exley (with Claude) <noreply@anthropic.com>

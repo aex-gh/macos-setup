@@ -273,9 +273,9 @@ clone_repository() {
     fi
     
     # Verify the clone
-    if [[ ! -f "$DOTFILES_DIR/scripts/00-bootstrap.zsh" ]]; then
+    if [[ ! -f "$DOTFILES_DIR/bootstrap/scripts/00-bootstrap.zsh" ]]; then
         error "Invalid repository structure - bootstrap script not found"
-        error "Expected: $DOTFILES_DIR/scripts/00-bootstrap.zsh"
+        error "Expected: $DOTFILES_DIR/bootstrap/scripts/00-bootstrap.zsh"
         exit 1
     fi
     
@@ -291,7 +291,7 @@ launch_bootstrap() {
     else
         cd "$DOTFILES_DIR"
         # Make bootstrap script executable
-        chmod +x scripts/00-bootstrap.zsh
+        chmod +x bootstrap/scripts/00-bootstrap.zsh
     fi
     
     # Prepare bootstrap arguments
@@ -305,7 +305,7 @@ launch_bootstrap() {
     debug "Bootstrap arguments: ${bootstrap_args[*]}"
     
     if [[ $DRY_RUN == true ]]; then
-        info "DRY RUN: Would execute: ./scripts/00-bootstrap.zsh ${bootstrap_args[*]}"
+        info "DRY RUN: Would execute: ./bootstrap/scripts/00-bootstrap.zsh ${bootstrap_args[*]}"
         return 0
     fi
     
@@ -313,7 +313,7 @@ launch_bootstrap() {
     echo ""
     
     # Execute the bootstrap script
-    if ./scripts/00-bootstrap.zsh "${bootstrap_args[@]}"; then
+    if ./bootstrap/scripts/00-bootstrap.zsh "${bootstrap_args[@]}"; then
         success "Dotfiles setup completed successfully!"
     else
         error "Bootstrap script failed"

@@ -68,6 +68,12 @@ declare -g HOMEBREW_PREFIX=""
 declare -g HOMEBREW_REPOSITORY=""
 declare -g HOMEBREW_CELLAR=""
 
+# Load dry run utilities
+if [[ -f "${SCRIPT_DIR}/lib/dry-run-utils.zsh" ]]; then
+    source "${SCRIPT_DIR}/lib/dry-run-utils.zsh"
+    dr_set_module "homebrew-setup"
+fi
+
 #=============================================================================
 # LOGGING FUNCTIONS
 #=============================================================================
@@ -141,23 +147,29 @@ print_section() {
     echo ""
 }
 
-# Execute command with proper logging
+# Execute command with proper logging (enhanced with dry run utils)
 execute_command() {
     local description=$1
     shift
     local cmd=("$@")
     
-    step "$description"
-    
-    if [[ $DRY_RUN == false ]]; then
-        if "${cmd[@]}"; then
-            debug "Executed: ${cmd[*]}"
-        else
-            error "Failed to execute: ${cmd[*]}"
-            return 1
-        fi
+    # Use dry run utilities if available
+    if command -v dr_execute >/dev/null 2>&1; then
+        dr_execute "$description" "${cmd[@]}"
     else
-        debug "DRY RUN: ${cmd[*]}"
+        # Fallback to original implementation
+        step "$description"
+        
+        if [[ $DRY_RUN == false ]]; then
+            if "${cmd[@]}"; then
+                debug "Executed: ${cmd[*]}"
+            else
+                error "Failed to execute: ${cmd[*]}"
+                return 1
+            fi
+        else
+            debug "DRY RUN: ${cmd[*]}"
+        fi
     fi
     
     return 0
@@ -463,7 +475,16 @@ install_brewfile_packages() {
         debug "No hardware-specific Brewfile for $HARDWARE_TYPE"
     fi
     
-    if [[ $DRY_RUN == true ]]; then
+    # Use enhanced dry run utilities if available
+    if [[ $DRY_RUN == true ]] && command -v dr_brew_bundle >/dev/null 2>&1; then
+        dr_brew_bundle "Install packages for profile: $profile" "$brewfile"
+        
+        if [[ -n $hardware_brewfile && -f $hardware_brewfile ]]; then
+            dr_brew_bundle "Install hardware-specific packages for $HARDWARE_TYPE" "$hardware_brewfile"
+        fi
+        return 0
+    elif [[ $DRY_RUN == true ]]; then
+        # Fallback dry run implementation
         info "DRY RUN: Would install packages from $brewfile"
         if [[ -f $brewfile ]]; then
             echo ""
@@ -791,6 +812,14 @@ main() {
     # Parse arguments
     parse_args "$@"
     
+    # Initialize dry run if enabled
+    if [[ $DRY_RUN == true ]] && command -v dr_init >/dev/null 2>&1; then
+        export DRY_RUN_ENABLED=true
+        dr_init "homebrew-setup"
+        dr_capture_system_state "homebrew-setup"
+        dr_check_conflicts "homebrew-setup"
+    fi
+    
     # Load hardware profile
     load_hardware_profile
     
@@ -863,12 +892,18 @@ main() {
             
             success "Homebrew setup completed successfully"
             
-            echo ""
-            echo "${BOLD}Next steps:${RESET}"
-            echo "  • Restart your terminal or run: exec zsh"
-            echo "  • Use 'brew install <package>' to install additional software"
-            echo "  • Use 'brew bundle' to install from Brewfiles"
-            echo ""
+            # Finalize dry run reporting
+            if [[ $DRY_RUN == true ]] && command -v dr_finalize_module >/dev/null 2>&1; then
+                dr_finalize_module "homebrew-setup"
+                dr_generate_summary
+            else
+                echo ""
+                echo "${BOLD}Next steps:${RESET}"
+                echo "  • Restart your terminal or run: exec zsh"
+                echo "  • Use 'brew install <package>' to install additional software"
+                echo "  • Use 'brew bundle' to install from Brewfiles"
+                echo ""
+            fi
         else
             error "Homebrew verification failed after installation"
             return 1

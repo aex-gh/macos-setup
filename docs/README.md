@@ -25,37 +25,44 @@ curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | b
 ```bash
 git clone https://github.com/aex-gh/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./scripts/00-bootstrap.zsh
+./bootstrap/scripts/00-bootstrap.zsh
 ```
 
 ## 📁 Repository Structure
 
 ```
 dotfiles/
-├── scripts/                 # Setup modules (numbered for execution order)
-│   ├── 00-bootstrap.zsh     # Main orchestration script
-│   ├── 01-system-detection.zsh
-│   ├── 02-xcode-tools.zsh
-│   ├── 03-homebrew-setup.zsh
-│   ├── 04-system-setup.zsh
-│   ├── 05-macos-defaults.zsh
-│   ├── 06-applications.zsh
-│   ├── 07-security-hardening.zsh
-│   ├── 09-post-setup.zsh
-│   └── modules/
-├── profiles/                # User profile configurations
-│   ├── developer.yml        # Full development environment
-│   ├── data-scientist.yml   # ML/DS focused setup
-│   └── personal.yml         # Personal productivity setup
-├── config/                  # Application and system configurations
-│   ├── Brewfile*            # Homebrew package definitions
-│   ├── hardware/            # Hardware-specific configurations
-│   └── machine-configs/     # Per-machine settings
-├── zsh/                     # Shell configuration
-│   ├── dot-zshrc           # Main zsh configuration
-│   ├── dot-zshenv          # Environment variables
-│   └── dot-zprofile        # Login shell setup
-└── ssh/                     # SSH configuration templates
+├── bootstrap/               # Initial macOS setup (run once)
+│   ├── scripts/             # Setup modules (numbered for execution order)
+│   │   ├── 00-bootstrap.zsh # Main orchestration script
+│   │   ├── 01-system-detection.zsh
+│   │   ├── 02-xcode-tools.zsh
+│   │   ├── 03-homebrew-setup.zsh
+│   │   ├── 04-system-setup.zsh
+│   │   ├── 05-macos-defaults.zsh
+│   │   ├── 06-applications.zsh
+│   │   ├── 07-security-hardening.zsh
+│   │   ├── 08-development-env.zsh
+│   │   └── 09-post-setup.zsh
+│   ├── profiles/            # User profile configurations
+│   │   ├── developer.yml    # Full development environment
+│   │   ├── data-scientist.yml # ML/DS focused setup
+│   │   └── personal.yml     # Personal productivity setup
+│   └── config/              # Bootstrap configuration files
+│       ├── Brewfile         # Core packages
+│       ├── Brewfile.development
+│       └── hardware/        # Hardware-specific configs
+├── packages/                # Stow packages (ongoing management)
+│   ├── zsh/                 # Shell configuration
+│   ├── git/                 # Git configuration  
+│   ├── ssh/                 # SSH configuration
+│   ├── karabiner/           # Keyboard customisation
+│   ├── homebrew/            # Personal packages
+│   └── claude/              # Claude AI configuration
+├── install.sh               # One-line installer
+├── .stowrc                  # Stow configuration
+├── spec.md                  # Stow specification
+└── docs/                    # Documentation
 ```
 
 ## 🎨 Setup Profiles
@@ -89,6 +96,32 @@ Bare essentials only:
 - Core command-line tools
 - Basic GUI applications
 - Essential system configuration
+
+## 🔄 Two-Phase Setup Approach
+
+This repository uses a clear separation between initial setup and ongoing management:
+
+### Phase 1: Bootstrap (Initial Setup)
+Run once on new machines to establish the base environment:
+- System detection and hardware configuration  
+- Xcode Command Line Tools installation
+- Homebrew installation and core packages
+- System preferences and security hardening
+- Essential applications and development tools
+
+### Phase 2: Stow Packages (Ongoing Management)
+Personal dotfiles managed with GNU Stow for easy updates:
+- Shell configurations (`.zshrc`, `.zshenv`, `.zprofile`)
+- Application-specific settings (Git, SSH, Karabiner)
+- Personal preferences and customisations
+
+```bash
+# Initial setup (run once)
+./bootstrap/scripts/00-bootstrap.zsh --profile developer
+
+# Ongoing management (run as needed)
+stow zsh git ssh karabiner
+```
 
 ## 🖥️ Hardware-Specific Optimisations
 

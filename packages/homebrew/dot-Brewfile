@@ -1,0 +1,19 @@
+# Personal Homebrew Bundle
+# Maintained packages for ongoing use
+# Run: brew bundle --file=~/.Brewfile
+
+#=============================================================================
+# PERSONAL PACKAGES
+#=============================================================================
+
+# Additional development tools
+brew "gh"                     # GitHub CLI
+brew "lazygit"                # Terminal UI for git
+brew "tmux"                   # Terminal multiplexer
+
+# Personal productivity
+cask "alfred"                 # Application launcher
+cask "rectangle"              # Window management
+
+# Note: Core packages are installed during bootstrap
+# This file is for personal additions and maintenance
