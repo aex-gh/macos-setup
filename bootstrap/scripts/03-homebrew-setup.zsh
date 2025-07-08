@@ -434,6 +434,8 @@ load_machine_config() {
             [[ $key =~ ^#.*$ || -z $key ]] && continue
             # Skip section headers
             [[ $key =~ ^\[.*\]$ ]] && continue
+            # Skip lines without values
+            [[ -z ${value:-} ]] && continue
             # Set variables with MACHINE_CONFIG_ prefix
             declare -g "MACHINE_CONFIG_${key}"="${value}"
         done < "$config_file"
