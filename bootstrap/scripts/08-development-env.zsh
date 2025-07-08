@@ -335,6 +335,7 @@ setup_node_environment() {
             "prettier"
             "@vue/cli"
             "create-react-app"
+            "@anthropic-ai/claude-code"
         )
         
         for package in "${global_packages[@]}"; do

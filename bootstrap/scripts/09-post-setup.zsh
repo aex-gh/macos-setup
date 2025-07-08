@@ -362,6 +362,49 @@ check_python_environment() {
     fi
 }
 
+# Check Node.js environment
+check_node_environment() {
+    step "Checking Node.js environment"
+    
+    # Check Node.js
+    if command -v node &>/dev/null; then
+        local node_version=$(node --version)
+        # Check if Node.js 18+ for Claude Code
+        local major_version=${node_version#v}
+        major_version=${major_version%%.*}
+        record_check "Node.js" "pass" "$node_version"
+        
+        if [[ $major_version -ge 18 ]]; then
+            record_check "Node.js 18+" "pass" "Compatible with Claude Code"
+        else
+            record_check "Node.js 18+" "warn" "Version $node_version (Claude Code requires 18+)"
+        fi
+    else
+        record_check "Node.js" "fail" "Not installed"
+    fi
+    
+    # Check npm
+    if command -v npm &>/dev/null; then
+        local npm_version=$(npm --version)
+        record_check "npm" "pass" "$npm_version"
+    else
+        record_check "npm" "warn" "Not available"
+    fi
+    
+    # Check Claude Code
+    if command -v claude &>/dev/null; then
+        local claude_version=$(claude --version 2>&1 || echo "version unknown")
+        record_check "Claude Code" "pass" "Installed ($claude_version)"
+    else
+        record_check "Claude Code" "warn" "Not installed (AI coding assistant)"
+        
+        if [[ $FIX_ISSUES == true ]] && command -v npm &>/dev/null; then
+            info "Installing Claude Code via npm..."
+            npm install -g @anthropic-ai/claude-code
+        fi
+    fi
+}
+
 # Check Git configuration
 check_git_configuration() {
     step "Checking Git configuration"
@@ -759,6 +802,7 @@ main() {
     check_essential_tools
     check_shell_configuration
     check_python_environment
+    check_node_environment
     check_git_configuration
     check_security_settings
     check_hardware_configuration

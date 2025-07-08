@@ -105,6 +105,13 @@ languages:
   scala:
     enable: true  # For Spark
     spark_integration: true
+  
+  node:
+    package_manager: "npm"
+    global_packages:
+      - "@anthropic-ai/claude-code"  # AI-powered coding assistant
+      - "typescript"
+      - "prettier"
 
 # Data science environment
 data_science:

@@ -70,7 +70,7 @@ dotfiles/
 ### Developer Profile
 Perfect for software engineers and full-stack developers:
 - **Languages**: Python, Node.js, Go, Rust, Java
-- **Tools**: VS Code, Zed, JetBrains Toolbox, OrbStack
+- **Tools**: VS Code, Zed, JetBrains Toolbox, OrbStack, Claude Code
 - **Databases**: PostgreSQL, Redis, MongoDB
 - **Cloud**: AWS, Azure, GCP CLI tools
 - **DevOps**: Docker, Kubernetes, Terraform
@@ -78,7 +78,7 @@ Perfect for software engineers and full-stack developers:
 ### Data Scientist Profile
 Optimised for machine learning and data analysis:
 - **Languages**: Python (with ML stack), R, Julia, Scala
-- **Tools**: Jupyter Lab, RStudio, Anaconda
+- **Tools**: Jupyter Lab, RStudio, Anaconda, Claude Code
 - **ML Frameworks**: TensorFlow, PyTorch, scikit-learn
 - **Big Data**: Apache Spark, Kafka, Airflow
 - **Visualisation**: Tableau, Plotly, Seaborn
@@ -164,6 +164,13 @@ stow zsh git ssh karabiner
 - Automatic virtual environment management
 - Data science project templates
 - Jupyter Lab integration
+
+### AI-Powered Development
+- **Claude Code** - Anthropic's official CLI for AI-assisted coding
+- Interactive coding sessions with Claude
+- Context-aware code generation and refactoring
+- Integrated with your project files and codebase
+- Run `claude` in any project directory to start
 
 ### Comprehensive Package Management
 - **Homebrew** for command-line tools

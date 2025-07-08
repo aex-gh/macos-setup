@@ -78,8 +78,10 @@ languages:
     global_packages:
       - "typescript"
       - "eslint"
+      - "prettier"
       - "@vue/cli"
       - "create-react-app"
+      - "@anthropic-ai/claude-code"
   
   go:
     enable: true
@@ -206,6 +208,7 @@ verification:
     - "python3 --version"
     - "docker --version"
     - "brew --version"
+    - "claude --version"
   
   services:
     - "postgresql@15"

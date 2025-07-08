@@ -1,0 +1,17 @@
+# Stow ignore file for Claude package
+# This ensures stow handles the package correctly
+
+# Ignore common temporary files
+\.DS_Store
+\#.*\#
+\.#.*
+.*~
+*.swp
+
+# Ignore git files
+\.git
+\.gitignore
+
+# Keep the directory structure
+!\.config
+!\.config/claude
