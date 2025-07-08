@@ -1,0 +1,28 @@
+# Pollex Consulting Git Account Configuration
+# Used for Pollex consulting projects and client work
+
+[user]
+	name = Andrew Exley
+	email = andrew.exley@pollex.consulting
+	signingkey = andrew.exley@pollex.consulting
+
+[commit]
+	# Enable GPG signing for consulting projects
+	gpgsign = true
+
+[tag]
+	# Tag signing for consulting projects
+	gpgsign = true
+
+# Consulting-specific settings
+[github]
+	user = andrew-exley-pollex
+
+# Consulting-specific Git settings
+[core]
+	# Consulting projects might have specific requirements
+	# editor is inherited from global config unless overridden
+
+# Client-specific hooks or policies can be added here
+[init]
+	# templatedir = ~/.git-templates/pollex

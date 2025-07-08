@@ -54,6 +54,10 @@ brew "awk"                    # GNU awk (better than BSD)
 brew "shellcheck"             # Shell script linter
 brew "shfmt"                  # Shell script formatter
 
+# Python development (modern toolchain)
+brew "uv"                     # Ultra-fast Python package manager and project tool
+brew "ruff"                   # Extremely fast Python linter and formatter
+
 #=============================================================================
 # CASKS - GUI Applications
 #=============================================================================

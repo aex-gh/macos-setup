@@ -21,7 +21,7 @@ brew "caddy"                  # Modern web server with automatic HTTPS
 brew "haproxy"                # Load balancer and proxy server
 
 # Database servers (optimized for always-on)
-brew "postgresql@15"          # PostgreSQL with auto-start
+brew "postgresql@17"          # PostgreSQL with auto-start
 brew "mysql"                  # MySQL database server
 brew "redis"                  # In-memory data store
 brew "mongodb/brew/mongodb-community"  # MongoDB document database
@@ -57,6 +57,10 @@ brew "iotop"                  # I/O monitoring
 brew "nload"                  # Network usage monitor
 brew "iftop"                  # Network bandwidth monitor
 brew "bandwhich"              # Network bandwidth monitor per process
+
+# Python development (modern toolchain)
+brew "uv"                     # Ultra-fast Python package manager and project tool
+brew "ruff"                   # Extremely fast Python linter and formatter
 
 # Memory and performance analysis
 brew "valgrind"               # Memory debugging (Intel only)
@@ -212,7 +216,7 @@ cask "carbon-copy-cloner"     # Disk cloning and backup
 #=============================================================================
 
 # Core database and application services
-# - postgresql@15         (Database server)
+# - postgresql@17         (Database server)
 # - redis                 (Cache and session storage)
 # - mongodb-community     (Document database)
 # - nginx                 (Web server and reverse proxy)

@@ -1,0 +1,201 @@
+{
+    /*
+     * DefaultKeyBinding.dict for macOS
+     * Place this file at: ~/Library/KeyBindings/DefaultKeyBinding.dict
+     * Create the KeyBindings directory if it doesn't exist
+     * Restart applications for changes to take effect
+     *
+     * Key modifiers:
+     * ^ = Control
+     * ~ = Option/Alt
+     * $ = Shift
+     * @ = Command
+     * # = Numeric keypad
+     */
+
+    /* ===== WORD NAVIGATION ===== */
+    /* Option + Left/Right Arrow for word jumping (enhanced) */
+    "~\UF702" = "moveWordBackward:";           /* Option + Left Arrow */
+    "~\UF703" = "moveWordForward:";            /* Option + Right Arrow */
+    "~$\UF702" = "moveWordBackwardAndModifySelection:";  /* Option + Shift + Left */
+    "~$\UF703" = "moveWordForwardAndModifySelection:";   /* Option + Shift + Right */
+
+    /* ===== LINE NAVIGATION ===== */
+    /* Command + Left/Right for line beginning/end */
+    "@\UF702" = "moveToBeginningOfLine:";      /* Command + Left Arrow */
+    "@\UF703" = "moveToEndOfLine:";            /* Command + Right Arrow */
+    "@$\UF702" = "moveToBeginningOfLineAndModifySelection:";  /* Cmd + Shift + Left */
+    "@$\UF703" = "moveToEndOfLineAndModifySelection:";        /* Cmd + Shift + Right */
+
+    /* ===== DELETION SHORTCUTS ===== */
+    /* Option + Delete for word deletion */
+    "~\U007F" = "deleteWordBackward:";         /* Option + Delete */
+    "~\UF728" = "deleteWordForward:";          /* Option + Forward Delete */
+
+    /* Command + Delete for line deletion */
+    "@\U007F" = "deleteToBeginningOfLine:";    /* Command + Delete */
+    "@\UF728" = "deleteToEndOfLine:";          /* Command + Forward Delete */
+
+    /* Control + K for delete to end of line (Unix-style) */
+    "^k" = "deleteToEndOfLine:";
+
+    /* ===== DUPLICATE AND KILL LINES ===== */
+    /* Control + D to duplicate current line */
+    "^d" = (
+        "moveToBeginningOfLine:",
+        "moveToEndOfLineAndModifySelection:",
+        "copy:",
+        "moveToEndOfLine:",
+        "insertNewline:",
+        "paste:"
+    );
+
+    /* Control + Shift + K to delete entire line */
+    "^$k" = (
+        "moveToBeginningOfLine:",
+        "moveToEndOfLineAndModifySelection:",
+        "delete:",
+        "deleteBackward:"
+    );
+
+    /* ===== PARAGRAPH NAVIGATION ===== */
+    /* Control + Up/Down for paragraph navigation */
+    "^\UF700" = "moveToBeginningOfParagraph:"; /* Control + Up Arrow */
+    "^\UF701" = "moveToEndOfParagraph:";       /* Control + Down Arrow */
+    "^$\UF700" = "moveToBeginningOfParagraphAndModifySelection:";
+    "^$\UF701" = "moveToEndOfParagraphAndModifySelection:";
+
+    /* ===== CASE CONVERSION ===== */
+    /* Control + U for uppercase word */
+    "^u" = (
+        "moveWordBackward:",
+        "moveWordForwardAndModifySelection:",
+        "uppercaseWord:"
+    );
+
+    /* Control + L for lowercase word */
+    "^l" = (
+        "moveWordBackward:",
+        "moveWordForwardAndModifySelection:",
+        "lowercaseWord:"
+    );
+
+    /* Control + T for title case word */
+    "^t" = (
+        "moveWordBackward:",
+        "moveWordForwardAndModifySelection:",
+        "capitalizeWord:"
+    );
+
+    /* ===== SMART QUOTES AND TYPOGRAPHY ===== */
+    /* Option + [ and ] for smart quotes */
+    "~[" = "insertText:", """;                 /* Option + [ for left quote */
+    "~]" = "insertText:", """;                 /* Option + ] for right quote */
+    "~{" = "insertText:", "'";                 /* Option + Shift + [ for left single quote */
+    "~}" = "insertText:", "'";                 /* Option + Shift + ] for right single quote */
+
+    /* En and em dashes */
+    "~-" = "insertText:", "–";                 /* Option + - for en dash */
+    "~_" = "insertText:", "—";                 /* Option + Shift + - for em dash */
+
+    /* ===== SELECTION SHORTCUTS ===== */
+    /* Control + A to select all in current paragraph */
+    "^a" = (
+        "moveToBeginningOfParagraph:",
+        "moveToEndOfParagraphAndModifySelection:"
+    );
+
+    /* Control + Shift + A to select entire document */
+    "^$a" = "selectAll:";
+
+    /* ===== BLANK LINE INSERTION ===== */
+    /* Control + Enter to insert blank line below */
+    "^\r" = (
+        "moveToEndOfLine:",
+        "insertNewline:"
+    );
+
+    /* Control + Shift + Enter to insert blank line above */
+    "^$\r" = (
+        "moveToBeginningOfLine:",
+        "insertNewline:",
+        "moveBackward:"
+    );
+
+    /* ===== TEXT TRANSFORMATION ===== */
+    /* Control + Shift + U to convert selection to uppercase */
+    "^$u" = "uppercaseWord:";
+
+    /* Control + Shift + L to convert selection to lowercase */
+    "^$l" = "lowercaseWord:";
+
+    /* ===== TRANSPOSE ===== */
+    /* Control + T to transpose characters (swap current and previous) */
+    "^t" = "transpose:";
+
+    /* ===== CENTRE TEXT ===== */
+    /* Control + Shift + C to centre current line/selection */
+    "^$c" = "centerSelectionInVisibleArea:";
+
+    /* ===== INDENTATION ===== */
+    /* Control + ] to increase indentation */
+    "^]" = "shiftRight:";
+
+    /* Control + [ to decrease indentation */
+    "^[" = "shiftLeft:";
+
+    /* ===== SCROLLING ===== */
+    /* Control + Option + Up/Down for scrolling without moving cursor */
+    "^~\UF700" = "scrollPageUp:";              /* Control + Option + Up */
+    "^~\UF701" = "scrollPageDown:";            /* Control + Option + Down */
+
+    /* ===== MARK AND JUMP ===== */
+    /* Control + Space to set mark */
+    "^ " = "setMark:";
+
+    /* Control + X followed by Control + X to jump to mark */
+    "^x" = {
+        "^x" = "selectToMark:";
+    };
+
+    /* ===== SEARCH AND REPLACE HELPERS ===== */
+    /* Control + S for incremental search */
+    "^s" = "performFindPanelAction:", "1";     /* Find Next */
+
+    /* Control + R for reverse incremental search */
+    "^r" = "performFindPanelAction:", "2";     /* Find Previous */
+
+    /* ===== SPECIAL CHARACTERS ===== */
+    /* Common special characters */
+    "~c" = "insertText:", "©";                 /* Option + C for copyright */
+    "~r" = "insertText:", "®";                 /* Option + R for registered */
+    "~tm" = "insertText:", "™";                /* Option + TM for trademark */
+    "~degrees" = "insertText:", "°";           /* For degrees symbol */
+
+    /* Mathematical symbols */
+    "~=" = "insertText:", "≠";                 /* Option + = for not equal */
+    "~<" = "insertText:", "≤";                 /* Option + < for less than or equal */
+    "~>" = "insertText:", "≥";                 /* Option + > for greater than or equal */
+    "~8" = "insertText:", "∞";                 /* Option + 8 for infinity */
+
+    /* ===== EMACS-STYLE BINDINGS ===== */
+    /* For those who like Emacs shortcuts */
+    "^f" = "moveForward:";                     /* Control + F to move forward */
+    "^b" = "moveBackward:";                    /* Control + B to move backward */
+    "^p" = "moveUp:";                          /* Control + P to move up */
+    "^n" = "moveDown:";                        /* Control + N to move down */
+    "^e" = "moveToEndOfLine:";                 /* Control + E for end of line */
+    "^w" = "deleteWordBackward:";              /* Control + W to delete word back */
+    "^y" = "yank:";                            /* Control + Y to yank (paste) */
+
+    /* ===== AUTOCOMPLETE ENHANCEMENTS ===== */
+    /* Control + Space for completion (in apps that support it) */
+    "^ " = "complete:";
+
+    /* ===== UNDO/REDO ENHANCEMENTS ===== */
+    /* Control + / for undo (alternative to Command + Z) */
+    "^/" = "undo:";
+
+    /* Control + Shift + / for redo */
+    "^$/" = "redo:";
+}

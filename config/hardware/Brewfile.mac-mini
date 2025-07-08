@@ -28,6 +28,10 @@ brew "httpie"                 # HTTP client
 brew "ngrok"                  # Secure tunnels
 brew "localtunnel"            # Alternative tunneling
 
+# Python development (modern toolchain)
+brew "uv"                     # Ultra-fast Python package manager and project tool
+brew "ruff"                   # Extremely fast Python linter and formatter
+
 #=============================================================================
 # HOME MEDIA CENTER & PRODUCTIVITY
 #=============================================================================

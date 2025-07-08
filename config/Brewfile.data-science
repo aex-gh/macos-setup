@@ -18,7 +18,7 @@ tap "r-lib/rig"               # R installation manager
 brew "python@3.11"           # Python 3.11 (stable for ML/DS)
 brew "python@3.12"           # Python 3.12 (latest)
 brew "uv"                     # Fast Python package installer
-brew "pipx"                   # Isolated Python app installation
+brew "ruff"                   # Extremely fast Python linter and formatter
 
 # R statistical computing
 brew "r"                      # R programming language
@@ -66,7 +66,7 @@ brew "geos"                   # Geometry engine
 #=============================================================================
 
 # Relational databases
-brew "postgresql@15"          # PostgreSQL with PostGIS support
+brew "postgresql@17"          # PostgreSQL with PostGIS support
 brew "mysql"                  # MySQL database
 brew "sqlite"                 # Lightweight SQL database
 

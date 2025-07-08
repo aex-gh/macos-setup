@@ -1,0 +1,24 @@
+# Personal Git Account Configuration
+# Used for personal projects and open source contributions
+
+[user]
+	name = Andrew Exley
+	email = 2067567+aex-gh@users.noreply.github.com
+	signingkey = 2067567+aex-gh@users.noreply.github.com
+
+[commit]
+	# Enable GPG signing for personal projects
+	gpgsign = true
+
+[tag]
+	# Enable GPG signing for tags
+	gpgsign = true
+
+# Personal project specific settings
+[github]
+	user = aex-gh
+
+# Additional personal settings can be added here
+[core]
+	# Personal projects might have different editor preferences
+	# editor is inherited from global config unless overridden

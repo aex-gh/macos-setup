@@ -1,0 +1,28 @@
+# Lument Work Git Account Configuration
+# Used for Lument company projects and repositories
+
+[user]
+	name = Andrew Exley
+	email = andrew.exley@lument.com.au
+	signingkey = andrew.exley@lument.com.au
+
+[commit]
+	# Enable GPG signing for work projects (if company policy requires)
+	gpgsign = false
+
+[tag]
+	# Tag signing for work projects
+	gpgsign = false
+
+# Work-specific settings
+[github]
+	user = andrew-exley-lument
+
+# Company-specific Git settings can be added here
+[core]
+	# Work projects might require different editor or settings
+	# editor is inherited from global config unless overridden
+
+# Company-specific hooks or policies
+[init]
+	# templatedir = ~/.git-templates/lument

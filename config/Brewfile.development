@@ -19,7 +19,7 @@ tap "azure/functions"         # Azure Functions Core Tools
 brew "python@3.11"           # Python 3.11 (stable LTS)
 brew "python@3.12"           # Python 3.12 (latest)
 brew "uv"                     # Fast Python package manager
-brew "pipx"                   # Install Python apps in isolated environments
+brew "ruff"                   # Extremely fast Python linter and formatter
 
 # Node.js ecosystem
 brew "node"                   # Node.js runtime
@@ -75,7 +75,7 @@ brew "curl"                   # Enhanced curl
 brew "postman-cli"            # Postman CLI
 
 # Database tools
-brew "postgresql@15"          # PostgreSQL database
+brew "postgresql@17"          # PostgreSQL database
 brew "mysql"                  # MySQL database
 brew "redis"                  # In-memory data store
 brew "sqlite"                 # Lightweight database

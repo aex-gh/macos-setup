@@ -35,7 +35,7 @@ brew "ionic-cli"              # Ionic framework CLI
 #=============================================================================
 
 # Full database stack (daily driver needs)
-brew "postgresql@15"          # PostgreSQL for development
+brew "postgresql@17"          # PostgreSQL for development
 brew "mysql"                  # MySQL database
 brew "redis"                  # In-memory data store
 brew "sqlite"                 # Lightweight database
@@ -51,6 +51,10 @@ brew "pre-commit"             # Git pre-commit hooks
 brew "commitizen"             # Conventional commits
 brew "gitleaks"               # Git secrets scanner
 brew "act"                    # Run GitHub Actions locally
+
+# Python development (modern toolchain)
+brew "uv"                     # Ultra-fast Python package manager and project tool
+brew "ruff"                   # Extremely fast Python linter and formatter
 
 # Container and virtualization (full stack)
 brew "docker"                 # Container platform CLI (for compatibility)
@@ -228,7 +232,7 @@ mas "Battery Monitor", id: 836505650      # Battery status
 #=============================================================================
 
 # Services for full development environment
-# - postgresql@15 (start when needed for development)
+# - postgresql@17 (start when needed for development)
 # - redis (lightweight, can auto-start)
 # - nginx (local development server)
 # - orbstack (lightweight container runtime, replaces Docker Desktop)

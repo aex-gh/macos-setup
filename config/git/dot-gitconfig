@@ -1,0 +1,392 @@
+# Global Git Configuration
+# Comprehensive setup for modern development with multi-account support
+# This file is managed by dotfiles and should be symlinked to ~/.gitconfig
+
+[user]
+	# Default identity - will be overridden by conditional includes
+	name = Andrew Exley
+	email = 2067567+aex-gh@users.noreply.github.com
+
+[core]
+	# Use global gitignore for common exclusions
+	excludesfile = ~/.gitignore_global
+	
+	# Editor configuration (respects $EDITOR environment variable)
+	editor = zed --wait
+	
+	# Pager with delta for better diff viewing
+	pager = delta
+	
+	# Line ending handling (important for cross-platform work)
+	autocrlf = input
+	safecrlf = true
+	
+	# Unicode handling
+	precomposeunicode = false
+	quotepath = false
+	
+	# Performance optimisations
+	preloadindex = true
+	fscache = true
+	untrackedCache = true
+
+[init]
+	# Use 'main' as default branch for new repositories
+	defaultBranch = main
+
+[push]
+	# Modern push behaviour - only push current branch
+	default = simple
+	
+	# Automatically set up tracking for new branches
+	autoSetupRemote = true
+	
+	# Push tags along with commits when using --follow-tags
+	followTags = true
+
+[pull]
+	# Use rebase instead of merge for pulls to maintain linear history
+	rebase = true
+	
+	# Automatically stash and unstash local changes during rebase
+	autoStash = true
+
+[fetch]
+	# Automatically prune deleted remote branches
+	prune = true
+	
+	# Fetch all tags by default
+	tags = true
+
+[rebase]
+	# Automatically stash and unstash during rebase
+	autoStash = true
+	
+	# Use interactive rebase for fixup and squash commits
+	autoSquash = true
+	
+	# Abbreviate commit hashes in interactive rebase
+	abbreviateCommands = true
+
+[merge]
+	# Use VS Code or fall back to vimdiff for merge conflicts
+	tool = vscode
+	
+	# Include summaries of merged commits in merge commit messages
+	log = true
+	
+	# Disable fast-forward merges to preserve branch history
+	ff = false
+
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+	trustExitCode = false
+
+[mergetool "zed"]
+	cmd = zed --wait --merge $LOCAL $BASE $REMOTE $MERGED
+	trustExitCode = false
+
+[diff]
+	# Use delta for better diff output
+	colorMoved = default
+	
+	# Show submodule changes in diffs
+	submodule = log
+	
+	# Better algorithm for detecting renames and copies
+	renames = copies
+	algorithm = patience
+
+[delta]
+	# Delta configuration for enhanced diff viewing
+	navigate = true
+	light = false
+	line-numbers = true
+	syntax-theme = Monokai Extended
+	
+	# Side-by-side view for wide terminals
+	side-by-side = true
+	
+	# File decorations
+	file-style = bold yellow ul
+	file-decoration-style = none
+	hunk-header-decoration-style = cyan box ul
+
+[interactive]
+	# Use delta for interactive diffs (git add -p)
+	diffFilter = delta --color-only
+
+[status]
+	# Show untracked files in directories
+	showUntrackedFiles = all
+	
+	# Show submodule status
+	submoduleSummary = true
+
+[branch]
+	# Automatically set up tracking when creating branches
+	autoSetupMerge = always
+	autoSetupRebase = always
+
+[log]
+	# Show dates in relative format
+	date = relative
+	
+	# Follow file renames in log
+	follow = true
+
+[color]
+	# Enable colours in Git output
+	ui = auto
+	
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+#=============================================================================
+# ALIASES - Comprehensive set for modern Git workflows
+#=============================================================================
+
+[alias]
+	# Status and information
+	st = status --short --branch
+	s = status
+	br = branch
+	co = checkout
+	
+	# Logging and history
+	lg = log --graph --oneline --decorate --all
+	ll = log --graph --pretty=format:'%C(yellow)%h%C(reset) -%C(red)%d%C(reset) %s %C(green)(%cr) %C(bold blue)<%an>%C(reset)' --abbrev-commit --all
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	
+	# Show last commit
+	last = log -1 HEAD --stat
+	
+	# Show what I did today
+	today = log --since='1 day ago' --oneline --author='Andrew Exley'
+	
+	# Show files in last commit
+	dl = "!git ll -1"
+	
+	# Show files in commit
+	dlc = diff-tree --no-commit-id --name-only -r
+	
+	# Commit operations
+	ci = commit
+	cm = commit -m
+	ca = commit -am
+	amend = commit --amend --no-edit
+	amendc = commit --amend
+	
+	# Quick commit with conventional commit format
+	feat = "!f() { git commit -m \"feat: $1\"; }; f"
+	fix = "!f() { git commit -m \"fix: $1\"; }; f"
+	docs = "!f() { git commit -m \"docs: $1\"; }; f"
+	style = "!f() { git commit -m \"style: $1\"; }; f"
+	refactor = "!f() { git commit -m \"refactor: $1\"; }; f"
+	test = "!f() { git commit -m \"test: $1\"; }; f"
+	chore = "!f() { git commit -m \"chore: $1\"; }; f"
+	
+	# Stash operations
+	sl = stash list
+	sa = stash apply
+	ss = stash save
+	sp = stash pop
+	
+	# Remote operations
+	pom = push origin main
+	pom-f = push origin main --force-with-lease
+	pod = push origin develop
+	
+	# Pull with rebase
+	pr = pull --rebase
+	pra = pull --rebase --autostash
+	
+	# Diff operations
+	d = diff
+	dc = diff --cached
+	ds = diff --staged
+	dt = difftool
+	dct = difftool --cached
+	
+	# Reset operations
+	unstage = reset HEAD --
+	uncommit = reset --soft HEAD^
+	reset-hard = reset --hard HEAD
+	
+	# Branch operations
+	new-branch = checkout -b
+	delete-branch = branch -d
+	delete-remote-branch = push origin --delete
+	
+	# Find things
+	f = "!git ls-files | grep -i"
+	grep = grep -Ii
+	gr = grep -Ii
+	
+	# List aliases
+	la = "!git config -l | grep alias | cut -c 7-"
+	
+	# Show ignored files
+	ignored = ls-files --others --ignored --exclude-standard
+	
+	# Clean up merged branches (local)
+	cleanup = "!git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -n 1 git branch -d"
+	
+	# Clean up remote tracking branches
+	cleanup-remote = remote prune origin
+	
+	# Show contributors
+	contributors = shortlog --summary --numbered --email
+	
+	# Show word diff
+	wdiff = diff --word-diff
+	
+	# Interactive rebase shortcuts
+	ri = rebase --interactive
+	rc = rebase --continue
+	ra = rebase --abort
+	
+	# Submodule shortcuts
+	sub = submodule
+	subu = submodule update --init --recursive
+	
+	# Archive current branch
+	archive = "!f() { git tag archive/$(git branch --show-current) $(git branch --show-current) && git checkout main && git branch -D $(git rev-parse --abbrev-ref @{-1}); }; f"
+	
+	# Undo last commit but keep changes
+	undo = reset --soft HEAD~1
+	
+	# Show files changed in commit
+	show-files = diff-tree --no-commit-id --name-only -r
+	
+	# Pretty print commits with files
+	ll-files = log --graph --pretty=format:'%C(yellow)%h%C(reset) -%C(red)%d%C(reset) %s %C(green)(%cr) %C(bold blue)<%an>%C(reset)' --name-status
+	
+	# Find commits that introduced a bug (requires good/bad commits)
+	bisect-start = bisect start
+	bisect-good = bisect good
+	bisect-bad = bisect bad
+	
+	# Working tree operations
+	wt = worktree
+	wt-list = worktree list
+	wt-add = worktree add
+	wt-remove = worktree remove
+
+#=============================================================================
+# CREDENTIAL AND SECURITY
+#=============================================================================
+
+[credential]
+	# Use macOS Keychain for credential storage
+	helper = osxkeychain
+
+[gpg]
+	# GPG configuration for commit signing
+	program = gpg
+
+[commit]
+	# Enable GPG signing for commits (can be overridden per project)
+	# gpgsign = true
+	
+	# Commit message template (optional)
+	# template = ~/.gitmessage
+
+[tag]
+	# Enable GPG signing for tags
+	# gpgsign = true
+	
+	# Sort tags in version order
+	sort = version:refname
+
+#=============================================================================
+# PERFORMANCE AND LARGE REPOSITORY OPTIMISATIONS
+#=============================================================================
+
+[pack]
+	# Use multiple threads for packing
+	threads = 0
+
+[index]
+	# Use filesystem monitor for better performance
+	# version = 4
+
+[feature]
+	# Enable experimental features for better performance
+	manyFiles = true
+
+#=============================================================================
+# URL REWRITES FOR CONVENIENCE
+#=============================================================================
+
+[url "git@github.com:"]
+	# Use SSH instead of HTTPS for GitHub
+	insteadOf = https://github.com/
+
+[url "git@gitlab.com:"]
+	# Use SSH instead of HTTPS for GitLab
+	insteadOf = https://gitlab.com/
+
+#=============================================================================
+# CONDITIONAL INCLUDES FOR MULTI-ACCOUNT SETUP
+#=============================================================================
+
+# Personal projects
+[includeIf "gitdir:~/Projects/personal/"]
+	path = ~/.config/git/accounts/personal.gitconfig
+
+[includeIf "gitdir:~/Development/personal/"]
+	path = ~/.config/git/accounts/personal.gitconfig
+
+# Lument work projects
+[includeIf "gitdir:~/Projects/lument/"]
+	path = ~/.config/git/accounts/lument.gitconfig
+
+[includeIf "gitdir:~/Development/lument/"]
+	path = ~/.config/git/accounts/lument.gitconfig
+
+# Pollex consulting projects
+[includeIf "gitdir:~/Projects/pollex/"]
+	path = ~/.config/git/accounts/pollex.gitconfig
+
+[includeIf "gitdir:~/Development/pollex/"]
+	path = ~/.config/git/accounts/pollex.gitconfig
+
+#=============================================================================
+# LFS (Large File Storage) CONFIGURATION
+#=============================================================================
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+#=============================================================================
+# MAINTENANCE AND HOUSEKEEPING
+#=============================================================================
+
+[gc]
+	# Automatic garbage collection settings
+	auto = 256
+	autoPackLimit = 4
+	
+[maintenance]
+	# Background maintenance for better performance
+	auto = false
+	strategy = incremental
