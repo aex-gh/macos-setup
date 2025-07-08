@@ -292,7 +292,7 @@ configure_system_naming() {
     if [[ -n $new_computer_name ]]; then
         # Set computer name
         execute_command "Setting computer name to '$new_computer_name'" \
-            scutil --set ComputerName "$new_computer_name"
+            sudo scutil --set ComputerName "$new_computer_name"
         
         # Generate hostname from computer name (lowercase, no spaces)
         local new_hostname="${new_computer_name// /-}"
@@ -300,15 +300,15 @@ configure_system_naming() {
         
         # Set local hostname
         execute_command "Setting local hostname to '$new_hostname'" \
-            scutil --set LocalHostName "$new_hostname"
+            sudo scutil --set LocalHostName "$new_hostname"
         
         # Set hostname
         execute_command "Setting hostname to '$new_hostname'" \
-            scutil --set HostName "$new_hostname"
+            sudo scutil --set HostName "$new_hostname"
         
         # Update /etc/hosts
         execute_command "Updating /etc/hosts" \
-            sh -c "echo '127.0.0.1 $new_hostname.local $new_hostname localhost' >> /etc/hosts"
+            sudo sh -c "echo '127.0.0.1 $new_hostname.local $new_hostname localhost' >> /etc/hosts"
         
         success "System naming configured successfully"
         info "Computer name: $new_computer_name"
@@ -380,7 +380,7 @@ configure_ssh() {
     
     # Enable SSH (Remote Login)
     execute_command "Enabling SSH (Remote Login)" \
-        systemsetup -setremotelogin on
+        sudo systemsetup -setremotelogin on
     
     # Configure SSH daemon security
     local ssh_config="/etc/ssh/sshd_config"
@@ -388,7 +388,7 @@ configure_ssh() {
     
     if [[ -f $ssh_config ]]; then
         execute_command "Backing up SSH daemon configuration" \
-            cp "$ssh_config" "$ssh_config_backup"
+            sudo cp "$ssh_config" "$ssh_config_backup"
     fi
     
     # Create secure SSH daemon configuration
@@ -412,7 +412,7 @@ MaxSessions 10
 EOF
     
     execute_command "Updating SSH daemon configuration" \
-        sh -c "cat /tmp/sshd_config_additions >> $ssh_config"
+        sudo sh -c "cat /tmp/sshd_config_additions >> $ssh_config"
     
     # Clean up
     rm -f "/tmp/sshd_config_additions"
@@ -468,10 +468,10 @@ EOF
     
     # Restart SSH service
     execute_command "Restarting SSH service" \
-        launchctl unload /System/Library/LaunchDaemons/ssh.plist 2>/dev/null || true
+        sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist 2>/dev/null || true
     
     execute_command "Starting SSH service" \
-        launchctl load /System/Library/LaunchDaemons/ssh.plist
+        sudo launchctl load /System/Library/LaunchDaemons/ssh.plist
     
     success "SSH configuration completed"
     info "SSH remote login is now enabled"
@@ -500,7 +500,7 @@ configure_file_sharing() {
     # Enable AFP (Apple File Protocol)
     if confirm "Enable AFP (Apple File Protocol) sharing?"; then
         execute_command "Enabling AFP sharing" \
-            launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+            sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
         
         success "AFP sharing enabled"
     fi
@@ -508,7 +508,7 @@ configure_file_sharing() {
     # Enable SMB (Server Message Block)
     if confirm "Enable SMB (Windows File Sharing) sharing?"; then
         execute_command "Enabling SMB sharing" \
-            launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+            sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
         
         success "SMB sharing enabled"
     fi
@@ -525,7 +525,7 @@ configure_file_sharing() {
         
         # Add to sharing configuration
         execute_command "Adding folder to sharing" \
-            sharing -a "$shared_folder" -S "Shared" -s 001 -g 000
+            sudo sharing -a "$shared_folder" -S "Shared" -s 001 -g 000
         
         success "Shared folder created and configured: $shared_folder"
     fi
