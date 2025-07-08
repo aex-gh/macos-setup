@@ -25,7 +25,7 @@ curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh 
 ```bash
 git clone https://github.com/aex-gh/macos-setup.git ~/.dotfiles
 cd ~/.dotfiles
-./scripts/00-bootstrap.zsh
+./bootstrap/scripts/00-bootstrap.zsh
 ```
 
 ## 📁 Repository Structure
@@ -246,34 +246,34 @@ stow zsh git ssh karabiner
 
 ### Interactive Setup
 ```bash
-./scripts/00-bootstrap.zsh
+./bootstrap/scripts/00-bootstrap.zsh
 # Follow prompts to select profile and modules
 ```
 
 ### Automated Setup (CI/CD)
 ```bash
-./scripts/00-bootstrap.zsh --profile developer --force
+./bootstrap/scripts/00-bootstrap.zsh --profile developer --force
 ```
 
 ### Dry Run (Preview Changes)
 ```bash
-./scripts/00-bootstrap.zsh --profile data-scientist --dry-run
+./bootstrap/scripts/00-bootstrap.zsh --profile data-scientist --dry-run
 ```
 
 ### Specific Modules Only
 ```bash
-./scripts/00-bootstrap.zsh --modules-only "01,03,05"
+./bootstrap/scripts/00-bootstrap.zsh --modules-only "01,03,05"
 ```
 
 ### Debug Mode
 ```bash
-./scripts/00-bootstrap.zsh --debug --verbose
+./bootstrap/scripts/00-bootstrap.zsh --debug --verbose
 ```
 
 ### Testing & Validation
 ```bash
 # Validate dry-run functionality
-./scripts/validate-dry-run.zsh
+./bootstrap/scripts/validate-dry-run.zsh
 
 # Run BATS tests
 cd bootstrap/tests
@@ -471,7 +471,7 @@ rm -rf .venv && uv venv && va
 ### Debug Mode
 Enable detailed logging for troubleshooting:
 ```bash
-./scripts/00-bootstrap.zsh --debug --verbose
+./bootstrap/scripts/00-bootstrap.zsh --debug --verbose
 ```
 
 Log files are stored in `~/.config/dotfiles-setup/`
@@ -480,7 +480,7 @@ Log files are stored in `~/.config/dotfiles-setup/`
 Use the built-in validation tools to check setup integrity:
 ```bash
 # Validate dry-run capabilities
-./scripts/validate-dry-run.zsh
+./bootstrap/scripts/validate-dry-run.zsh
 
 # Run comprehensive tests
 cd bootstrap/tests && bats test_dry_run.bats
