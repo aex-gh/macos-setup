@@ -126,7 +126,7 @@ detect_system_info() {
     HARDWARE_IDENTIFIER=$(system_profiler SPHardwareDataType | grep "Model Identifier:" | awk -F': ' '{print $2}' | xargs)
     
     # Serial number
-    SERIAL_NUMBER=$(system_profiler SPHardwareDataType | grep "Serial Number:" | awk -F': ' '{print $2}' | xargs)
+    SERIAL_NUMBER=$(system_profiler SPHardwareDataType | grep "Serial Number (system):" | awk -F': ' '{print $2}' | xargs)
     
     debug "System: $HARDWARE_MODEL ($HARDWARE_IDENTIFIER)"
     debug "macOS: $MACOS_VERSION ($MACOS_BUILD)"
