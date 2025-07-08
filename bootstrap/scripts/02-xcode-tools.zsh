@@ -287,8 +287,9 @@ accept_xcode_license() {
         return 0
     fi
     
-    # Check if xcodebuild is available (requires full Xcode, not just Command Line Tools)
-    if ! command -v xcodebuild &>/dev/null; then
+    # Check if full Xcode is installed (not just Command Line Tools)
+    local xcode_path=$(xcode-select -p 2>/dev/null || echo "")
+    if [[ -z $xcode_path ]] || [[ $xcode_path == "/Library/Developer/CommandLineTools" ]]; then
         info "Xcode license check skipped (Command Line Tools only, no full Xcode)"
         return 0
     fi
