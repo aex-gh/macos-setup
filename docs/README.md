@@ -17,21 +17,21 @@ This dotfiles repository provides an intelligent, automated macOS setup system t
 ### One-Line Installation
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aex-gh/dotfiles/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/aex-gh/macos-setup/main/install.sh | bash
 ```
 
 ### Manual Installation
 
 ```bash
-git clone https://github.com/aex-gh/dotfiles.git ~/.dotfiles
+git clone https://github.com/aex-gh/macos-setup.git ~/.dotfiles
 cd ~/.dotfiles
-./bootstrap/scripts/00-bootstrap.zsh
+./scripts/00-bootstrap.zsh
 ```
 
 ## 📁 Repository Structure
 
 ```
-dotfiles/
+macos-setup/
 ├── bootstrap/               # Initial macOS setup (run once)
 │   ├── scripts/             # Setup modules (numbered for execution order)
 │   │   ├── 00-bootstrap.zsh # Main orchestration script
@@ -43,26 +43,59 @@ dotfiles/
 │   │   ├── 06-applications.zsh
 │   │   ├── 07-security-hardening.zsh
 │   │   ├── 08-development-env.zsh
-│   │   └── 09-post-setup.zsh
+│   │   ├── 09-post-setup.zsh
+│   │   ├── 10-power-remote-access.zsh  # Power management & remote access
+│   │   ├── validate-dry-run.zsh        # Dry-run validation script
+│   │   ├── lib/                        # Utility libraries
+│   │   │   └── dry-run-utils.zsh       # Dry-run testing utilities
+│   │   └── modules/                    # Modular components
+│   │       ├── network-shares.zsh      # Network sharing setup
+│   │       ├── power-management.zsh    # Power management settings
+│   │       ├── remote-access.zsh       # Remote access configuration
+│   │       └── system-health.zsh       # System health monitoring
 │   ├── profiles/            # User profile configurations
 │   │   ├── developer.yml    # Full development environment
 │   │   ├── data-scientist.yml # ML/DS focused setup
 │   │   └── personal.yml     # Personal productivity setup
-│   └── config/              # Bootstrap configuration files
-│       ├── Brewfile         # Core packages
-│       ├── Brewfile.development
-│       └── hardware/        # Hardware-specific configs
+│   ├── config/              # Bootstrap configuration files
+│   │   ├── Brewfile         # Core packages
+│   │   ├── Brewfile.development
+│   │   ├── Brewfile.data-science
+│   │   ├── Brewfile.minimal
+│   │   ├── hardware/        # Hardware-specific configs
+│   │   │   ├── Brewfile.mac-mini
+│   │   │   ├── Brewfile.mac-studio
+│   │   │   └── Brewfile.macbook-pro
+│   │   ├── karabiner/       # Karabiner configuration
+│   │   │   └── karabiner-popular.json
+│   │   └── machine-configs/ # Machine-specific configurations
+│   │       ├── mac-mini.conf
+│   │       ├── mac-studio.conf
+│   │       └── macbook-pro.conf
+│   └── tests/               # Testing framework
+│       ├── test_dry_run.bats
+│       └── test_helper.bash
 ├── packages/                # Stow packages (ongoing management)
 │   ├── zsh/                 # Shell configuration
 │   ├── git/                 # Git configuration  
 │   ├── ssh/                 # SSH configuration
 │   ├── karabiner/           # Keyboard customisation
 │   ├── homebrew/            # Personal packages
-│   └── claude/              # Claude AI configuration
+│   ├── claude/              # Claude AI configuration
+│   └── macos/               # macOS-specific configurations
+├── docs/                    # Documentation
+│   ├── README.md            # This file
+│   ├── DRY-RUN-TESTING.md   # Dry-run testing guide
+│   ├── PACKAGE_SUMMARY.md   # Package summaries
+│   └── POWER-MANAGEMENT-REMOTE-ACCESS.md # Power & remote access docs
 ├── install.sh               # One-line installer
 ├── .stowrc                  # Stow configuration
 ├── spec.md                  # Stow specification
-└── docs/                    # Documentation
+├── macos-zsh-standards.md   # Shell scripting standards
+├── role-macos-specialist.md # macOS specialist role definition
+├── DefaultKeyBinding.dict   # macOS key bindings
+├── CLAUDE.MD                # Claude AI project configuration
+└── CLAUDE.local.md          # Local Claude AI settings
 ```
 
 ## 🎨 Setup Profiles
@@ -171,6 +204,15 @@ stow zsh git ssh karabiner
 - Context-aware code generation and refactoring
 - Integrated with your project files and codebase
 - Run `claude` in any project directory to start
+- **Project-specific Claude configuration** via `CLAUDE.MD` files
+- **Local Claude settings** for personalised AI assistance
+
+### Advanced macOS Integration
+- **Custom key bindings** via `DefaultKeyBinding.dict`
+- **Karabiner Elements** configuration for keyboard customisation
+- **System-wide shortcuts** and productivity enhancements
+- **Application-specific settings** and preferences
+- **Dock and Finder customisations** for optimal workflow
 
 ### Comprehensive Package Management
 - **Homebrew** for command-line tools
@@ -178,6 +220,27 @@ stow zsh git ssh karabiner
 - **Mac App Store** integration via `mas`
 - Hardware-specific package selection
 - Service auto-start configuration
+- Profile-specific package management
+
+### Modular Architecture
+- **Modular components** in `bootstrap/scripts/modules/`
+- **Utility libraries** in `bootstrap/scripts/lib/`
+- **Machine-specific configurations** in `bootstrap/config/machine-configs/`
+- **Dry-run testing framework** with validation scripts
+- **BATS testing suite** for automated testing
+
+### Enhanced Power Management & Remote Access
+- **Power management** optimised for different hardware types
+- **Remote access** configuration (SSH, Screen Sharing, File Sharing)
+- **Network shares** setup for AFP, SMB, and NFS
+- **System health monitoring** with automated checks
+
+### Testing & Validation Framework
+- **Dry-run testing** with comprehensive validation scripts
+- **BATS testing suite** for automated script testing
+- **Utility libraries** for testing infrastructure
+- **Validation tools** for setup verification
+- **Machine-specific testing** across different hardware
 
 ## 🛠️ Usage Examples
 
@@ -205,6 +268,16 @@ stow zsh git ssh karabiner
 ### Debug Mode
 ```bash
 ./scripts/00-bootstrap.zsh --debug --verbose
+```
+
+### Testing & Validation
+```bash
+# Validate dry-run functionality
+./scripts/validate-dry-run.zsh
+
+# Run BATS tests
+cd bootstrap/tests
+bats test_dry_run.bats
 ```
 
 ## 🐍 Python Development Features
@@ -329,10 +402,33 @@ export MY_CUSTOM_VAR="value"
 alias myalias="my command"
 ```
 
+### Custom Key Bindings
+Modify `DefaultKeyBinding.dict` for system-wide key bindings:
+```bash
+# Custom macOS key bindings
+# Place in ~/Library/KeyBindings/DefaultKeyBinding.dict
+```
+
+### Claude AI Configuration
+Customise Claude AI integration:
+```bash
+# Project-specific Claude settings
+echo "# Custom Claude configuration" >> CLAUDE.MD
+
+# Local Claude preferences  
+echo "# Local settings" >> CLAUDE.local.md
+```
+
 ### Hardware-Specific Packages
 Add hardware-specific Brewfiles:
 ```
-config/hardware/Brewfile.my-machine
+bootstrap/config/hardware/Brewfile.my-machine
+```
+
+### Machine-Specific Configuration
+Add machine-specific configuration files:
+```
+bootstrap/config/machine-configs/my-machine.conf
 ```
 
 ### Profile Customisation
@@ -380,31 +476,58 @@ Enable detailed logging for troubleshooting:
 
 Log files are stored in `~/.config/dotfiles-setup/`
 
+### Validation Tools
+Use the built-in validation tools to check setup integrity:
+```bash
+# Validate dry-run capabilities
+./scripts/validate-dry-run.zsh
+
+# Run comprehensive tests
+cd bootstrap/tests && bats test_dry_run.bats
+```
+
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Follow the shell scripting standards in `macos-zsh-standards.md`
+3. Follow the shell scripting standards in `../macos-zsh-standards.md`
 4. Test on multiple macOS versions and hardware
 5. Submit a pull request
 
 ### Adding New Modules
-1. Create `scripts/XX-module-name.zsh`
-2. Follow the template structure
+1. Create `bootstrap/scripts/XX-module-name.zsh`
+2. Follow the template structure in `macos-zsh-standards.md`
 3. Add to `AVAILABLE_MODULES` in bootstrap script
 4. Update profile configurations
 5. Add tests and documentation
+6. Consider adding modular components in `scripts/modules/`
+7. Update machine-specific configurations if needed
 
 ## 📖 Documentation
 
-- [macOS Zsh Standards](macos-zsh-standards.md) - Shell scripting guidelines
-- [macOS Specialist Role](role-macos-specialist.md) - Expert system administrator guidance
-- [Hardware Detection](scripts/01-system-detection.zsh) - How hardware detection works
-- [Security Hardening](scripts/07-security-hardening.zsh) - Security implementation details
+### Core Documentation
+- [macOS Zsh Standards](../macos-zsh-standards.md) - Shell scripting guidelines
+- [macOS Specialist Role](../role-macos-specialist.md) - Expert system administrator guidance
+- [Stow Package Specification](../spec.md) - Package management with GNU Stow
+
+### Feature Documentation
+- [Dry-Run Testing](DRY-RUN-TESTING.md) - Testing framework and validation
+- [Power Management & Remote Access](POWER-MANAGEMENT-REMOTE-ACCESS.md) - Advanced system configuration
+- [Package Summary](PACKAGE_SUMMARY.md) - Complete package listings
+
+### Script Documentation
+- [Hardware Detection](../bootstrap/scripts/01-system-detection.zsh) - How hardware detection works
+- [Security Hardening](../bootstrap/scripts/07-security-hardening.zsh) - Security implementation details
+- [Power & Remote Access](../bootstrap/scripts/10-power-remote-access.zsh) - Power management setup
+
+### Module Documentation
+- [Network Shares](../bootstrap/scripts/modules/network-shares.zsh) - Network sharing configuration
+- [System Health](../bootstrap/scripts/modules/system-health.zsh) - Health monitoring setup
+- [Remote Access](../bootstrap/scripts/modules/remote-access.zsh) - Remote access configuration
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](../LICENSE) for details.
 
 ## 🙏 Acknowledgements
 
@@ -417,4 +540,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **Author**: Andrew Exley
 
-For questions, issues, or contributions, please visit the [GitHub repository](https://github.com/aex-gh/dotfiles).
+For questions, issues, or contributions, please visit the [GitHub repository](https://github.com/aex-gh/macos-setup).
