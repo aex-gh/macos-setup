@@ -85,12 +85,13 @@ declare -ga AVAILABLE_MODULES=(
     "07-security-hardening"
     "08-development-env"
     "09-post-setup"
+    "10-power-remote-access"
 )
 
 declare -gA PROFILE_MODULES=(
-    [developer]="01,02,03,04,05,06,08,09"
-    [data-scientist]="01,02,03,04,05,06,07,08,09"
-    [personal]="01,02,03,04,05,09"
+    [developer]="01,02,03,04,05,06,08,09,10"
+    [data-scientist]="01,02,03,04,05,06,07,08,09,10"
+    [personal]="01,02,03,04,05,09,10"
     [minimal]="01,02,03,05,09"
 )
 
@@ -256,6 +257,7 @@ ${BOLD}MODULES${RESET}
     07 - Security Hardening Additional security measures
     08 - Development Env    Language runtimes and dev tools
     09 - Post Setup         Verification and cleanup
+    10 - Power & Remote     Power management and remote access configuration
 
 ${BOLD}AUTHOR${RESET}
     Andrew Exley (with Claude) <noreply@anthropic.com>
@@ -467,7 +469,7 @@ get_modules_for_profile() {
         echo "${PROFILE_MODULES[$profile]}" | tr ',' ' '
     else
         # Default to all modules
-        echo "01 02 03 04 05 06 07 08 09"
+        echo "01 02 03 04 05 06 07 08 09 10"
     fi
 }
 
