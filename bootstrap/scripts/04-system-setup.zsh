@@ -499,18 +499,19 @@ configure_file_sharing() {
     
     # Enable AFP (Apple File Protocol)
     if confirm "Enable AFP (Apple File Protocol) sharing?"; then
-        execute_command "Enabling AFP sharing" \
-            sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+        info "AFP is deprecated in macOS - use SMB sharing instead"
+        info "If needed, AFP can be enabled in System Preferences > Sharing"
         
-        success "AFP sharing enabled"
+        success "AFP sharing configuration noted"
     fi
     
     # Enable SMB (Server Message Block)
     if confirm "Enable SMB (Windows File Sharing) sharing?"; then
-        execute_command "Enabling SMB sharing" \
-            sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+        info "SMB sharing must be enabled through System Preferences"
+        info "Go to: System Preferences > Sharing > File Sharing"
+        info "Click Options and check 'Share files and folders using SMB'"
         
-        success "SMB sharing enabled"
+        success "SMB sharing configuration noted - complete setup in System Preferences"
     fi
     
     # Configure shared folders
@@ -543,12 +544,12 @@ configure_network() {
     print_section "NETWORK CONFIGURATION" "🌐"
     
     # Configure Bonjour/mDNS
-    execute_command "Enabling Bonjour service" \
-        launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+    # Note: mDNSResponder is managed by the system and usually already running
+    info "Bonjour/mDNS service is managed by macOS and typically already running"
     
     # Configure network discovery
     execute_command "Enabling network discovery" \
-        defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
+        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$(scutil --get LocalHostName 2>/dev/null || hostname -s)"
     
     # Set DNS servers (optional)
     if confirm "Configure DNS servers (Cloudflare: 1.1.1.1, 1.0.0.1)?"; then
