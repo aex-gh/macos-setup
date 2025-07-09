@@ -1,6 +1,6 @@
-# Simple macOS Setup
+# macOS Setup
 
-A simplified, configuration-driven macOS setup system that follows DRY principles and provides clean, maintainable automation for Mac systems.
+A configuration-driven macOS setup system that follows DRY principles and provides clean, maintainable automation for Mac systems.
 
 ## Directory Structure
 
@@ -38,7 +38,7 @@ macos-setup/simple/
 
 1. **Run the all-systems setup first:**
    ```bash
-   cd macos-setup/simple/scripts
+   cd macos-setup/scripts
    ./all-systems.zsh
    ```
 
@@ -46,10 +46,10 @@ macos-setup/simple/
    ```bash
    # For Mac Studio
    ./mac-studio.zsh
-   
+
    # For MacBook Pro
    ./macbook-pro.zsh
-   
+
    # For Mac Mini
    ./mac-mini.zsh
    ```
@@ -159,6 +159,119 @@ System utilities and specialized tools:
 - Security tools (Little Snitch, Authy)
 - Backup tools (Carbon Copy Cloner, Arq)
 
+## Idempotent Homebrew Management
+
+This project now includes advanced idempotent Homebrew management tools that ensure your system packages stay in sync with your Brewfiles and can automatically clean up unwanted packages.
+
+### New Idempotent Tools
+
+#### homebrew-manager.rb
+The core Ruby script that provides idempotent package management:
+
+```bash
+# Install packages from Brewfiles
+./scripts/homebrew-manager.rb --install --brewfiles base.brewfile,dev.brewfile
+
+# Show differences between desired and actual state
+./scripts/homebrew-manager.rb --diff
+
+# Sync packages (install missing, remove extra)
+./scripts/homebrew-manager.rb --sync --verbose
+
+# Remove packages not in any Brewfile
+./scripts/homebrew-manager.rb --cleanup --dry-run
+
+# Create backup of current state
+./scripts/homebrew-manager.rb --backup --output backup.yaml
+```
+
+#### brew-cleanup-safe.zsh
+Safe wrapper for cleanup operations with comprehensive safety features:
+
+```bash
+# Dry run to see what would be removed
+./scripts/brew-cleanup-safe.zsh --dry-run
+
+# Safe cleanup with backup
+./scripts/brew-cleanup-safe.zsh --backup
+
+# Force cleanup without prompts
+./scripts/brew-cleanup-safe.zsh --force
+
+# Use specific Brewfiles
+./scripts/brew-cleanup-safe.zsh --brewfiles base.brewfile,dev.brewfile
+
+# Rollback to previous state
+./scripts/brew-cleanup-safe.zsh --rollback
+```
+
+#### brew-state-tracker.zsh
+Monitor and track package state changes:
+
+```bash
+# Show current status
+./scripts/brew-state-tracker.zsh status
+
+# Show detailed differences
+./scripts/brew-state-tracker.zsh diff
+
+# Perform health check
+./scripts/brew-state-tracker.zsh health
+
+# Generate detailed report
+./scripts/brew-state-tracker.zsh report --output report.txt
+
+# Monitor for changes
+./scripts/brew-state-tracker.zsh monitor --verbose
+```
+
+#### install-homebrew-idempotent.zsh
+Enhanced installation script with idempotent cleanup integration:
+
+```bash
+# Install base packages only
+./scripts/install-homebrew-idempotent.zsh --system base
+
+# Full sync with backup
+./scripts/install-homebrew-idempotent.zsh --sync --backup
+
+# Development environment with cleanup
+./scripts/install-homebrew-idempotent.zsh --system dev --cleanup --verbose
+
+# Dry run to see what would change
+./scripts/install-homebrew-idempotent.zsh --dry-run --system all
+```
+
+### Safety Features
+
+- **Dry-run mode**: See what would be changed without executing
+- **Confirmation prompts**: Get confirmation before destructive operations
+- **Backup creation**: Automatic backup before cleanup operations
+- **Protected packages**: Essential packages are never removed
+- **Rollback capability**: Restore previous package states
+- **Comprehensive logging**: All operations are logged
+- **State tracking**: Monitor package changes over time
+
+### System Types
+
+The idempotent tools support different system types:
+
+- **base**: Essential tools for all systems
+- **dev**: Development environment packages
+- **productivity**: Office and productivity applications
+- **utilities**: System utilities and specialised tools
+- **all**: All available packages
+
+### Integration
+
+The idempotent tools integrate seamlessly with your existing Brewfile structure:
+
+1. **Merge multiple Brewfiles**: Combine different categories as needed
+2. **Deduplication**: Automatically handle duplicate packages
+3. **Dependency resolution**: Manage package dependencies correctly
+4. **State persistence**: Track changes over time
+5. **Backup management**: Automatic backup rotation and cleanup
+
 ## Dotfiles Management
 
 The system includes automated dotfiles management using GNU Stow. Dotfiles are organised into packages in the `dotfiles/` directory and automatically symlinked to your home directory.
@@ -209,6 +322,8 @@ To add new dotfiles to the system:
 ## Usage Examples
 
 ### Install specific categories of applications:
+
+#### Traditional Homebrew Bundle Method:
 ```bash
 # Install base tools only
 brew bundle --file=../brewfiles/base.brewfile
@@ -221,6 +336,26 @@ brew bundle --file=../brewfiles/productivity.brewfile
 
 # Install utilities
 brew bundle --file=../brewfiles/utilities.brewfile
+```
+
+#### Idempotent Method (Recommended):
+```bash
+# Install base tools with cleanup
+./scripts/install-homebrew-idempotent.zsh --system base --cleanup
+
+# Install development environment
+./scripts/install-homebrew-idempotent.zsh --system dev --backup --verbose
+
+# Install productivity tools with state tracking
+./scripts/install-homebrew-idempotent.zsh --system productivity --track
+
+# Install utilities with dry run first
+./scripts/install-homebrew-idempotent.zsh --system utilities --dry-run
+# Then run without --dry-run if satisfied
+./scripts/install-homebrew-idempotent.zsh --system utilities --sync
+
+# Install everything with full safety features
+./scripts/install-homebrew-idempotent.zsh --system all --backup --cleanup --track
 ```
 
 ### Use individual modules:
