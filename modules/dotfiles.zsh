@@ -5,8 +5,10 @@
 set -euo pipefail
 
 # Global variables
-readonly DOTFILES_DIR="/Users/andrew/projects/personal/macos-setup/dotfiles"
-readonly STOW_CONFIG="/Users/andrew/projects/personal/macos-setup/.stowrc"
+readonly SCRIPT_DIR="${0:A:h}"
+readonly PROJECT_ROOT="${SCRIPT_DIR}/.."
+readonly DOTFILES_DIR="${PROJECT_ROOT}/dotfiles"
+readonly STOW_CONFIG="${PROJECT_ROOT}/.stowrc"
 
 # Colours for output
 readonly RED='\033[0;31m'
@@ -112,7 +114,7 @@ stow_package() {
     log_info "Stowing package: $package"
     
     # Change to project root directory to use .stowrc
-    pushd "/Users/andrew/projects/personal/macos-setup" > /dev/null
+    pushd "$PROJECT_ROOT" > /dev/null
     
     if stow "$package" 2>/dev/null; then
         log_success "Successfully stowed: $package"
@@ -138,7 +140,7 @@ unstow_package() {
     log_info "Unstowing package: $package"
     
     # Change to project root directory to use .stowrc
-    pushd "/Users/andrew/projects/personal/macos-setup" > /dev/null
+    pushd "$PROJECT_ROOT" > /dev/null
     
     if stow -D "$package" 2>/dev/null; then
         log_success "Successfully unstowed: $package"
@@ -164,7 +166,7 @@ restow_package() {
     log_info "Restowing package: $package"
     
     # Change to project root directory to use .stowrc
-    pushd "/Users/andrew/projects/personal/macos-setup" > /dev/null
+    pushd "$PROJECT_ROOT" > /dev/null
     
     if stow -R "$package" 2>/dev/null; then
         log_success "Successfully restowed: $package"
@@ -249,7 +251,7 @@ preview_stow_action() {
     log_info "Previewing stow action: $action $package"
     
     # Change to project root directory to use .stowrc
-    pushd "/Users/andrew/projects/personal/macos-setup" > /dev/null
+    pushd "$PROJECT_ROOT" > /dev/null
     
     case "$action" in
         "stow")
