@@ -4,11 +4,19 @@
 
 set -euo pipefail
 
+# Use parent script's logging functions if available, otherwise use plain echo
+if ! command -v log_info &> /dev/null; then
+    log_info() { echo "$@"; }
+    log_success() { echo "$@"; }
+    log_warn() { echo "$@"; }
+    log_error() { echo "$@" >&2; }
+fi
+
 # Load YAML configuration
 load_config() {
     local config_file="$1"
     if [[ ! -f "$config_file" ]]; then
-        echo "Error: Configuration file not found: $config_file"
+        log_error "Configuration file not found: $config_file"
         return 1
     fi
     
@@ -35,7 +43,7 @@ get_config_value() {
 configure_firewall() {
     local config_file="$1"
     
-    echo "Configuring firewall from: $config_file"
+    log_info "Configuring firewall from: $config_file"
     
     load_config "$config_file"
     
@@ -43,11 +51,11 @@ configure_firewall() {
     local stealth_mode=$(get_config_value "security.stealth_mode" "true")
     
     if [[ "$firewall_enabled" = "true" ]]; then
-        echo "Enabling firewall"
+        log_info "Enabling firewall"
         sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
         
         if [[ "$stealth_mode" = "true" ]]; then
-            echo "Enabling stealth mode"
+            log_info "Enabling stealth mode"
             sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
         fi
         
@@ -55,14 +63,14 @@ configure_firewall() {
         # There's no separate setloggingmode flag in newer macOS versions
     fi
     
-    echo "Firewall configuration complete"
+    log_success "Firewall configuration complete"
 }
 
 # Configure FileVault
 configure_filevault() {
     local config_file="$1"
     
-    echo "Configuring FileVault from: $config_file"
+    log_info "Configuring FileVault from: $config_file"
     
     load_config "$config_file"
     
@@ -71,22 +79,22 @@ configure_filevault() {
     if [[ "$filevault_enabled" = "true" ]]; then
         # Check if FileVault is already enabled
         if ! fdesetup status | grep -q "FileVault is On"; then
-            echo "FileVault is not enabled. Please enable it manually:"
+            log_warn "FileVault is not enabled. Please enable it manually:"
             echo "  System Preferences > Security & Privacy > FileVault > Turn On FileVault"
             echo "  Or use: sudo fdesetup enable (requires user interaction)"
         else
-            echo "FileVault is already enabled"
+            log_success "FileVault is already enabled"
         fi
     fi
     
-    echo "FileVault configuration complete"
+    log_success "FileVault configuration complete"
 }
 
 # Configure SSH
 configure_ssh() {
     local config_file="$1"
     
-    echo "Configuring SSH from: $config_file"
+    log_info "Configuring SSH from: $config_file"
     
     load_config "$config_file"
     
@@ -101,14 +109,14 @@ configure_ssh() {
     # Generate SSH key if it doesn't exist
     local ssh_key_path=~/.ssh/id_${ssh_key_type}
     if [[ ! -f "$ssh_key_path" ]]; then
-        echo "Generating $ssh_key_type SSH key"
+        log_info "Generating $ssh_key_type SSH key"
         ssh-keygen -t "$ssh_key_type" -f "$ssh_key_path" -N ""
     fi
     
     # Configure SSH client
     local ssh_config=~/.ssh/config
     if [[ ! -f "$ssh_config" ]]; then
-        echo "Creating SSH client configuration"
+        log_info "Creating SSH client configuration"
         cat > "$ssh_config" << EOF
 Host *
     IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
@@ -122,56 +130,62 @@ EOF
         chmod 600 "$ssh_config"
     fi
     
-    echo "SSH configuration complete"
+    log_success "SSH configuration complete"
 }
 
 # Configure user accounts
 configure_user_accounts() {
     local config_file="$1"
     
-    echo "Configuring user accounts from: $config_file"
+    log_info "Configuring user accounts from: $config_file"
     
     load_config "$config_file"
     
     local disable_guest=$(get_config_value "security.disable_guest_user" "true")
     
     if [[ "$disable_guest" = "true" ]]; then
-        echo "Disabling guest user"
-        sudo dscl . -delete /Users/Guest
+        log_info "Disabling guest user"
+        # Only try to delete if Guest user exists in dscl
+        if dscl . -list /Users | grep -q "^Guest$"; then
+            sudo dscl . -delete /Users/Guest 2>/dev/null || true
+        fi
+        # Disable guest account via loginwindow preferences
         sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+        sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool false
+        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool false
     fi
     
-    echo "User account configuration complete"
+    log_success "User account configuration complete"
 }
 
 # Configure all security settings
 configure_security() {
     local config_file="$1"
     
-    echo "Configuring security settings from: $config_file"
+    log_info "Configuring security settings from: $config_file"
     
     configure_firewall "$config_file"
     configure_filevault "$config_file"
     configure_ssh "$config_file"
     configure_user_accounts "$config_file"
     
-    echo "Security configuration complete"
+    log_success "Security configuration complete"
 }
 
 # Show current security status
 show_security_status() {
-    echo "Current security status:"
+    log_info "Current security status:"
     echo
-    echo "Firewall Status:"
+    log_info "Firewall Status:"
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
     echo
-    echo "FileVault Status:"
+    log_info "FileVault Status:"
     fdesetup status
     echo
-    echo "SSH Keys:"
+    log_info "SSH Keys:"
     ls -la ~/.ssh/id_* 2>/dev/null || echo "No SSH keys found"
     echo
-    echo "User Accounts:"
+    log_info "User Accounts:"
     dscl . -list /Users | grep -v "^_"
 }
 
