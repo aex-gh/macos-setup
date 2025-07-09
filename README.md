@@ -66,6 +66,7 @@ macos-setup/simple/
 - Installs Xcode Command Line Tools
 - Installs and configures Homebrew
 - Installs essential applications (1Password, Karabiner Elements)
+- **Configures dotfiles using GNU Stow**
 - Configures remote access (SSH)
 - Enables file sharing (SMB)
 - Configures network discovery (Bonjour)
@@ -157,6 +158,53 @@ System utilities and specialized tools:
 - System monitoring (Stats, iStat Menus)
 - Security tools (Little Snitch, Authy)
 - Backup tools (Carbon Copy Cloner, Arq)
+
+## Dotfiles Management
+
+The system includes automated dotfiles management using GNU Stow. Dotfiles are organised into packages in the `dotfiles/` directory and automatically symlinked to your home directory.
+
+### Available Dotfiles Packages
+
+- **claude**: Claude Code configuration
+- **git**: Git configuration with multi-account support
+- **homebrew**: Homebrew bundle file
+- **karabiner**: Karabiner Elements keyboard configuration
+- **macos**: macOS-specific scripts and system defaults
+- **ssh**: SSH client configuration
+- **zsh**: Zsh shell configuration and customisation
+
+### Automated Setup
+
+Dotfiles are automatically configured when you run `all-systems.zsh`. The script:
+
+1. Installs GNU Stow via Homebrew
+2. Uses the `.stowrc` configuration file for settings
+3. Symlinks all dotfiles packages to your home directory
+4. Reports any conflicts or issues
+
+### Manual Dotfiles Management
+
+You can also manage dotfiles manually using the dedicated module:
+
+```bash
+# Interactive dotfiles manager
+./modules/dotfiles.zsh
+
+# Or source the module and use individual functions
+source modules/dotfiles.zsh
+setup_dotfiles                    # Setup all packages
+stow_package "zsh"                # Stow a specific package
+unstow_package "git"              # Remove a package
+show_dotfiles_status              # Show current status
+```
+
+### Adding New Dotfiles
+
+To add new dotfiles to the system:
+
+1. Create a new package directory in `dotfiles/`
+2. Use the `dot-` prefix for files that should become hidden (e.g., `dot-zshrc` → `~/.zshrc`)
+3. Run `stow_package <package_name>` to activate
 
 ## Usage Examples
 
