@@ -4,11 +4,19 @@
 
 set -euo pipefail
 
+# Use parent script's logging functions if available, otherwise use plain echo
+if ! command -v log_info &> /dev/null; then
+    log_info() { echo "$@"; }
+    log_success() { echo "$@"; }
+    log_warn() { echo "$@"; }
+    log_error() { echo "$@" >&2; }
+fi
+
 # Load YAML configuration
 load_config() {
     local config_file="$1"
     if [[ ! -f "$config_file" ]]; then
-        echo "Error: Configuration file not found: $config_file"
+        log_error "Configuration file not found: $config_file"
         return 1
     fi
     
@@ -35,7 +43,7 @@ get_config_value() {
 configure_file_sharing() {
     local config_file="$1"
     
-    echo "Configuring file sharing from: $config_file"
+    log_info "Configuring file sharing from: $config_file"
     
     load_config "$config_file"
     
@@ -44,13 +52,13 @@ configure_file_sharing() {
     local create_shared_folder=$(get_config_value "sharing.create_shared_folder" "false")
     
     if [[ "$enable_smb" = "true" ]]; then
-        echo "Enabling SMB file sharing"
+        log_info "Enabling SMB file sharing"
         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
         sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk
     fi
     
     if [[ "$enable_afp" = "true" ]]; then
-        echo "Enabling AFP file sharing"
+        log_info "Enabling AFP file sharing"
         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
     fi
     
@@ -58,25 +66,25 @@ configure_file_sharing() {
         local folder_name=$(get_config_value "sharing.shared_folder_name" "Shared")
         local folder_path=$(get_config_value "sharing.shared_folder_path" "/Users/Shared/SharedFolder")
         
-        echo "Creating shared folder: $folder_path"
+        log_info "Creating shared folder: $folder_path"
         sudo mkdir -p "$folder_path"
         sudo chmod 755 "$folder_path"
         
         # Add shared folder to SMB sharing
         if [[ "$enable_smb" = "true" ]]; then
-            echo "Adding folder to SMB sharing"
+            log_info "Adding folder to SMB sharing"
             sudo sharing -a "$folder_path" -S "$folder_name"
         fi
     fi
     
-    echo "File sharing configuration complete"
+    log_success "File sharing configuration complete"
 }
 
 # Configure remote access
 configure_remote_access() {
     local config_file="$1"
     
-    echo "Configuring remote access from: $config_file"
+    log_info "Configuring remote access from: $config_file"
     
     load_config "$config_file"
     
@@ -86,35 +94,35 @@ configure_remote_access() {
     local enable_remote_management=$(get_config_value "sharing.enable_remote_management" "false")
     
     if [[ "$enable_ssh" = "true" ]]; then
-        echo "Enabling SSH (Remote Login)"
+        log_info "Enabling SSH (Remote Login)"
         sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
         sudo systemsetup -setremotelogin on
     fi
     
     if [[ "$enable_remote_login" = "true" ]]; then
-        echo "Enabling remote login"
+        log_info "Enabling remote login"
         sudo systemsetup -setremotelogin on
     fi
     
     if [[ "$enable_screen_sharing" = "true" ]]; then
-        echo "Enabling screen sharing"
+        log_info "Enabling screen sharing"
         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
     fi
     
     if [[ "$enable_remote_management" = "true" ]]; then
-        echo "Enabling remote management"
+        log_info "Enabling remote management"
         sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
             -activate -configure -access -on -restart -agent -privs -all
     fi
     
-    echo "Remote access configuration complete"
+    log_success "Remote access configuration complete"
 }
 
 # Configure network services
 configure_network_services() {
     local config_file="$1"
     
-    echo "Configuring network services from: $config_file"
+    log_info "Configuring network services from: $config_file"
     
     load_config "$config_file"
     
@@ -123,54 +131,54 @@ configure_network_services() {
     local enable_time_machine_server=$(get_config_value "sharing.enable_time_machine_server" "false")
     
     if [[ "$enable_bonjour" = "true" ]]; then
-        echo "Enabling Bonjour"
+        log_info "Enabling Bonjour"
         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
     fi
     
     if [[ "$enable_service_discovery" = "true" ]]; then
-        echo "Enabling service discovery"
+        log_info "Enabling service discovery"
         # Service discovery is typically handled by Bonjour
-        echo "Service discovery enabled via Bonjour"
+        log_info "Service discovery enabled via Bonjour"
     fi
     
     if [[ "$enable_time_machine_server" = "true" ]]; then
-        echo "Enabling Time Machine server"
+        log_info "Enabling Time Machine server"
         sudo tmutil setdestination -a /Users/Shared/TimeMachine
     fi
     
-    echo "Network services configuration complete"
+    log_success "Network services configuration complete"
 }
 
 # Configure all sharing services
 configure_sharing() {
     local config_file="$1"
     
-    echo "Configuring sharing services from: $config_file"
+    log_info "Configuring sharing services from: $config_file"
     
     configure_file_sharing "$config_file"
     configure_remote_access "$config_file"
     configure_network_services "$config_file"
     
-    echo "Sharing configuration complete"
+    log_success "Sharing configuration complete"
 }
 
 # Show current sharing status
 show_sharing_status() {
-    echo "Current sharing status:"
+    log_info "Current sharing status:"
     echo
-    echo "System sharing services:"
+    log_info "System sharing services:"
     sudo systemsetup -getremotelogin
     echo
-    echo "SMB Status:"
+    log_info "SMB Status:"
     launchctl list | grep smb || echo "SMB not running"
     echo
-    echo "SSH Status:"
+    log_info "SSH Status:"
     launchctl list | grep ssh || echo "SSH not running"
     echo
-    echo "Screen Sharing Status:"
+    log_info "Screen Sharing Status:"
     launchctl list | grep screensharing || echo "Screen sharing not running"
     echo
-    echo "Bonjour Status:"
+    log_info "Bonjour Status:"
     launchctl list | grep mDNSResponder || echo "Bonjour not running"
 }
 
