@@ -221,7 +221,9 @@ configure_sharing_services() {
         
         # Enable SMB sharing
         log_info "Enabling SMB sharing..."
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+        if ! sudo launchctl list | grep -q "com.apple.smbd"; then
+            sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.smbd.plist 2>/dev/null || true
+        fi
         
         # Enable SSH
         log_info "Enabling SSH..."
@@ -229,7 +231,9 @@ configure_sharing_services() {
         
         # Enable screen sharing
         log_info "Enabling screen sharing..."
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+        if ! sudo launchctl list | grep -q "com.apple.screensharing"; then
+            sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
+        fi
         
         # Enable Time Machine server
         log_info "Enabling Time Machine server..."
@@ -296,8 +300,9 @@ configure_performance_settings() {
     # Limit background app refresh
     defaults write NSGlobalDomain NSAppRefreshEnabled -bool false
     
-    # Disable Time Machine local snapshots
-    sudo tmutil disablelocal
+    # Disable Time Machine local snapshots (deprecated in newer macOS)
+    # Use thinlocalsnapshots instead for modern macOS
+    sudo tmutil thinlocalsnapshots / 10000000000 4
     
     # Selective spotlight indexing
     log_info "Configuring selective Spotlight indexing..."

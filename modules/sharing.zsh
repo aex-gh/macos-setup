@@ -53,13 +53,23 @@ configure_file_sharing() {
     
     if [[ "$enable_smb" = "true" ]]; then
         log_info "Enabling SMB file sharing"
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+        # Check if SMB is already running
+        if ! sudo launchctl list | grep -q "com.apple.smbd"; then
+            sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.smbd.plist 2>/dev/null || true
+        else
+            log_info "SMB file sharing is already enabled"
+        fi
         sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk
     fi
     
     if [[ "$enable_afp" = "true" ]]; then
         log_info "Enabling AFP file sharing"
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+        # Check if AFP is already running
+        if ! sudo launchctl list | grep -q "com.apple.AppleFileServer"; then
+            sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist 2>/dev/null || true
+        else
+            log_info "AFP file sharing is already enabled"
+        fi
     fi
     
     if [[ "$create_shared_folder" = "true" ]]; then
@@ -95,18 +105,25 @@ configure_remote_access() {
     
     if [[ "$enable_ssh" = "true" ]]; then
         log_info "Enabling SSH (Remote Login)"
-        sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
-        sudo systemsetup -setremotelogin on
+        # Check if SSH is already enabled
+        if ! sudo systemsetup -getremotelogin | grep -q "On"; then
+            sudo systemsetup -setremotelogin on
+        else
+            log_info "SSH is already enabled"
+        fi
     fi
     
-    if [[ "$enable_remote_login" = "true" ]]; then
-        log_info "Enabling remote login"
-        sudo systemsetup -setremotelogin on
-    fi
+    # Note: enable_ssh and enable_remote_login are the same thing
+    # Keeping for backward compatibility but not duplicating the action
     
     if [[ "$enable_screen_sharing" = "true" ]]; then
         log_info "Enabling screen sharing"
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+        # Check if screen sharing is already running
+        if ! sudo launchctl list | grep -q "com.apple.screensharing"; then
+            sudo launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.screensharing.plist 2>/dev/null || true
+        else
+            log_info "Screen sharing is already enabled"
+        fi
     fi
     
     if [[ "$enable_remote_management" = "true" ]]; then
@@ -132,7 +149,13 @@ configure_network_services() {
     
     if [[ "$enable_bonjour" = "true" ]]; then
         log_info "Enabling Bonjour"
-        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+        # mDNSResponder is a critical system service that's always running
+        # Just verify it's running
+        if sudo launchctl list | grep -q "com.apple.mDNSResponder"; then
+            log_info "Bonjour (mDNSResponder) is running"
+        else
+            log_warn "Bonjour (mDNSResponder) is not running - this is unusual"
+        fi
     fi
     
     if [[ "$enable_service_discovery" = "true" ]]; then
