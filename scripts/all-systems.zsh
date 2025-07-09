@@ -207,8 +207,9 @@ configure_network_discovery() {
     log_success "Network discovery configured"
 }
 
-# Configure security
+# Configure security (basic version - will be overridden by security module if available)
 configure_security() {
+    local config_file="${1:-}"
     log_info "Configuring security..."
     
     # Enable firewall
@@ -359,7 +360,11 @@ main() {
     
     # Configure security
     log_info "=== Configuring Security ==="
-    configure_security
+    # Source security module if available (will override basic function)
+    if [[ -f "${MODULES_DIR}/security.zsh" ]]; then
+        source "${MODULES_DIR}/security.zsh"
+    fi
+    configure_security "$BASE_CONFIG"
     
     # Configure time sync
     log_info "=== Configuring Time Synchronization ==="
