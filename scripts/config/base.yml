@@ -1,0 +1,55 @@
+# Base Configuration for All Systems
+# Common settings that apply to all macOS systems
+
+system:
+  timezone: "Australia/Adelaide"
+  language: "en-AU"
+  region: "AU"
+  
+security:
+  enable_filevault: true
+  enable_firewall: true
+  enable_stealth_mode: true
+  ssh_key_type: "ed25519"
+  
+updates:
+  auto_update_system: true
+  auto_update_homebrew: true
+  auto_cleanup_logs: true
+  
+xcode:
+  install_command_line_tools: true
+  auto_accept_license: true
+  
+homebrew:
+  install_path: "/opt/homebrew"
+  enable_analytics: false
+  install_base_packages: true
+  
+onepwd:
+  install_cli: true
+  enable_ssh_agent: true
+  
+remote_access:
+  enable_ssh: true
+  enable_remote_login: true
+  configure_ssh_keys: true
+  
+file_sharing:
+  enable_smb: true
+  enable_bonjour: true
+  
+network:
+  enable_bonjour: true
+  enable_network_discovery: true
+  
+telemetry:
+  disable_analytics: true
+  disable_crash_reports: false
+  disable_diagnostic_data: true
+  
+ntp:
+  enable_ntp: true
+  ntp_servers:
+    - "time.apple.com"
+    - "au.pool.ntp.org"

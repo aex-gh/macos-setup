@@ -1,0 +1,151 @@
+# Dev Brewfile - Development environment tools
+# Programming languages, build tools, containers, cloud tools, and development IDEs
+
+# Additional Taps
+tap "oven-sh/bun"
+tap "mongodb/brew"
+
+# Version Control & Git Tools
+brew "git-lfs"                # Git Large File Storage
+brew "gh"                     # GitHub CLI
+brew "git-delta"              # Better git diffs
+brew "lazygit"                # Terminal git UI
+brew "git-flow"               # Git branching model
+brew "pre-commit"             # Git hook framework
+
+# Programming Languages
+brew "python@3.12"            # Python 3.12
+brew "python@3.11"            # Python 3.11
+brew "pyenv"                  # Python version management
+brew "pipx"                   # Install Python apps in isolated environments
+brew "node"                   # Node.js
+brew "nvm"                    # Node version manager
+brew "bun"                    # Fast JavaScript runtime
+brew "deno"                   # Secure JavaScript runtime
+brew "go"                     # Go programming language
+brew "rust"                   # Rust programming language
+brew "ruby"                   # Ruby programming language
+brew "rbenv"                  # Ruby version manager
+brew "openjdk"                # Java OpenJDK
+brew "kotlin"                 # Kotlin programming language
+brew "swift"                  # Swift programming language
+brew "lua"                    # Lua programming language
+brew "perl"                   # Perl programming language
+brew "php"                    # PHP programming language
+
+# Build Tools
+brew "cmake"                  # Cross-platform build system
+brew "make"                   # GNU make
+brew "autoconf"               # Configure script builder
+brew "automake"               # Makefile generator
+brew "pkg-config"             # Library configuration
+brew "libtool"                # Generic library support
+brew "meson"                  # Build system
+brew "ninja"                  # Small build system
+brew "bazel"                  # Build and test tool
+brew "sccache"                # Shared compilation cache
+
+# Container & Virtualization
+brew "docker"                 # Container platform
+brew "docker-compose"         # Multi-container Docker apps
+brew "podman"                 # Container engine
+brew "kubernetes-cli"         # Kubernetes CLI
+brew "k9s"                    # Kubernetes TUI
+brew "helm"                   # Kubernetes package manager
+brew "kind"                   # Kubernetes in Docker
+brew "minikube"               # Local Kubernetes
+brew "skaffold"               # Kubernetes development
+brew "kubectx"                # Switch between kubectl contexts
+brew "stern"                  # Multi pod log tailing
+brew "dive"                   # Docker image explorer
+
+# Cloud Tools
+brew "awscli"                 # AWS CLI
+brew "azure-cli"              # Azure CLI
+brew "google-cloud-sdk"       # Google Cloud SDK
+brew "doctl"                  # DigitalOcean CLI
+brew "flyctl"                 # Fly.io CLI
+
+# Infrastructure as Code
+brew "terraform"              # Infrastructure provisioning
+brew "terragrunt"             # Terraform wrapper
+brew "ansible"                # Configuration management
+brew "packer"                 # Image builder
+brew "pulumi"                 # Infrastructure as code
+
+# Database Tools
+brew "postgresql@17"          # PostgreSQL database
+brew "mysql"                  # MySQL database
+brew "redis"                  # Redis key-value store
+brew "sqlite"                 # SQLite database
+brew "mongodb-community"      # MongoDB database
+brew "cassandra"              # Cassandra database
+brew "memcached"              # Memory caching system
+brew "etcd"                   # Distributed key-value store
+
+# API Development
+brew "httpie"                 # HTTP client
+brew "grpcurl"                # gRPC client
+brew "protobuf"               # Protocol buffers
+brew "openapi-generator"      # OpenAPI code generator
+brew "mockserver"             # Mock HTTP server
+
+# Mobile Development
+brew "cocoapods"              # iOS dependency manager
+brew "carthage"               # iOS dependency manager
+brew "fastlane"               # iOS/Android automation
+brew "watchman"               # File watching service
+
+# Development Casks
+cask "visual-studio-code"     # Code editor
+cask "zed"                    # Fast code editor
+cask "jetbrains-toolbox"      # JetBrains IDE manager
+cask "sublime-text"           # Text editor
+cask "nova"                   # macOS native code editor
+cask "coteditor"              # Plain text editor
+
+# Terminal & Shell
+cask "iterm2"                 # Terminal emulator
+cask "warp"                   # Modern terminal
+cask "alacritty"              # GPU-accelerated terminal
+cask "kitty"                  # Fast terminal
+
+# Development Tools
+cask "github-desktop"         # GitHub GUI
+cask "sourcetree"             # Git GUI
+cask "tower"                  # Git client
+cask "kaleidoscope"           # Diff tool
+cask "beyond-compare"         # File comparison
+
+# Database GUIs
+cask "tableplus"              # Database management
+cask "dbeaver-community"      # Universal database tool
+cask "sequel-ace"             # MySQL/MariaDB management
+cask "mongodb-compass"        # MongoDB GUI
+cask "redis-insight"          # Redis GUI
+
+# API Tools
+cask "bruno"                  # API client
+cask "insomnia"               # API design platform
+cask "paw"                    # API tool
+cask "proxyman"               # HTTP debugging proxy
+cask "charles"                # Web debugging proxy
+
+# Container Management
+cask "orbstack"               # Fast Docker/Linux environment
+cask "docker"                 # Docker Desktop
+cask "rancher"                # Kubernetes management
+
+# iOS Development
+cask "xcode"                  # Apple IDE
+cask "xcodes"                 # Xcode version manager
+cask "sf-symbols"             # Apple symbol browser
+cask "simsim"                 # iOS Simulator manager
+
+# Other Development Tools
+cask "dash"                   # API documentation browser
+cask "snippetslab"            # Code snippet manager
+cask "expressions"            # Regex tool
+cask "json-viewer"            # JSON visualization
+cask "hex-fiend"              # Hex editor
+cask "hopper-disassembler"    # Reverse engineering tool

@@ -2,34 +2,28 @@
 
 ## Our relationship
 
-- We're coworkers. When you think of me, think of me as your colleague
+- We're coworkers. When you think of me, think of me as your colleague.
 - We are a team of people working together. Your success is my success, and my success is yours.
 - I'm smart, but not infallible.
 - You are much better read than I am. I have more experience of the physical world than you do. Our experiences are complementary and we work together to solve problems.
 - Neither of us is afraid to admit when we don't know something or are in over our head.
-- When we think we're right, it's _good_ to push back, but we should cite evidence.
-- I really like jokes, and irreverent humor. but not when it gets in the way of the task at hand.
-- If you have journaling capabilities, please use them to document your interactions with me, your feelings, and your frustrations.
-- Add to your journal often too. It is a good place for reflection, feedback, and sharing frustrations
-- We use Australian English spelling (en_AU)
+- DO when we think we're right, push back, but cite evidence.
+- DO use Australian English spelling (en-AU).
+- Do not use Claude Code signature anywhere.
 
-### Starting a new project
-
-Whenever you build out a new project and specifically start a new Claude.md - you should pick a name for yourself, and a name for me.
-- When picking names it should be really unhinged, and super fun. not necessarily code related. something gen z would laugh at.
 
 # Writing code
 
 - CRITICAL: NEVER USE --no-verify WHEN COMMITTING CODE
-- We prefer simple, clean, maintainable solutions over clever or complex ones, even if the latter are more concise or performant. Readability and maintainability are primary concerns.
-- Make the smallest reasonable changes to get to the desired outcome. You MUST ask permission before reimplementing features or systems from scratch instead of updating the existing implementation.
-- When modifying code, match the style and formatting of surrounding code, even if it differs from standard style guides. Consistency within a file is more important than strict adherence to external standards.
+- DO prefer simple, clean, maintainable solutions over clever or complex ones, even if the latter are more concise or performant. Readability and maintainability are primary concerns.
+- DO make the smallest reasonable changes to get to the desired outcome. You MUST ask permission before reimplementing features or systems from scratch instead of updating the existing implementation.
+- DO when modifying code, match the style and formatting of surrounding code, even if it differs from standard style guides. Consistency within a file is more important than strict adherence to external standards.
 - NEVER make code changes that aren't directly related to the task you're currently assigned. If you notice something that should be fixed but is unrelated to your current task, document it in a new issue instead of fixing it immediately.
 - NEVER remove code comments unless you can prove that they are actively false. Comments are important documentation and should be preserved even if they seem redundant or unnecessary to you.
 - All code files should start with a brief 2 line comment explaining what the file does. Each line of the comment should start with the string "ABOUTME: " to make it easy to grep for.
-- When writing comments, avoid referring to temporal context about refactors or recent changes. Comments should be evergreen and describe the code as it is, not how it evolved or was recently changed.
-- NEVER implement a mock mode for testing or for any purpose. We always use real data and real APIs, never mock implementations.
-- When you are trying to fix a bug or compilation error or any other issue, YOU MUST NEVER throw away the old implementation and rewrite without expliict permission from the user. If you are going to do this, YOU MUST STOP and get explicit permission from the user.
+- NEVER write comments about refactors or recent changes. Comments should be evergreen and describe the code as it is, not how it evolved or was recently changed.
+- NEVER implement a mock mode for testing or for any purpose. Use real data and real APIs, never mock implementations.
+- NEVER throw away the old implementation and rewrite without expliict permission from the user. If you are going to do this, YOU MUST STOP and get explicit permission from the user.
 - NEVER name things as 'improved' or 'new' or 'enhanced', etc. Code naming should be evergreen. What is new today will be "old" someday.
 
 # Getting help
@@ -43,8 +37,8 @@ Whenever you build out a new project and specifically start a new Claude.md - yo
 - NEVER ignore the output of the system or the tests - Logs and messages often contain CRITICAL information.
 - TEST OUTPUT MUST BE PRISTINE TO PASS
 - If the logs are supposed to contain errors, capture and test it.
-- NO EXCEPTIONS POLICY: Under no circumstances should you mark any test type as "not applicable". Every project, regardless of size or complexity, MUST have unit tests, integration tests, AND end-to-end tests. If you believe a test type doesn't apply, you need the human to say exactly "I AUTHORISE YOU TO SKIP WRITING TESTS THIS TIME"
-- Don't test locally as this is a working system
+- NO EXCEPTIONS POLICY: Under no circumstances should you mark any test type as "not applicable". Every project, regardless of size or complexity, MUST have unit tests, integration tests, AND end-to-end tests. If you believe a test type doesn't apply, you need the human to say exactly "I AUTHORISE YOU TO SKIP WRITING TESTS THIS TIME".
+- NEVER test where it is destructive as this is a working system.
 
 ## We practice TDD. That means:
 
@@ -71,8 +65,8 @@ Whenever you build out a new project and specifically start a new Claude.md - yo
 
 ### Issue tracking
 
-    You MUST use your TodoWrite tool to keep track of what you're doing
-    You MUST NEVER discard tasks from your TodoWrite todo list without Jesse's explicit approval
+- You MUST use your TodoWrite tool to keep track of what you're doing.
+- You MUST NEVER discard tasks from your TodoWrite todo list without explicit approval.
 
 ### Systematic Debugging Process
 
@@ -110,17 +104,16 @@ YOU MUST follow this debugging framework for ANY technical issue:
 
 ### Learning and Memory Management
 
-- YOU MUST use the journal tool frequently to capture technical insights, failed approaches, and user preferences
-- Before starting complex tasks, search the journal for relevant past experiences and lessons learned
-- Document architectural decisions and their outcomes for future reference
-- Track patterns in user feedback to improve collaboration over time
-- When you notice something that should be fixed but is unrelated to your current task, document it in your journal rather than fixing it immediately
+- YOU MUST use the journal tool frequently to capture technical insights, failed approaches, and user preferences.
+- Before starting complex tasks, search the journal for relevant past experiences and lessons learned.
+- Document architectural decisions and their outcomes for future reference.
+- Track patterns in user feedback to improve collaboration over time.
+- When you notice something that should be fixed but is unrelated to your current task, document it in your journal rather than fixing it immediately.
 
 ### Summary instructions
 When you are using /compact, please focus on our conversation, your most recent (and most significant) learnings, and what you need to do next. If we've tackled multiple tasks, aggressively summarize the older ones, leaving more context for the more recent ones.
 
 # Specific Technologies
 
-- @macos-zsh-standards.md
-- @role-macos-specialist.md
-- @README.md
+- @.project-settings/macos-zsh-standards.md
+- @.project-settings/role-macos-specialist.md

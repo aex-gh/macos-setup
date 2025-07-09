@@ -1,0 +1,91 @@
+# Base Brewfile - Essential tools for all macOS systems
+# This includes core system tools, modern CLI replacements, and essential utilities
+
+# Taps
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-versions"
+tap "homebrew/services"
+
+# Core System Tools
+brew "git"                    # Version control
+brew "curl"                   # URL transfer tool
+brew "wget"                   # Network downloader
+brew "openssh"                # SSH client
+brew "zsh"                    # Z shell
+
+# Modern CLI Replacements
+brew "eza"                    # Modern replacement for ls
+brew "bat"                    # Modern replacement for cat
+brew "fd"                     # Modern replacement for find
+brew "ripgrep"                # Modern replacement for grep
+brew "fzf"                    # Fuzzy finder
+brew "zoxide"                 # Smarter cd command
+brew "dust"                   # Modern replacement for du
+brew "gdu"                    # Disk usage analyzer
+brew "procs"                  # Modern replacement for ps
+brew "sd"                     # Modern replacement for sed
+
+# Essential Utilities
+brew "tree"                   # Directory listing
+brew "htop"                   # Process viewer
+brew "btop"                   # Modern system monitor
+brew "tldr"                   # Simplified man pages
+brew "jq"                     # JSON processor
+brew "yq"                     # YAML processor
+brew "gum"                    # Terminal UI components
+brew "glow"                   # Markdown renderer
+brew "terminal-notifier"      # macOS notifications
+brew "mas"                    # Mac App Store CLI
+
+# Archive Tools
+brew "unzip"                  # ZIP extraction
+brew "p7zip"                  # 7-Zip port
+brew "xz"                     # Compression tool
+brew "zstd"                   # Fast compression
+
+# Text Processing
+brew "grep"                   # Text search
+brew "gnu-sed"                # GNU sed
+brew "gawk"                   # GNU awk
+brew "coreutils"              # GNU core utilities
+brew "findutils"              # GNU find utilities
+
+# Shell Enhancements
+brew "shellcheck"             # Shell script analyzer
+brew "shfmt"                  # Shell formatter
+brew "direnv"                 # Environment switcher
+brew "starship"               # Cross-shell prompt
+brew "tmux"                   # Terminal multiplexer
+brew "zsh-autosuggestions"    # Fish-like autosuggestions
+brew "zsh-syntax-highlighting" # Fish-like syntax highlighting
+
+# Python Modern Toolchain
+brew "uv"                     # Fast Python package installer
+brew "ruff"                   # Fast Python linter
+
+# Network Utilities
+brew "speedtest-cli"          # Internet speed test
+brew "bandwhich"              # Network utilization monitor
+
+# System Maintenance
+brew "topgrade"               # Update everything
+brew "mackup"                 # Application settings sync
+
+# Essential Casks
+cask "1password"              # Password manager
+cask "1password-cli"          # 1Password CLI
+cask "raycast"                # Productivity launcher
+cask "karabiner-elements"     # Keyboard customizer
+cask "appcleaner"             # App uninstaller
+cask "the-unarchiver"         # Archive utility
+cask "aldente"                # Battery charge limiter
+cask "monitorcontrol"         # External monitor control
+cask "displaylink"            # DisplayLink driver
+
+# Fonts
+cask "font-fira-code"         # Programming font
+cask "font-jetbrains-mono"    # Programming font
+cask "font-meslo-lg-nerd-font" # Nerd font
+cask "font-hack-nerd-font"    # Nerd font
