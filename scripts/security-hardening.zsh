@@ -60,8 +60,8 @@ harden_firewall() {
     # Enable stealth mode
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
     
-    # Enable logging
-    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+    # Note: Logging is enabled by default when firewall is on
+    # There's no separate setloggingmode flag in newer macOS versions
     
     # Block all incoming connections by default
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setblockall on

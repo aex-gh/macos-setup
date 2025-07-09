@@ -51,8 +51,8 @@ configure_firewall() {
             sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
         fi
         
-        # Enable logging
-        sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+        # Note: Logging is enabled by default when firewall is on
+        # There's no separate setloggingmode flag in newer macOS versions
     fi
     
     echo "Firewall configuration complete"
