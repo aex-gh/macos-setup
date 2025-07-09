@@ -1,0 +1,13 @@
+# Server & Infrastructure Brewfile
+
+# Home Automation & IoT
+brew "homebridge"             # HomeKit bridge
+brew "mosquitto"              # MQTT broker
+brew "node-red"               # Flow-based programming
+brew "platformio"             # IoT development
+cask "home-assistant"         # Home automation
+cask "mqtt-explorer"          # MQTT client
+
+# Server & Infrastructure
+brew "nginx"                  # Web server
+brew "caddy"                  # Web server

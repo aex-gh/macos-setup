@@ -5,121 +5,35 @@
 cask "zoom"                   # Video conferencing
 cask "slack"                  # Team communication
 cask "discord"                # Voice and text chat
-cask "microsoft-teams"        # Microsoft Teams
-cask "skype"                  # Video calls
-cask "signal"                 # Secure messaging
-cask "telegram"               # Messaging app
-cask "whatsapp"               # Messaging app
-
-# Email Clients
-cask "spark"                  # Email client
-cask "mimestream"             # Gmail client
-cask "airmail"                # Email client
-cask "canary-mail"            # Email client
 
 # Note-taking & Knowledge Management
-cask "notion"                 # All-in-one workspace
 cask "obsidian"               # Knowledge base
-cask "bear"                   # Writing app
-cask "typora"                 # Markdown editor
-cask "logseq"                 # Privacy-first knowledge base
-cask "roam-research"          # Research tool
-cask "craft"                  # Documents and notes
-cask "drafts"                 # Quick capture
 cask "agenda"                 # Date-focused notes
-cask "ulysses"                # Writing app
-
-# Task Management
-cask "todoist"                # Task manager
-cask "things"                 # Task manager
-cask "omnifocus"              # Task manager
-cask "ticktick"               # To-do list
-cask "fantastical"            # Calendar app
-cask "busycal"                # Calendar app
-cask "calendars"              # Calendar app
 
 # Office Suites
 cask "libreoffice"            # Open source office suite
-cask "onlyoffice"             # Office suite
-cask "microsoft-office"       # Microsoft Office
 cask "pages"                  # Apple word processor
 cask "numbers"                # Apple spreadsheet
 cask "keynote"                # Apple presentations
 
-# PDF Tools
-cask "pdf-expert"             # PDF editor
-cask "pdfpenpro"              # PDF editor
-cask "skim"                   # PDF reader
-cask "preview"                # Built-in PDF viewer
-cask "adobe-acrobat-reader"   # PDF reader
-
 # Creative Tools
-cask "figma"                  # Design tool
-cask "sketch"                 # Design tool
-cask "canva"                  # Graphic design
 cask "affinity-designer"      # Vector graphics
 cask "affinity-photo"         # Photo editing
 cask "affinity-publisher"     # Desktop publishing
-cask "pixelmator-pro"         # Image editor
-cask "acorn"                  # Image editor
 
 # Media & Entertainment
-cask "spotify"                # Music streaming
-cask "apple-music"            # Music streaming
-cask "tidal"                  # Music streaming
 cask "vlc"                    # Media player
 cask "iina"                   # Modern media player
-cask "infuse"                 # Video player
-cask "plex"                   # Media server client
-cask "netflix"                # Video streaming
-cask "disney-plus"            # Video streaming
-
-# Screen Recording & Streaming
-cask "obs"                    # Broadcasting software
-cask "screenflow"             # Screen recording
-cask "camtasia"               # Screen recording
-cask "loom"                   # Quick video messages
-cask "cleanshot"              # Screenshot tool
-cask "snagit"                 # Screenshot tool
 
 # File Management & Sync
-cask "dropbox"                # Cloud storage
 cask "google-drive"           # Cloud storage
-cask "onedrive"               # Cloud storage
-cask "box-drive"              # Cloud storage
-cask "sync"                   # File sync
 cask "resilio-sync"           # P2P sync
 
 # Window Management
-cask "rectangle"              # Window management
-cask "magnet"                 # Window management
-cask "moom"                   # Window management
-cask "divvy"                  # Window management
-cask "bettertouchtool"        # Input customization
+cask "rectangle-pro"              # Window management
 
 # Productivity Enhancers
-cask "alfred"                 # Productivity app
-cask "hazel"                  # Automated organization
-cask "keyboard-maestro"       # Automation tool
-cask "popclip"                # Text selection tool
 cask "textexpander"           # Text expansion
-cask "typeto"                 # Type on other devices
-cask "pastebot"               # Clipboard manager
-cask "yoink"                  # Drag and drop shelf
-
-# Focus & Time Management
-cask "freedom"                # Website blocker
-cask "cold-turkey-blocker"    # Website blocker
-cask "toggl-track"            # Time tracking
-cask "timing"                 # Automatic time tracking
-cask "rescuetime"             # Productivity tracking
-cask "be-focused"             # Pomodoro timer
-cask "forest"                 # Focus app
 
 # Mac App Store Apps (installed via mas)
 brew "mas"                    # Mac App Store CLI
-# mas "Paste", id: 967805235  # Clipboard manager
-# mas "Amphetamine", id: 937984704  # Keep Mac awake
-# mas "Hidden Bar", id: 1452453066  # Menu bar manager
-# mas "Clockify", id: 1364502317  # Time tracker
-# mas "Grammarly", id: 1462114288  # Writing assistant

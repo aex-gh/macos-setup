@@ -1,4 +1,4 @@
-# Utilities Brewfile - System utilities and specialized tools
+# Utilities Brewfile - System utilities and specialised tools
 # Network tools, system monitoring, media processing, scientific computing, and specialized utilities
 
 # Network Tools
@@ -20,14 +20,7 @@ brew "sslscan"                # SSL scanner
 # System Monitoring
 cask "stats"                  # System monitor
 cask "coconutbattery"         # Battery health
-cask "istat-menus"            # System monitoring
-cask "sensei"                 # System optimization
-cask "cleanmymac"             # System cleaner
-cask "daisydisk"              # Disk space analyzer
-cask "disk-inventory-x"       # Disk usage utility
 cask "grandperspective"       # Disk usage visualizer
-cask "activity-monitor"       # Process monitor
-cask "hwsensors"              # Hardware monitoring
 
 # Media Processing
 brew "ffmpeg"                 # Media converter
@@ -43,54 +36,25 @@ brew "gifski"                 # GIF encoder
 brew "gifsicle"               # GIF optimizer
 
 # Security Tools
-cask "little-snitch"          # Network monitor
-cask "micro-snitch"           # Microphone/camera monitor
 cask "knockknock"             # Startup item monitor
 cask "blockblock"             # Persistent monitor
 cask "oversight"              # Webcam/mic monitor
 cask "lulu"                   # Firewall
-cask "suspicious-package"     # Package inspector
-cask "gpg-suite"              # GPG encryption
-cask "veracrypt"              # Disk encryption
-cask "authy"                  # 2FA app
-
-# File Management
-cask "forklift"               # File manager
-cask "pathfinder"             # File manager
-cask "commander-one"          # File manager
-cask "devonthink"             # Document management
-cask "hazel"                  # Automated file organization
-cask "gemini"                 # Duplicate finder
-cask "space-gremlin"          # Storage manager
 
 # Remote Access & File Transfer
 cask "cyberduck"              # Cloud storage browser
-cask "transmit"               # File transfer
 cask "expandrive"             # Cloud storage mounter
 cask "screens"                # VNC client
 cask "jump-desktop-connect"   # Remote desktop
-cask "teamviewer"             # Remote support
-cask "anydesk"                # Remote desktop
 
 # Backup & Recovery
 cask "carbon-copy-cloner"     # Backup utility
-cask "superduper"             # Backup utility
-cask "chronosync"             # File synchronization
-cask "arq"                    # Backup to cloud
-cask "backblaze"              # Cloud backup
-cask "time-machine"           # Built-in backup
 brew "restic"                 # Backup program
 brew "borgbackup"             # Deduplicating backup
 brew "rclone"                 # Cloud storage sync
 
 # Virtualization & Emulation
 cask "parallels"              # Virtual machines
-cask "vmware-fusion"          # Virtual machines
-cask "virtualbox"             # Virtual machines
-cask "utm"                    # Virtual machines (Apple Silicon)
-cask "multipass"              # Ubuntu VMs
-cask "vagrant"                # Development environments
-cask "wine-stable"            # Windows compatibility
 
 # Scientific Computing & Data Science
 brew "r"                      # R language
@@ -114,22 +78,6 @@ brew "geos"                   # Geometry engine
 brew "qgis"                   # GIS application
 brew "postgis"                # Spatial database
 
-# Home Automation & IoT
-brew "homebridge"             # HomeKit bridge
-brew "mosquitto"              # MQTT broker
-brew "node-red"               # Flow-based programming
-brew "platformio"             # IoT development
-cask "home-assistant"         # Home automation
-cask "mqtt-explorer"          # MQTT client
-
-# Server & Infrastructure
-brew "nginx"                  # Web server
-brew "caddy"                  # Web server
-brew "haproxy"                # Load balancer
-brew "consul"                 # Service mesh
-brew "vault"                  # Secret management
-brew "nomad"                  # Workload orchestrator
-
 # Big Data & Analytics
 brew "apache-spark"           # Data processing
 brew "kafka"                  # Stream processing
@@ -141,22 +89,8 @@ brew "apache-drill"           # SQL query engine
 
 # Hardware & System Tools
 cask "balenaetcher"           # USB/SD card writer
-cask "raspberry-pi-imager"    # Raspberry Pi imager
-cask "arduino"                # Arduino IDE
-cask "openemu"                # Game emulation
 cask "handbrake"              # Video transcoder
-cask "makemkv"                # DVD/Blu-ray ripper
-cask "musicbrainz-picard"     # Music tagger
-cask "kid3"                   # Audio tagger
 
 # Specialized Utilities
-cask "bartender"              # Menu bar organizer
 cask "itsycal"                # Menu bar calendar
-cask "vanilla"                # Menu bar hider
-cask "amphetamine"            # Keep Mac awake
-cask "flux"                   # Blue light filter
-cask "nightowl"               # Dark mode scheduler
-cask "lunar"                  # Monitor brightness
-cask "switchresx"             # Display management
-cask "usb-overdrive"          # USB device driver
-cask "logitech-options"       # Logitech device manager
+cask "betterdisplay"          # Display management
