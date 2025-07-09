@@ -137,7 +137,18 @@ class HomebrewManager
 
   def load_brewfiles
     brewfiles = if @options[:brewfiles].any?
-                  @options[:brewfiles].map { |f| File.expand_path(f) }
+                  @options[:brewfiles].map do |f|
+                    # Check if it's an absolute path or exists in current directory
+                    if File.absolute_path?(f) || File.exist?(f)
+                      File.expand_path(f)
+                    else
+                      # Otherwise, look in the brewfiles directory
+                      brewfile_path = File.join(@brewfiles_dir, f)
+                      # Add .brewfile extension if not present
+                      brewfile_path += '.brewfile' unless f.end_with?('.brewfile')
+                      brewfile_path
+                    end
+                  end
                 else
                   Dir.glob("#{@brewfiles_dir}/*.brewfile").sort
                 end
