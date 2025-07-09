@@ -1,0 +1,28 @@
+{
+  "builder": {
+    "gc": {
+      "enabled": true,
+      "defaultKeepStorage": "20GB"
+    }
+  },
+  "experimental": false,
+  "features": {
+    "buildkit": true
+  },
+  "default-address-pools": [
+    {
+      "base": "172.17.0.0/16",
+      "size": 24
+    }
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "storage-driver": "overlay2",
+  "debug": false,
+  "registry-mirrors": [],
+  "insecure-registries": [],
+  "dns": ["8.8.8.8", "8.8.4.4"]
+}

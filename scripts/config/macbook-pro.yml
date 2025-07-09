@@ -15,26 +15,26 @@ system:
   hostname: "macbook-pro"
   computer_name: "MacBook Pro"
   local_hostname: "macbook-pro"
-  
+
   # Power management - optimized for battery life
   power:
-    sleep_display: 2       # Display sleep after 2 minutes on battery
-    sleep_system: 5        # System sleep after 5 minutes on battery
-    sleep_disk: 10         # Disk sleep after 10 minutes
-    power_nap: true        # Enable Power Nap
+    sleep_display: 2 # Display sleep after 2 minutes on battery
+    sleep_system: 5 # System sleep after 5 minutes on battery
+    sleep_disk: 10 # Disk sleep after 10 minutes
+    power_nap: true # Enable Power Nap
     wake_on_network: false # Disable for battery preservation
-    auto_restart: false    # Disable auto restart
-    hibernate_mode: 3      # Enable hibernation for battery preservation
-    standby_mode: 1        # Enable standby mode
-    wake_on_ac: true       # Enable wake on AC power attach
-    tcp_keep_alive: false  # Disable for battery preservation
-    
+    auto_restart: false # Disable auto restart
+    hibernate_mode: 3 # Enable hibernation for battery preservation
+    standby_mode: 1 # Enable standby mode
+    wake_on_ac: true # Enable wake on AC power attach
+    tcp_keep_alive: false # Disable for battery preservation
+
   # Thermal management
   thermal_pressure_handling: "balanced"
-  
+
   # Power schedule
   power_schedule:
-    enabled: false  # Disable for mobile device
+    enabled: false # Disable for mobile device
 
 network:
   hostname: "macbook-pro"
@@ -44,15 +44,15 @@ network:
   disable_wifi: false
   enable_ethernet: true
   enable_thunderbolt_networking: true
-  
+
   # DHCP configuration (mobile device)
   use_static_ip: false
-  
+
   # DNS configuration
   use_custom_dns: true
   primary_dns: "1.1.1.1"
   secondary_dns: "1.0.0.1"
-  
+
   # DHCP configuration
   enable_dhcp_server: false
 
@@ -62,58 +62,58 @@ sharing:
   enable_smb: false
   enable_ssh: true
   enable_remote_login: true
-  
+
   # Network services
   enable_bonjour: true
   enable_service_discovery: true
   enable_time_machine_server: false
-  
+
   # Screen sharing
   enable_screen_sharing: true
   enable_remote_management: false
-  
+
   # Shared folder
   create_shared_folder: false
 
 display:
   resolution: "auto"
   scaling: "default"
-  
+
 audio:
   output_device: "auto"
   disable_sound_effects: false
-  
+
 dock:
   position: "bottom"
   size: 48
   autohide: true
   show_recents: false
-  
+
 notifications:
   enable_notifications: true
   banner_style: "banners"
-  
+
 screensaver:
   enable_screensaver: true
-  timeout: 300  # 5 minutes
-  
+  timeout: 300 # 5 minutes
+
 apple_intelligence:
-  enable_apple_intelligence: true
-  
+  enable_apple_intelligence: false
+
 siri:
-  enable_siri: true
-  enable_listen_for_hey_siri: true
-  
+  enable_siri: false
+  enable_listen_for_hey_siri: false
+
 wallpaper:
-  type: "dynamic"
-  name: "macOS Sonoma"
+  type: "image"
+  path: "configs/assets/pexels-mikhail-nilov-6942967.jpg"
 
 performance:
   background_app_refresh: "smart"
   visual_effects: "full"
   transparency: true
   motion: "full"
-  
+
   # Storage optimization
   spotlight_indexing: "full"
   time_machine_local_snapshots: true
@@ -123,7 +123,7 @@ development:
   install_docker: true
   install_homebrew_services: true
   enable_virtualization: true
-  
+
   # Container optimization - conservative for battery
   docker_memory_limit: "8g"
   docker_cpu_limit: 4
@@ -133,12 +133,12 @@ security:
   stealth_mode: true
   file_vault: true
   secure_boot: "full"
-  
+
   # SSH hardening
   ssh_key_type: "ed25519"
   ssh_disable_password_auth: false
   ssh_max_auth_tries: 3
-  
+
   # User accounts
   create_admin_user: false
   disable_guest_user: true

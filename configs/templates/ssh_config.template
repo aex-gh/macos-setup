@@ -1,0 +1,68 @@
+# SSH Client Configuration Template
+# Location: ~/.ssh/config
+# Permissions: chmod 600 ~/.ssh/config
+
+# Global defaults
+Host *
+    # Use SSH key agent
+    AddKeysToAgent yes
+    UseKeychain yes
+    
+    # Reuse connections
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%h-%p-%r
+    ControlPersist 600
+    
+    # Security settings
+    PasswordAuthentication no
+    ChallengeResponseAuthentication no
+    HashKnownHosts yes
+    
+    # Keep connections alive
+    ServerAliveInterval 60
+    ServerAliveCountMax 10
+    
+    # Compression for slow connections
+    Compression yes
+
+# GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_ed25519
+    IdentitiesOnly yes
+
+# GitLab
+Host gitlab.com
+    HostName gitlab.com
+    User git
+    IdentityFile ~/.ssh/gitlab_ed25519
+    IdentitiesOnly yes
+
+# Personal server example
+Host myserver
+    HostName server.example.com
+    User myusername
+    Port 22
+    IdentityFile ~/.ssh/personal_ed25519
+    IdentitiesOnly yes
+    ForwardAgent yes
+
+# Work servers with jump host
+Host work-jumphost
+    HostName jump.company.com
+    User username
+    IdentityFile ~/.ssh/work_ed25519
+    IdentitiesOnly yes
+
+Host work-*.internal
+    User username
+    IdentityFile ~/.ssh/work_ed25519
+    IdentitiesOnly yes
+    ProxyJump work-jumphost
+
+# Local development VMs
+Host *.local
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    LogLevel ERROR

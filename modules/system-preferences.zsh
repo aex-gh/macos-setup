@@ -189,6 +189,7 @@ configure_wallpaper() {
     local wallpaper_type=$(get_config_value "wallpaper.type" "dynamic")
     local wallpaper_color=$(get_config_value "wallpaper.color" "#1e1e1e")
     local wallpaper_name=$(get_config_value "wallpaper.name" "macOS Sonoma")
+    local wallpaper_path=$(get_config_value "wallpaper.path" "")
     
     case "$wallpaper_type" in
         "solid_color")
@@ -198,6 +199,49 @@ configure_wallpaper() {
         "dynamic")
             echo "Setting dynamic wallpaper: $wallpaper_name"
             echo "Note: Dynamic wallpaper configuration requires manual setup"
+            ;;
+        "image")
+            if [[ -n "$wallpaper_path" ]]; then
+                # Resolve relative path from project root
+                local project_root
+                if [[ -n "${SCRIPT_DIR:-}" ]]; then
+                    project_root="${SCRIPT_DIR}/.."
+                else
+                    # Fallback: assume we're in modules directory
+                    project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+                fi
+                
+                # Convert to absolute path
+                local absolute_wallpaper_path
+                if [[ "$wallpaper_path" = /* ]]; then
+                    # Already absolute path
+                    absolute_wallpaper_path="$wallpaper_path"
+                else
+                    # Relative path, resolve from project root
+                    absolute_wallpaper_path="${project_root}/${wallpaper_path}"
+                fi
+                
+                if [[ -f "$absolute_wallpaper_path" ]]; then
+                    echo "Setting image wallpaper: $absolute_wallpaper_path"
+                    # Use AppleScript to set the wallpaper for all desktops
+                    osascript << EOF
+tell application "System Events"
+    tell every desktop
+        set picture to POSIX file "$absolute_wallpaper_path"
+    end tell
+end tell
+EOF
+                    if [[ $? -eq 0 ]]; then
+                        echo "Wallpaper set successfully"
+                    else
+                        echo "Failed to set wallpaper"
+                    fi
+                else
+                    echo "Error: Wallpaper image not found at path: $absolute_wallpaper_path"
+                fi
+            else
+                echo "Error: No wallpaper path specified"
+            fi
             ;;
         *)
             echo "Unknown wallpaper type: $wallpaper_type"

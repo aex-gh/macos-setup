@@ -1,0 +1,60 @@
+# Time Machine Exclusion List
+# Use with: sudo tmutil addexclusion -p [path]
+# Or configure in Time Machine preferences
+
+# Development directories
+~/Library/Caches/
+~/Library/Developer/Xcode/DerivedData/
+~/Library/Developer/Xcode/Archives/
+~/Library/Developer/CoreSimulator/
+~/.npm/
+~/.cache/
+~/.local/share/Trash/
+~/Downloads/
+~/tmp/
+
+# Virtual environments and dependencies
+**/.venv/
+**/venv/
+**/node_modules/
+**/.tox/
+**/__pycache__/
+**/*.pyc
+
+# Build artifacts
+**/build/
+**/dist/
+**/target/
+**/.next/
+**/.nuxt/
+**/out/
+
+# Large media files (optional)
+*.dmg
+*.iso
+*.img
+*.vmdk
+
+# Docker
+~/Library/Containers/com.docker.docker/
+~/.docker/desktop/
+
+# Version control
+**/.git/objects/
+**/.git/lfs/
+
+# IDE caches
+**/.idea/
+**/.vscode/
+**/.fleet/
+
+# Homebrew caches
+/opt/homebrew/Caches/
+/opt/homebrew/Cellar/
+/opt/homebrew/Downloads/
+
+# Cloud storage (already backed up)
+~/Dropbox/
+~/Google Drive/
+~/OneDrive/
+~/iCloud Drive/
