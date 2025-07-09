@@ -9,7 +9,7 @@
 --target=$HOME
 
 # Source directory - where stow packages are stored
---dir=packages
+--dir=dotfiles
 
 # Enable dotfiles mode - transforms "dot-" prefix to "." in target
 # This allows storing .zshrc as dot-zshrc in the repository
@@ -100,9 +100,9 @@
 #   stow zsh git ssh          # Stow multiple packages at once
 #
 # Package structure example:
-#   packages/zsh/dot-zshrc    → ~/.zshrc
-#   packages/git/dot-gitconfig → ~/.gitconfig
-#   packages/ssh/dot-ssh/config → ~/.ssh/config
+#   dotfiles/zsh/dot-zshrc    → ~/.zshrc
+#   dotfiles/git/dot-gitconfig → ~/.gitconfig
+#   dotfiles/ssh/dot-ssh/config → ~/.ssh/config
 #
 # For more information, see:
 #   man stow
