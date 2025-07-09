@@ -141,6 +141,25 @@ install_essential_apps() {
     log_success "Essential applications installed"
 }
 
+# Configure dotfiles with GNU Stow
+configure_dotfiles() {
+    log_info "Configuring dotfiles..."
+    
+    # Source the dotfiles module
+    if [[ -f "${MODULES_DIR}/dotfiles.zsh" ]]; then
+        source "${MODULES_DIR}/dotfiles.zsh"
+        
+        # Run dotfiles setup
+        if setup_dotfiles; then
+            log_success "Dotfiles configured successfully"
+        else
+            log_warn "Dotfiles setup failed - continuing with setup"
+        fi
+    else
+        log_warn "Dotfiles module not found - skipping dotfiles setup"
+    fi
+}
+
 # Configure remote access
 configure_remote_access() {
     log_info "Configuring remote access..."
@@ -276,6 +295,34 @@ disable_telemetry() {
     log_success "Telemetry disabled"
 }
 
+# Verify Claude Code installation
+verify_claude_code() {
+    log_info "Verifying Claude Code installation..."
+    
+    # Check if Claude Code is available
+    if command -v claude &> /dev/null; then
+        local claude_version=$(claude --version 2>&1 | head -1 || echo "version unknown")
+        log_success "Claude Code is installed: $claude_version"
+        
+        # Check Node.js compatibility
+        if command -v node &> /dev/null; then
+            local node_version=$(node --version)
+            local major_version=${node_version#v}
+            major_version=${major_version%%.*}
+            
+            if [[ $major_version -ge 18 ]]; then
+                log_success "Node.js $node_version is compatible with Claude Code"
+            else
+                log_warn "Node.js $node_version may not be compatible (requires 18+)"
+            fi
+        else
+            log_warn "Node.js not found - Claude Code may not function correctly"
+        fi
+    else
+        log_warn "Claude Code not found - install with: ./install-claude-code.zsh"
+    fi
+}
+
 # Main setup function
 main() {
     log_info "Starting macOS all-systems setup..."
@@ -293,6 +340,10 @@ main() {
     install_xcode_tools
     install_homebrew
     install_essential_apps
+    
+    # Configure dotfiles
+    log_info "=== Configuring Dotfiles ==="
+    configure_dotfiles
     
     # Configure remote access
     log_info "=== Configuring Remote Access ==="
@@ -322,20 +373,27 @@ main() {
     log_info "=== Disabling Telemetry ==="
     disable_telemetry
     
+    # Verify Claude Code installation
+    log_info "=== Verifying Claude Code ==="
+    verify_claude_code
+    
     log_success "All-systems setup complete!"
     
     # Final instructions
     echo
     log_info "Next steps:"
     echo "1. Run the system-specific setup script for your Mac model"
-    echo "2. Install additional applications using the categorized Brewfiles"
-    echo "3. Configure dotfiles and personal settings"
-    echo "4. Enable FileVault if not already enabled"
+    echo "2. Install additional applications using the categorised Brewfiles"
+    echo "3. Enable FileVault if not already enabled"
+    echo "4. Install Claude Code if not already installed: ./install-claude-code.zsh"
     echo
     log_info "Available system-specific scripts:"
     echo "  - mac-studio.zsh"
     echo "  - macbook-pro.zsh"
     echo "  - mac-mini.zsh"
+    echo
+    log_info "Available standalone installers:"
+    echo "  - install-claude-code.zsh    # AI-powered coding assistant"
 }
 
 # Run main function
