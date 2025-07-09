@@ -14,7 +14,7 @@ class HomebrewManager
   VERSION = '1.0.0'
 
   def initialize
-    @brewfiles_dir = File.expand_path('../brewfiles', __dir__)
+    @brewfiles_dir = determine_brewfiles_dir
     @options = {}
     @desired_state = {
       'tap' => Set.new,
@@ -43,6 +43,7 @@ class HomebrewManager
 
   def run
     parse_options
+    log_verbose "Using brewfiles directory: #{@brewfiles_dir}"
     load_brewfiles
     load_actual_state
     
@@ -64,6 +65,21 @@ class HomebrewManager
   end
 
   private
+
+  def determine_brewfiles_dir
+    # Follow the same pattern as other scripts: ${SCRIPT_DIR}/../brewfiles
+    # where SCRIPT_DIR is the absolute path to the script's directory
+    script_dir = File.expand_path(__dir__)
+    brewfiles_dir = File.expand_path('../brewfiles', script_dir)
+    
+    # Allow override via environment variable
+    if ENV['BREWFILES_DIR'] && Dir.exist?(ENV['BREWFILES_DIR'])
+      return ENV['BREWFILES_DIR']
+    end
+    
+    # Use the standard location relative to script directory
+    brewfiles_dir
+  end
 
   def parse_options
     @options = {
@@ -139,7 +155,7 @@ class HomebrewManager
     brewfiles = if @options[:brewfiles].any?
                   @options[:brewfiles].map do |f|
                     # Check if it's an absolute path or exists in current directory
-                    if File.absolute_path?(f) || File.exist?(f)
+                    if f.start_with?('/') || File.exist?(f)
                       File.expand_path(f)
                     else
                       # Otherwise, look in the brewfiles directory
