@@ -6,7 +6,7 @@
 \#.*\#
 \.#.*
 .*~
-*.swp
+.*\.swp
 
 # Ignore git files
 \.git

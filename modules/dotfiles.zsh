@@ -116,15 +116,35 @@ stow_package() {
     # Change to project root directory to use .stowrc
     pushd "$PROJECT_ROOT" > /dev/null
     
-    if stow "$package" 2>/dev/null; then
+    # Temporarily disable .stowrc if it exists to avoid simulation mode issues
+    local stowrc_backup=""
+    if [[ -f ".stowrc" ]]; then
+        stowrc_backup=".stowrc.temp.$$"
+        mv ".stowrc" "$stowrc_backup"
+    fi
+    
+    # Try stowing without --adopt first
+    if stow --target="$HOME" --dir=dotfiles --dotfiles "$package" 2>/dev/null; then
         log_success "Successfully stowed: $package"
-        return 0
+        local result=0
     else
-        log_error "Failed to stow: $package"
-        return 1
+        # If stowing failed, try with --adopt to handle conflicts
+        if stow --target="$HOME" --dir=dotfiles --dotfiles --adopt "$package" 2>/dev/null; then
+            log_success "Successfully stowed: $package (adopted existing files)"
+            local result=0
+        else
+            log_error "Failed to stow: $package"
+            local result=1
+        fi
+    fi
+    
+    # Restore .stowrc if it was backed up
+    if [[ -n "$stowrc_backup" && -f "$stowrc_backup" ]]; then
+        mv "$stowrc_backup" ".stowrc"
     fi
     
     popd > /dev/null
+    return $result
 }
 
 # Unstow a single package
@@ -142,15 +162,28 @@ unstow_package() {
     # Change to project root directory to use .stowrc
     pushd "$PROJECT_ROOT" > /dev/null
     
-    if stow -D "$package" 2>/dev/null; then
+    # Temporarily disable .stowrc if it exists to avoid simulation mode issues
+    local stowrc_backup=""
+    if [[ -f ".stowrc" ]]; then
+        stowrc_backup=".stowrc.temp.$$"
+        mv ".stowrc" "$stowrc_backup"
+    fi
+    
+    if stow --target="$HOME" --dir=dotfiles --dotfiles -D "$package" 2>/dev/null; then
         log_success "Successfully unstowed: $package"
-        return 0
+        local result=0
     else
         log_error "Failed to unstow: $package"
-        return 1
+        local result=1
+    fi
+    
+    # Restore .stowrc if it was backed up
+    if [[ -n "$stowrc_backup" && -f "$stowrc_backup" ]]; then
+        mv "$stowrc_backup" ".stowrc"
     fi
     
     popd > /dev/null
+    return $result
 }
 
 # Restow a single package (unstow then stow)
@@ -168,15 +201,28 @@ restow_package() {
     # Change to project root directory to use .stowrc
     pushd "$PROJECT_ROOT" > /dev/null
     
-    if stow -R "$package" 2>/dev/null; then
+    # Temporarily disable .stowrc if it exists to avoid simulation mode issues
+    local stowrc_backup=""
+    if [[ -f ".stowrc" ]]; then
+        stowrc_backup=".stowrc.temp.$$"
+        mv ".stowrc" "$stowrc_backup"
+    fi
+    
+    if stow --target="$HOME" --dir=dotfiles --dotfiles -R "$package" 2>/dev/null; then
         log_success "Successfully restowed: $package"
-        return 0
+        local result=0
     else
         log_error "Failed to restow: $package"
-        return 1
+        local result=1
+    fi
+    
+    # Restore .stowrc if it was backed up
+    if [[ -n "$stowrc_backup" && -f "$stowrc_backup" ]]; then
+        mv "$stowrc_backup" ".stowrc"
     fi
     
     popd > /dev/null
+    return $result
 }
 
 # Stow all packages
