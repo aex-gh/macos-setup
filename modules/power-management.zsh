@@ -101,6 +101,5 @@ show_power_settings() {
     pmset -g sched
 }
 
-# Export functions
-export -f configure_power_management
-export -f show_power_settings
+
+# Functions are available when sourced, no need to export in Zsh

@@ -205,9 +205,4 @@ show_sharing_status() {
     launchctl list | grep mDNSResponder || echo "Bonjour not running"
 }
 
-# Export functions
-export -f configure_sharing
-export -f configure_file_sharing
-export -f configure_remote_access
-export -f configure_network_services
-export -f show_sharing_status
+# Functions are available when sourced, no need to export in Zsh

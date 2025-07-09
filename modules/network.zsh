@@ -179,10 +179,5 @@ show_network_config() {
     scutil --dns
 }
 
-# Export functions
-export -f configure_network
-export -f configure_system_names
-export -f configure_dns
-export -f configure_static_ip
-export -f configure_network_services
-export -f show_network_config
+
+# Functions are available when sourced, no need to export in Zsh

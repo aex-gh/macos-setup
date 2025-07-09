@@ -189,10 +189,4 @@ show_security_status() {
     dscl . -list /Users | grep -v "^_"
 }
 
-# Export functions
-export -f configure_security
-export -f configure_firewall
-export -f configure_filevault
-export -f configure_ssh
-export -f configure_user_accounts
-export -f show_security_status
+# Functions are available when sourced, no need to export in Zsh

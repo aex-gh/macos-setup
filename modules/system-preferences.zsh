@@ -285,14 +285,5 @@ show_system_preferences() {
     echo "  Enabled: $(defaults read com.apple.assistant.support 'Assistant Enabled' 2>/dev/null || echo 'default')"
 }
 
-# Export functions
-export -f configure_system_preferences
-export -f configure_dock
-export -f configure_display
-export -f configure_audio
-export -f configure_notifications
-export -f configure_screensaver
-export -f configure_siri
-export -f configure_apple_intelligence
-export -f configure_wallpaper
-export -f show_system_preferences
+
+# Functions are available when sourced, no need to export in Zsh
