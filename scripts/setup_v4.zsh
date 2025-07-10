@@ -41,6 +41,99 @@ typeset -g SKIP_SECURITY=false
 typeset -g DOTFILES_REPO=""
 
 # =============================================================================
+# MODULE TOGGLE CONFIGURATION
+# =============================================================================
+# Enable/disable specific modules by changing these values to true/false
+# This allows you to customise the setup process for different use cases
+
+# Network and system basics (DNS, timezone, system preferences)
+typeset -g ENABLE_NETWORK_CONFIG=true
+
+# Hardware-specific power management optimisations
+typeset -g ENABLE_POWER_MANAGEMENT=true
+
+# Comprehensive security configuration (firewall, FileVault, etc.)
+typeset -g ENABLE_SECURITY_CONFIG=true
+
+# Sharing services (SSH, Screen Sharing) based on Mac type
+typeset -g ENABLE_SHARING_SERVICES=true
+
+# Mail, Calendar, and Contacts app configuration
+typeset -g ENABLE_MAIL_CALENDAR=true
+
+# System dependencies (Xcode CLI, Homebrew, GNU Stow)
+typeset -g ENABLE_SYSTEM_DEPENDENCIES=true
+
+# Dotfiles management (backup, clone, stow application)
+typeset -g ENABLE_DOTFILES_MANAGEMENT=true
+
+# =============================================================================
+# MODULE VALIDATION AND DEPENDENCIES
+# =============================================================================
+
+validate_module_configuration() {
+    info "Validating module configuration..."
+    
+    local warnings=()
+    local errors=()
+    
+    # Check for dependency conflicts
+    if [[ $ENABLE_DOTFILES_MANAGEMENT == true && $ENABLE_SYSTEM_DEPENDENCIES == false ]]; then
+        warnings+=("Dotfiles management requires system dependencies (GNU Stow)")
+    fi
+    
+    # Check for security conflicts
+    if [[ $SKIP_SECURITY == true && $ENABLE_SECURITY_CONFIG == true ]]; then
+        warnings+=("--skip-security flag conflicts with ENABLE_SECURITY_CONFIG=true")
+    fi
+    
+    # Logical consistency checks
+    if [[ $ENABLE_SECURITY_CONFIG == false && $ENABLE_SHARING_SERVICES == true ]]; then
+        warnings+=("Enabling sharing services without security configuration may be unsafe")
+    fi
+    
+    # Check if all modules are disabled
+    if [[ $ENABLE_NETWORK_CONFIG == false && $ENABLE_POWER_MANAGEMENT == false && 
+          $ENABLE_SECURITY_CONFIG == false && $ENABLE_SHARING_SERVICES == false && 
+          $ENABLE_MAIL_CALENDAR == false && $ENABLE_SYSTEM_DEPENDENCIES == false && 
+          $ENABLE_DOTFILES_MANAGEMENT == false ]]; then
+        errors+=("All modules are disabled - nothing to do")
+    fi
+    
+    # Report warnings
+    if [[ ${#warnings[@]} -gt 0 ]]; then
+        warn "Configuration warnings detected:"
+        for warning in "${warnings[@]}"; do
+            warn "  • $warning"
+        done
+        echo
+    fi
+    
+    # Report errors
+    if [[ ${#errors[@]} -gt 0 ]]; then
+        error "Configuration errors detected:"
+        for err in "${errors[@]}"; do
+            error "  • $err"
+        done
+        echo
+        return 1
+    fi
+    
+    # Show enabled modules summary
+    info "Enabled modules:"
+    [[ $ENABLE_NETWORK_CONFIG == true ]] && info "  ✓ Network and system basics"
+    [[ $ENABLE_POWER_MANAGEMENT == true ]] && info "  ✓ Power management"
+    [[ $ENABLE_SECURITY_CONFIG == true ]] && info "  ✓ Security configuration"
+    [[ $ENABLE_SHARING_SERVICES == true ]] && info "  ✓ Sharing services"
+    [[ $ENABLE_MAIL_CALENDAR == true ]] && info "  ✓ Mail, Calendar, Contacts"
+    [[ $ENABLE_SYSTEM_DEPENDENCIES == true ]] && info "  ✓ System dependencies"
+    [[ $ENABLE_DOTFILES_MANAGEMENT == true ]] && info "  ✓ Dotfiles management"
+    
+    success "Module configuration validated"
+    return 0
+}
+
+# =============================================================================
 # ENHANCED LOGGING SYSTEM
 # =============================================================================
 
@@ -964,6 +1057,19 @@ ${BOLD}OPTIONS${RESET}
     --dotfiles-repo URL    Specify dotfiles repository URL
     -h, --help             Show this help message
 
+${BOLD}MODULE CONFIGURATION${RESET}
+    You can enable/disable specific modules by editing the script:
+    
+    ENABLE_NETWORK_CONFIG      - Network and system basics (DNS, timezone)
+    ENABLE_POWER_MANAGEMENT    - Hardware-specific power optimisations
+    ENABLE_SECURITY_CONFIG     - Comprehensive security (firewall, FileVault)
+    ENABLE_SHARING_SERVICES    - SSH, Screen Sharing based on Mac type
+    ENABLE_MAIL_CALENDAR       - Mail, Calendar, Contacts configuration
+    ENABLE_SYSTEM_DEPENDENCIES - Xcode CLI, Homebrew, GNU Stow
+    ENABLE_DOTFILES_MANAGEMENT - Backup, clone, stow dotfiles
+    
+    Set any to 'false' to disable that module.
+
 ${BOLD}EXAMPLES${RESET}
     # Interactive setup
     $SCRIPT_NAME
@@ -976,6 +1082,19 @@ ${BOLD}EXAMPLES${RESET}
 
     # With custom dotfiles repository
     $SCRIPT_NAME --dotfiles-repo https://github.com/user/dotfiles.git
+
+${BOLD}COMMON CONFIGURATIONS${RESET}
+    # Basic system setup (no dotfiles)
+    Set ENABLE_DOTFILES_MANAGEMENT=false
+    
+    # Security-focused setup
+    Set ENABLE_MAIL_CALENDAR=false, ENABLE_SHARING_SERVICES=false
+    
+    # Development machine (all modules)
+    Use default settings (all enabled)
+    
+    # Server setup
+    Set ENABLE_MAIL_CALENDAR=false, keep ENABLE_SHARING_SERVICES=true
 
 ${BOLD}ARCHITECTURE${RESET}
     This script uses a hybrid approach:
@@ -1083,6 +1202,9 @@ main() {
     validate_system_requirements
     detect_mac_model
     
+    # Validate module configuration
+    validate_module_configuration || exit 1
+    
     # Show architecture summary
     print_architecture_summary
     
@@ -1106,21 +1228,64 @@ main() {
     info "Starting configuration process..."
     
     # Phase 1: System Configuration
-    configure_network_and_system_basics
-    configure_enhanced_power_management
-    configure_comprehensive_security
-    configure_sharing_services
-    configure_mail_calendar_contacts
+    if [[ $ENABLE_NETWORK_CONFIG == true ]]; then
+        configure_network_and_system_basics
+    else
+        info "Skipping network and system basics configuration (disabled)"
+    fi
+    
+    if [[ $ENABLE_POWER_MANAGEMENT == true ]]; then
+        configure_enhanced_power_management
+    else
+        info "Skipping power management configuration (disabled)"
+    fi
+    
+    if [[ $ENABLE_SECURITY_CONFIG == true ]]; then
+        configure_comprehensive_security
+    else
+        info "Skipping security configuration (disabled)"
+    fi
+    
+    if [[ $ENABLE_SHARING_SERVICES == true ]]; then
+        configure_sharing_services
+    else
+        info "Skipping sharing services configuration (disabled)"
+    fi
+    
+    if [[ $ENABLE_MAIL_CALENDAR == true ]]; then
+        configure_mail_calendar_contacts
+    else
+        info "Skipping Mail, Calendar, and Contacts configuration (disabled)"
+    fi
     
     # Phase 2: Dependencies and Tools
-    install_system_dependencies
+    if [[ $ENABLE_SYSTEM_DEPENDENCIES == true ]]; then
+        install_system_dependencies
+    else
+        info "Skipping system dependencies installation (disabled)"
+    fi
     
     # Phase 3: Dotfiles Management
-    backup_existing_configs
-    clone_or_update_dotfiles
-    apply_dotfiles_with_stow
-    verify_application_configs
-    setup_shell_integration
+    if [[ $ENABLE_DOTFILES_MANAGEMENT == true ]]; then
+        # Check dependency
+        if [[ $ENABLE_SYSTEM_DEPENDENCIES == false ]]; then
+            warn "Dotfiles management requires system dependencies - GNU Stow may not be available"
+            if [[ $INTERACTIVE == true ]]; then
+                if ! confirm "Continue with dotfiles setup anyway?"; then
+                    info "Skipping dotfiles management"
+                    return 0
+                fi
+            fi
+        fi
+        
+        backup_existing_configs
+        clone_or_update_dotfiles
+        apply_dotfiles_with_stow
+        verify_application_configs
+        setup_shell_integration
+    else
+        info "Skipping dotfiles management (disabled)"
+    fi
     
     # Final cleanup
     if [[ $DRY_RUN == false ]]; then
