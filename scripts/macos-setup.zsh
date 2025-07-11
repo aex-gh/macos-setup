@@ -3,7 +3,7 @@
 # ABOUTME: Combines opt4's clean architecture with v3's advanced power management and security features
 
 # Ensure PATH includes standard Unix command locations FIRST
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"
 
 # macOS Setup Script v4.0 - Best of Both Worlds
 # Hybrid approach: System-level configs + External dotfiles via Stow
@@ -31,9 +31,9 @@ readonly SCRIPT_VERSION="4.0"
 readonly REQUIRED_MACOS_VERSION="14.0"
 
 # Timing and logging
-typeset -g SETUP_START_TIME=$(date +%s)
-typeset -g LOG_FILE="/tmp/${SCRIPT_NAME%.zsh}-$(date +%Y%m%d-%H%M%S).log"
-typeset -g BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
+typeset -g SETUP_START_TIME=$(/bin/date +%s)
+typeset -g LOG_FILE="/tmp/${SCRIPT_NAME%.zsh}-$(/bin/date +%Y%m%d-%H%M%S).log"
+typeset -g BACKUP_DIR="$HOME/.config-backup-$(/bin/date +%Y%m%d-%H%M%S)"
 typeset -g TEMP_DIR=$(mktemp -d)
 
 # Configuration flags with defaults
@@ -156,7 +156,7 @@ log() {
     local level=$1
     shift
     local message="$*"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp=$(/bin/date '+%Y-%m-%d %H:%M:%S')
     
     # Always log to file
     echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
@@ -211,10 +211,10 @@ cleanup() {
     jobs -p | xargs -r kill 2>/dev/null || true
     
     # Remove temporary files
-    [[ -d $TEMP_DIR ]] && rm -rf "$TEMP_DIR"
+    [[ -d $TEMP_DIR ]] && /bin/rm -rf "$TEMP_DIR"
     
     # Log completion
-    local total_time=$(($(date +%s) - SETUP_START_TIME))
+    local total_time=$(($(/bin/date +%s) - SETUP_START_TIME))
     local minutes=$((total_time / 60))
     local seconds=$((total_time % 60))
     
@@ -944,14 +944,14 @@ backup_existing_configs() {
     for file in $files_to_backup; do
         if [[ -f "$file" && ! -L "$file" ]]; then
             cp "$file" "$BACKUP_DIR/" 2>/dev/null || true
-            debug "Backed up: $(basename $file)"
+            debug "Backed up: $(/usr/bin/basename $file)"
         fi
     done
     
     # Backup application config directories
     for app_name path in ${(kv)APP_CONFIG_PATHS}; do
         if [[ -d "$path" && ! -L "$path" ]]; then
-            cp -r "$path" "$BACKUP_DIR/$(basename $path)-$app_name" 2>/dev/null || true
+            cp -r "$path" "$BACKUP_DIR/$(/usr/bin/basename $path)-$app_name" 2>/dev/null || true
             debug "Backed up: $app_name config directory"
         fi
     done
@@ -964,7 +964,7 @@ clone_or_update_dotfiles() {
     
     # Use provided repo or prompt for one
     if [[ -z $DOTFILES_REPO ]]; then
-        if [[ $INTERACTIVE == true ]]; then
+        if [[ $INTERACTIVE == true && $DRY_RUN == false ]]; then
             echo -n "Enter your dotfiles repository URL (or press Enter to skip): "
             read DOTFILES_REPO
         fi
@@ -1061,7 +1061,7 @@ verify_application_configs() {
     for app_name path in ${(kv)APP_CONFIG_PATHS}; do
         if [[ -e "$path" ]]; then
             if [[ -L "$path" ]]; then
-                local target=$(readlink "$path")
+                local target=$(/usr/bin/readlink "$path")
                 success "$app_name config linked: $path -> $target"
             else
                 info "$app_name config exists (not symlinked): $path"
@@ -1101,7 +1101,7 @@ setup_shell_integration() {
 # =============================================================================
 
 usage() {
-    cat << EOF
+    /bin/cat << EOF
 ${BOLD}macOS Setup Script v${SCRIPT_VERSION}${RESET}
 
 ${BOLD}USAGE${RESET}
@@ -1209,7 +1209,7 @@ parse_command_line_arguments() {
 # =============================================================================
 
 print_setup_header() {
-    cat << 'EOF'
+    /bin/cat << 'EOF'
 
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
@@ -1222,7 +1222,7 @@ EOF
 }
 
 print_architecture_summary() {
-    cat << EOF
+    /bin/cat << EOF
 
 ${CYAN}╔══════════════════════════════════════════════════════════════════╗
 ║                    ARCHITECTURE DECISIONS                       ║
@@ -1351,7 +1351,7 @@ main() {
     fi
     
     # Success message
-    cat << EOF
+    /bin/cat << EOF
 
 ${GREEN}╔══════════════════════════════════════════════════════════════════╗
 ║                        SETUP COMPLETED!                         ║
