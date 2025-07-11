@@ -2,6 +2,9 @@
 # ABOUTME: Enhanced macOS Setup Script v4.0 - Hybrid system configuration with comprehensive power and security management
 # ABOUTME: Combines opt4's clean architecture with v3's advanced power management and security features
 
+# Ensure PATH includes standard Unix command locations FIRST
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
 # macOS Setup Script v4.0 - Best of Both Worlds
 # Hybrid approach: System-level configs + External dotfiles via Stow
 # Author: System Administrator  
@@ -15,7 +18,7 @@ setopt EXTENDED_GLOB NULL_GLOB HIST_VERIFY PROMPT_SUBST
 autoload -U colors && colors
 autoload -U add-zsh-hook
 
-# Strict error handling
+# Strict error handling (moved after PATH is set)
 set -euo pipefail
 
 # =============================================================================
