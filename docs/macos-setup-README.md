@@ -1,19 +1,21 @@
 # macOS Setup
 
-A configuration-driven macOS setup system that follows DRY principles and provides clean, maintainable automation for Mac systems.
+A comprehensive, modular macOS setup system that provides automated configuration for Apple Silicon Macs. Features hardware-specific optimisations, security hardening, and integrated dotfiles management with support for development, productivity, and server environments.
 
 ## Directory Structure
 
 ```
 macos-setup/
-├── brewfiles/          # Categorized Homebrew package lists
+├── brewfiles/          # Categorised Homebrew package lists
 │   ├── base.brewfile    # Essential tools and modern CLI replacements
 │   ├── dev.brewfile     # Development tools and programming languages
 │   ├── productivity.brewfile  # Office and communication tools
-│   └── utilities.brewfile     # System utilities and specialized tools
+│   ├── server.brewfile  # Server and infrastructure tools
+│   └── utilities.brewfile     # System utilities and specialised tools
 ├── configs/            # Configuration files organised by category
 │   ├── applications/    # Application-specific configurations
 │   ├── assets/         # Configuration assets and resources
+│   ├── claude/         # Claude Code MCP server configurations
 │   ├── development/    # Development environment configurations
 │   ├── services/       # System service configurations
 │   ├── system/         # System-level configurations
@@ -25,16 +27,21 @@ macos-setup/
 │   ├── karabiner/     # Karabiner Elements keyboard configuration
 │   ├── macos/         # macOS-specific scripts and system defaults
 │   ├── ssh/           # SSH client configuration
+│   ├── zed/           # Zed editor configuration
 │   └── zsh/           # Zsh shell configuration and customisation
 ├── scripts/            # Setup and utility scripts
-│   ├── setup_v4.zsh   # Enhanced macOS setup script (hybrid approach)
-│   ├── homebrew-manager.rb    # Idempotent package management
-│   ├── brew-cleanup-safe.zsh  # Safe cleanup operations
-│   ├── brew-state-tracker.zsh # Package state monitoring
-│   └── install-homebrew-idempotent.zsh # Enhanced installation
+│   ├── macos-setup.zsh # Main macOS setup script with module toggles
+│   ├── craftbrew.zsh   # Idempotent Homebrew package management
+│   ├── install-claude-code.zsh # Claude Code installation with MCP servers
+│   └── macos-security-hardening.zsh # Security hardening script
 ├── docs/               # Documentation
-│   └── README.md      # This file
-└── .stowrc            # GNU Stow configuration
+│   ├── claude-code-README.md   # Claude Code setup documentation
+│   ├── macos-setup-README.md   # Main setup documentation
+│   └── zed-README.md          # Zed editor configuration documentation
+├── .stowrc            # GNU Stow configuration
+├── CLAUDE.md          # Project instructions for Claude Code
+├── CLAUDE.local.md    # Local project instructions
+└── DefaultKeyBinding.dict # macOS key bindings
 ```
 
 ## Quick Start
@@ -48,46 +55,52 @@ macos-setup/
 2. **Run the main setup script:**
    ```bash
    cd scripts
-   ./setup_v4.zsh
+   ./macos-setup.zsh
    ```
    
-   This enhanced setup script (v4) provides:
+   This comprehensive setup script (v4.0) provides:
    - Auto-detection of Mac model (Mac Studio, MacBook Pro, Mac Mini, etc.)
    - Hardware-specific power management optimisation
    - Comprehensive security configuration
    - Automated dotfiles management with GNU Stow
    - Module-based configuration (can enable/disable features)
+   - Idempotent Homebrew package management
 
 3. **Optional: Run security hardening:**
    ```bash
-   ./security-hardening.zsh
+   ./macos-security-hardening.zsh
+   ```
+
+4. **Optional: Install Claude Code with MCP servers:**
+   ```bash
+   ./install-claude-code.zsh
    ```
 
 ### Script Options
 
-The `setup_v4.zsh` script supports several command-line options:
+The `macos-setup.zsh` script supports several command-line options:
 
 ```bash
 # Interactive setup (default)
-./setup_v4.zsh
+./macos-setup.zsh
 
 # Non-interactive setup with defaults
-./setup_v4.zsh --non-interactive
+./macos-setup.zsh --non-interactive
 
 # Dry run to preview changes
-./setup_v4.zsh --dry-run --verbose
+./macos-setup.zsh --dry-run --verbose
 
 # Skip security configuration
-./setup_v4.zsh --skip-security
+./macos-setup.zsh --skip-security
 
 # Specify custom dotfiles repository
-./setup_v4.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
+./macos-setup.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
 ```
 
 ## What Each Script Does
 
-### setup_v4.zsh (Main Setup Script)
-The enhanced hybrid setup script that combines the best of all previous versions:
+### macos-setup.zsh (Main Setup Script)
+The comprehensive modular setup script (v4.0) that provides:
 - **Auto-detects Mac model** (Mac Studio, MacBook Pro, Mac Mini, iMac, Mac Pro)
 - **Module-based architecture** - Enable/disable specific features:
   - Network and system basics (DNS, timezone)
@@ -110,7 +123,7 @@ The enhanced hybrid setup script that combines the best of all previous versions
 - **Dotfiles integration** via GNU Stow
 - **Non-destructive** - Creates backups before changes
 
-### security-hardening.zsh
+### macos-security-hardening.zsh
 Additional security hardening beyond the base setup:
 - Hardens firewall configuration
 - Secures SSH daemon settings
@@ -124,40 +137,33 @@ Additional security hardening beyond the base setup:
 
 ### Homebrew Management Scripts
 
-#### homebrew-manager.rb
-Core Ruby script for idempotent package management:
+#### craftbrew.zsh
+Comprehensive idempotent Homebrew package management:
 - Install packages from multiple Brewfiles
 - Show differences between desired and actual state
 - Sync packages (install missing, remove extra)
 - Create backups of current state
 - Protected packages feature
-
-#### brew-cleanup-safe.zsh
-Safe wrapper for cleanup operations:
 - Dry-run mode to preview changes
 - Automatic backup before cleanup
 - Rollback capability
 - Force mode for automated workflows
 - Comprehensive logging
 
-#### brew-state-tracker.zsh
-Monitor and track package state changes:
-- Show current package status
-- Detailed difference reporting
-- Health check functionality
-- Change monitoring
-- State persistence
+### Claude Code Integration
 
-#### install-homebrew-idempotent.zsh
-Enhanced installation with cleanup integration:
-- System-based package installation
-- Full sync with backup
-- Dry-run support
-- Verbose logging
+#### install-claude-code.zsh
+Comprehensive Claude Code installation with MCP server setup:
+- Install Claude Code CLI tool
+- Configure essential MCP servers (FileSystem, Sequential Thinking, etc.)
+- Optional MCP servers with API key setup (GitHub, Brave Search, PostgreSQL)
+- Automated dotfiles integration
+- Environment variable configuration
+- Configuration template management
 
 ## Configuration
 
-### Module Configuration in setup_v4.zsh
+### Module Configuration in macos-setup.zsh
 
 The main setup script uses module toggles at the top of the file to control which features are enabled:
 
@@ -196,7 +202,7 @@ Development environment tools:
 - Programming languages (Python, Node, Go, Rust, Ruby, Java)
 - Development tools (Docker, Kubernetes, Terraform)
 - Version control (Git tools, GitHub CLI)
-- IDEs and editors (VS Code, JetBrains, Sublime Text)
+- IDEs and editors (VS Code, JetBrains, Sublime Text, Zed)
 - Database tools (PostgreSQL, MySQL, Redis)
 
 ### productivity.brewfile
@@ -207,8 +213,16 @@ Office and productivity applications:
 - Creative tools (Figma, Sketch, Canva)
 - Media applications (Spotify, VLC, IINA)
 
+### server.brewfile
+Server and infrastructure tools:
+- Web servers (nginx, apache)
+- Database servers (PostgreSQL, MySQL, Redis)
+- Monitoring tools (Prometheus, Grafana)
+- Infrastructure as code (Terraform, Ansible)
+- Container orchestration (Docker, Kubernetes)
+
 ### utilities.brewfile
-System utilities and specialized tools:
+System utilities and specialised tools:
 - Network tools (nmap, Wireshark, netcat)
 - Media processing (ffmpeg, ImageMagick)
 - System monitoring (Stats, iStat Menus)
@@ -217,85 +231,43 @@ System utilities and specialized tools:
 
 ## Idempotent Homebrew Management
 
-This project now includes advanced idempotent Homebrew management tools that ensure your system packages stay in sync with your Brewfiles and can automatically clean up unwanted packages.
+This project includes advanced idempotent Homebrew management through the `craftbrew.zsh` script that ensures your system packages stay in sync with your Brewfiles and can automatically clean up unwanted packages.
 
-### New Idempotent Tools
+### Craftbrew Tool
 
-#### homebrew-manager.rb
-The core Ruby script that provides idempotent package management:
+#### craftbrew.zsh
+Comprehensive idempotent package management:
 
 ```bash
 # Install packages from Brewfiles
-./scripts/homebrew-manager.rb --install --brewfiles base.brewfile,dev.brewfile
+./scripts/craftbrew.zsh --install --brewfiles base.brewfile,dev.brewfile
 
 # Show differences between desired and actual state
-./scripts/homebrew-manager.rb --diff
+./scripts/craftbrew.zsh --diff
 
 # Sync packages (install missing, remove extra)
-./scripts/homebrew-manager.rb --sync --verbose
+./scripts/craftbrew.zsh --sync --verbose
 
 # Remove packages not in any Brewfile
-./scripts/homebrew-manager.rb --cleanup --dry-run
+./scripts/craftbrew.zsh --cleanup --dry-run
 
 # Create backup of current state
-./scripts/homebrew-manager.rb --backup --output backup.yaml
-```
+./scripts/craftbrew.zsh --backup --output backup.yaml
 
-#### brew-cleanup-safe.zsh
-Safe wrapper for cleanup operations with comprehensive safety features:
-
-```bash
 # Dry run to see what would be removed
-./scripts/brew-cleanup-safe.zsh --dry-run
+./scripts/craftbrew.zsh --dry-run
 
 # Safe cleanup with backup
-./scripts/brew-cleanup-safe.zsh --backup
+./scripts/craftbrew.zsh --backup
 
 # Force cleanup without prompts
-./scripts/brew-cleanup-safe.zsh --force
+./scripts/craftbrew.zsh --force
 
 # Use specific Brewfiles
-./scripts/brew-cleanup-safe.zsh --brewfiles base.brewfile,dev.brewfile
+./scripts/craftbrew.zsh --brewfiles base.brewfile,dev.brewfile
 
 # Rollback to previous state
-./scripts/brew-cleanup-safe.zsh --rollback
-```
-
-#### brew-state-tracker.zsh
-Monitor and track package state changes:
-
-```bash
-# Show current status
-./scripts/brew-state-tracker.zsh status
-
-# Show detailed differences
-./scripts/brew-state-tracker.zsh diff
-
-# Perform health check
-./scripts/brew-state-tracker.zsh health
-
-# Generate detailed report
-./scripts/brew-state-tracker.zsh report --output report.txt
-
-# Monitor for changes
-./scripts/brew-state-tracker.zsh monitor --verbose
-```
-
-#### install-homebrew-idempotent.zsh
-Enhanced installation script with idempotent cleanup integration:
-
-```bash
-# Install base packages only
-./scripts/install-homebrew-idempotent.zsh --system base
-
-# Full sync with backup
-./scripts/install-homebrew-idempotent.zsh --sync --backup
-
-# Development environment with cleanup
-./scripts/install-homebrew-idempotent.zsh --system dev --cleanup --verbose
-
-# Dry run to see what would change
-./scripts/install-homebrew-idempotent.zsh --dry-run --system all
+./scripts/craftbrew.zsh --rollback
 ```
 
 ### Safety Features
@@ -315,6 +287,7 @@ The idempotent tools support different system types:
 - **base**: Essential tools for all systems
 - **dev**: Development environment packages
 - **productivity**: Office and productivity applications
+- **server**: Server and infrastructure tools
 - **utilities**: System utilities and specialised tools
 - **all**: All available packages
 
@@ -340,11 +313,12 @@ The system includes automated dotfiles management using GNU Stow. Dotfiles are o
 - **karabiner**: Karabiner Elements keyboard configuration
 - **macos**: macOS-specific scripts and system defaults
 - **ssh**: SSH client configuration
+- **zed**: Zed editor configuration
 - **zsh**: Zsh shell configuration and customisation
 
 ### Automated Setup
 
-Dotfiles are automatically configured when you run `all-systems.zsh`. The script:
+Dotfiles are automatically configured when you run `macos-setup.zsh`. The script:
 
 1. Installs GNU Stow via Homebrew
 2. Uses the `.stowrc` configuration file for settings
@@ -353,7 +327,7 @@ Dotfiles are automatically configured when you run `all-systems.zsh`. The script
 
 ### Manual Dotfiles Management
 
-The dotfiles are managed automatically by the `setup_v4.zsh` script using GNU Stow. However, you can also manage them manually:
+The dotfiles are managed automatically by the `macos-setup.zsh` script using GNU Stow. However, you can also manage them manually:
 
 ```bash
 # Navigate to the dotfiles directory
@@ -375,7 +349,7 @@ To add new dotfiles to the system:
 
 1. Create a new package directory in `dotfiles/`
 2. Place your configuration files in the appropriate structure
-3. Use the setup script to apply: `./scripts/setup_v4.zsh --dotfiles-repo /path/to/your/dotfiles`
+3. Use the setup script to apply: `./scripts/macos-setup.zsh --dotfiles-repo /path/to/your/dotfiles`
 4. Or manually stow: `cd dotfiles && stow <package_name>`
 
 ## Usage Examples
@@ -400,39 +374,39 @@ brew bundle --file=../brewfiles/utilities.brewfile
 #### Idempotent Method (Recommended):
 ```bash
 # Install base tools with cleanup
-./scripts/install-homebrew-idempotent.zsh --system base --cleanup
+./scripts/craftbrew.zsh --brewfiles base.brewfile --cleanup
 
 # Install development environment
-./scripts/install-homebrew-idempotent.zsh --system dev --backup --verbose
+./scripts/craftbrew.zsh --brewfiles dev.brewfile --backup --verbose
 
-# Install productivity tools with state tracking
-./scripts/install-homebrew-idempotent.zsh --system productivity --track
+# Install productivity tools
+./scripts/craftbrew.zsh --brewfiles productivity.brewfile
 
 # Install utilities with dry run first
-./scripts/install-homebrew-idempotent.zsh --system utilities --dry-run
+./scripts/craftbrew.zsh --brewfiles utilities.brewfile --dry-run
 # Then run without --dry-run if satisfied
-./scripts/install-homebrew-idempotent.zsh --system utilities --sync
+./scripts/craftbrew.zsh --brewfiles utilities.brewfile --sync
 
 # Install everything with full safety features
-./scripts/install-homebrew-idempotent.zsh --system all --backup --cleanup --track
+./scripts/craftbrew.zsh --brewfiles base.brewfile,dev.brewfile,productivity.brewfile,server.brewfile,utilities.brewfile --backup --cleanup
 ```
 
 ### Use the main setup script with different options:
 ```bash
 # Full interactive setup
-./scripts/setup_v4.zsh
+./scripts/macos-setup.zsh
 
 # Non-interactive setup with defaults
-./scripts/setup_v4.zsh --non-interactive
+./scripts/macos-setup.zsh --non-interactive
 
 # Dry run to preview changes
-./scripts/setup_v4.zsh --dry-run --verbose
+./scripts/macos-setup.zsh --dry-run --verbose
 
 # Skip security configuration for testing
-./scripts/setup_v4.zsh --skip-security
+./scripts/macos-setup.zsh --skip-security
 
 # Use specific dotfiles repository
-./scripts/setup_v4.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
+./scripts/macos-setup.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
 ```
 
 ## System Requirements
@@ -444,21 +418,23 @@ brew bundle --file=../brewfiles/utilities.brewfile
 
 ## Important Notes
 
-1. **Always run all-systems.zsh first** - it sets up the foundation
+1. **Always run macos-setup.zsh first** - it sets up the foundation
 2. **Review configuration files** - adjust settings for your environment
 3. **Test in non-production** - always test setup scripts before production use
 4. **FileVault** - enable manually through System Settings after setup
 5. **Backup first** - ensure you have backups before running hardening scripts
+6. **Claude Code** - run install-claude-code.zsh for AI development tools
 
 ## Customisation
 
 To customise for your environment:
 
-1. **Edit module toggles** in `scripts/setup_v4.zsh` to enable/disable features
+1. **Edit module toggles** in `scripts/macos-setup.zsh` to enable/disable features
 2. **Modify Brewfiles** in `brewfiles/` to add/remove applications
 3. **Adjust dotfiles** in `dotfiles/` for your preferences
 4. **Update configuration files** in `configs/` for specific applications
 5. **Modify the setup script** directly for custom hardware or requirements
+6. **Configure Claude Code** in `configs/claude/` for MCP server settings
 
 ## Troubleshooting
 

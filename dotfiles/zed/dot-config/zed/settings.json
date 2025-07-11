@@ -100,20 +100,22 @@
     },
     "Shell Script": {
       "format_on_save": "on",
-      "formatter": "external",
-      "external_formatter": {
-        "command": "shfmt",
-        "arguments": ["-i", "2", "-ci", "-sr"]
+      "formatter": {
+        "external": {
+          "command": "shfmt",
+          "arguments": ["-i", "2", "-ci", "-sr"]
+        }
       },
       "language_servers": ["bash-language-server"],
       "tab_size": 2
     },
     "Zsh": {
       "format_on_save": "on",
-      "formatter": "external", 
-      "external_formatter": {
-        "command": "shfmt",
-        "arguments": ["-i", "2", "-ci", "-sr", "-ln", "bash"]
+      "formatter": {
+        "external": {
+          "command": "shfmt",
+          "arguments": ["-i", "2", "-ci", "-sr", "-ln", "bash"]
+        }
       },
       "language_servers": ["bash-language-server"],
       "tab_size": 2
@@ -156,9 +158,21 @@
     "Shell Script": ["*.sh", "*.bash", "*.zsh", "*.fish"],
     "Zsh": ["*.zsh", ".zshrc", ".zprofile", ".zshenv", ".zlogin", ".zlogout"],
     "XML": ["*.plist", "*.xml", "*.xib", "*.storyboard"],
-    "YAML": ["*.yml", "*.yaml", "*.github/workflows/*.yml", "*.github/workflows/*.yaml"],
+    "YAML": [
+      "*.yml",
+      "*.yaml",
+      "*.github/workflows/*.yml",
+      "*.github/workflows/*.yaml"
+    ],
     "TOML": ["*.toml", "Brewfile", "Pipfile"],
-    "Markdown": ["*.md", "*.markdown", "*.mdown", "*.mkd", "*.mkdown", "CLAUDE.md"]
+    "Markdown": [
+      "*.md",
+      "*.markdown",
+      "*.mdown",
+      "*.mkd",
+      "*.mkdown",
+      "CLAUDE.md"
+    ]
   },
   "file_scan_exclusions": [
     "**/.svn",

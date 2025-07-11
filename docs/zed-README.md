@@ -1,6 +1,6 @@
 # Zed Editor Configuration
 
-This package contains enhanced Zed editor configuration optimised for macOS development, particularly shell scripting and system administration.
+This package contains enhanced Zed editor configuration optimised for macOS development, particularly shell scripting and system administration. Part of the comprehensive macOS setup system with integrated dotfiles management.
 
 ## Features
 
@@ -37,6 +37,13 @@ This package contains enhanced Zed editor configuration optimised for macOS deve
 
 ## Installation
 
+### Automatic Installation (Recommended)
+The Zed configuration is automatically installed when you run the main setup script:
+```bash
+./scripts/macos-setup.zsh
+```
+
+### Manual Installation
 1. **Install required tools**:
    ```bash
    brew install shfmt shellcheck
@@ -120,7 +127,25 @@ This configuration builds on the excellent [jellydn/zed-101-setup](https://githu
 ## Project Integration
 
 This zed package integrates with the macos-setup project's dotfiles management system:
-- Located in `/Users/andrew/projects/personal/macos-setup/dotfiles/zed/`
-- Follows the same naming conventions as other dotfiles packages
-- Managed via GNU Stow from the project directory
-- Consistent with claude, git, homebrew, karabiner, macos, ssh, and zsh packages
+- **Location**: `/Users/andrew/projects/personal/macos-setup/dotfiles/zed/`
+- **Management**: Automatically managed via GNU Stow by `macos-setup.zsh`
+- **Consistency**: Follows the same naming conventions as other dotfiles packages
+- **Integration**: Works alongside claude, git, homebrew, karabiner, macos, ssh, and zsh packages
+- **Configuration**: Enhanced for macOS development workflows
+
+## Automatic Setup
+
+When you run the main setup script (`macos-setup.zsh`), the Zed configuration is automatically:
+1. Installed via GNU Stow
+2. Configured with optimal settings for macOS development
+3. Integrated with shell script development tools
+4. Set up with security and performance optimisations
+
+## Development Workflow Integration
+
+This configuration is optimised for the macOS setup project's development workflow:
+- **Shell Scripts**: Enhanced support for `.zsh` files and Homebrew scripts
+- **Configuration Files**: Proper handling of YAML, JSON, and plist files
+- **Security**: Disabled inline completions for sensitive files
+- **Performance**: Optimised file exclusions for faster search
+- **Integration**: Works seamlessly with the project's coding standards

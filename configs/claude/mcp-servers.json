@@ -7,7 +7,20 @@
         "description": "Local file system access - essential for all development work",
         "required": true,
         "env_vars": [],
-        "args": ["{{HOME}}/Documents", "{{HOME}}/Desktop", "{{HOME}}/Downloads", "{{HOME}}/Projects", "{{HOME}}/Developer"]
+        "args": [
+          "{{HOME}}/Documents",
+          "{{HOME}}/Downloads",
+          "{{HOME}}/Projects",
+          "{{HOME}}/Developer"
+        ]
+      },
+      {
+        "name": "craftbrew",
+        "package": "@modelcontextprotocol/server-craftbrew",
+        "description": "Homebrew package manager for macOS",
+        "required": true,
+        "env_vars": [],
+        "args": []
       },
       {
         "name": "sequential-thinking",

@@ -1,8 +1,8 @@
-# Claude Code MCP Setup Guide
+# Claude Code Installation Guide
 
 ## Overview
 
-The `install-claude-code.zsh` script provides a comprehensive setup for Claude Code with full MCP (Model Context Protocol) server configuration. This guide explains how to use the enhanced installation script to set up Claude Code with all essential MCP servers on a new Mac.
+The `install-claude-code.zsh` script provides a comprehensive setup for Claude Code with full MCP (Model Context Protocol) server configuration. This standalone script (v1.0.0) installs Claude Code with all required dependencies and configures essential MCP servers for enhanced AI-powered development on macOS.
 
 ## Quick Start
 
@@ -13,8 +13,10 @@ The `install-claude-code.zsh` script provides a comprehensive setup for Claude C
 
 This installs:
 - Claude Code CLI tool
+- Node.js (if not already installed)
 - Essential MCP servers (FileSystem, Sequential Thinking, Context7, Memory Bank, MarkItDown, Puppeteer, Desktop Commander)
 - Dotfiles configuration (if available)
+- Environment variable configuration
 
 ### Installation with Optional MCP Servers
 ```bash
@@ -103,6 +105,7 @@ Example: `postgresql://user:pass@localhost:5432/mydb`
 - **Location**: `~/.claude/claude_desktop_config.json`
 - **Purpose**: Defines all MCP servers and their configuration
 - **Auto-generated**: Yes, based on installed servers and API keys
+- **Template**: `configs/claude/claude_desktop_config.json.template`
 
 ### Environment Variables
 - **Location**: `~/.zshrc` (automatically appended)
@@ -115,6 +118,7 @@ Example: `postgresql://user:pass@localhost:5432/mydb`
 ### Template Files
 - **MCP Config Template**: `configs/claude/claude_desktop_config.json.template`
 - **Server Definitions**: `configs/claude/mcp-servers.json`
+- **Dotfiles Integration**: `dotfiles/claude/` package for GNU Stow
 
 ## Post-Installation
 
@@ -127,12 +131,12 @@ source ~/.zshrc
 ### Verification
 Check Claude Code installation:
 ```bash
-claude --version
+laude --version
 ```
 
-List installed MCP servers:
+Verify MCP configuration:
 ```bash
-claude mcp list
+cat ~/.claude/claude_desktop_config.json
 ```
 
 ### Using MCP Servers
@@ -140,6 +144,7 @@ Within a Claude Code session:
 - Check MCP status: `/mcp`
 - Configure permissions: `/permissions`
 - List available tools: `/tools`
+- Switch contexts: `/context`
 
 ## Troubleshooting
 
@@ -159,7 +164,7 @@ Force reinstall with:
 ./scripts/install-claude-code.zsh --force
 ```
 
-## Examples
+## Usage Examples
 
 ### Basic Developer Setup
 ```bash
@@ -177,10 +182,35 @@ Force reinstall with:
 ./scripts/install-claude-code.zsh --skip-mcp
 ```
 
-### Dotfiles + MCP (No Optional)
+### Skip Dotfiles Configuration
 ```bash
 ./scripts/install-claude-code.zsh --skip-dotfiles
 ```
+
+### Force Reinstall with Verbose Output
+```bash
+./scripts/install-claude-code.zsh --force --verbose
+```
+
+### Show Version Information
+```bash
+./scripts/install-claude-code.zsh --version
+```
+
+## Integration with macOS Setup
+
+This script integrates with the larger macOS setup system:
+- Can be run standalone or as part of `macos-setup.zsh`
+- Uses the same dotfiles structure (`dotfiles/claude/`)
+- Follows the same configuration patterns
+- Integrates with GNU Stow for configuration management
+
+## Requirements
+
+- macOS 11.0+ (Big Sur)
+- Administrator privileges for Homebrew installation
+- Internet connection for downloading packages
+- Node.js 18+ (automatically installed if missing)
 
 ## Support
 
@@ -188,3 +218,4 @@ For issues or questions:
 1. Check the verbose output: `./scripts/install-claude-code.zsh -v`
 2. Review the Claude Code documentation: https://docs.anthropic.com/en/docs/claude-code
 3. Check MCP documentation: https://docs.anthropic.com/en/docs/claude-code/mcp
+4. Review the project's main documentation: `docs/macos-setup-README.md`
