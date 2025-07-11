@@ -284,20 +284,19 @@ safe_sudo() {
         return 0
     fi
     
+    # Always refresh credentials before any sudo command to be absolutely sure
+    if ! sudo -n true 2>/dev/null; then
+        info "Administrative credentials needed for: $1"
+    else
+        debug "Sudo credentials still valid for: $1"
+    fi
+    sudo -v
+    
     local max_attempts=3
     local attempt=1
     
     while [[ $attempt -le $max_attempts ]]; do
-        debug "Attempting sudo command (attempt $attempt/$max_attempts): $*"
-        
-        # Ensure credentials are fresh
-        if ! sudo -n true 2>/dev/null; then
-            info "Administrative credentials needed for: $1"
-            if ! sudo -v; then
-                error "Failed to obtain administrative credentials"
-                return 1
-            fi
-        fi
+        debug "Executing sudo command (attempt $attempt/$max_attempts): $*"
         
         # Execute the command
         if sudo "$@"; then
@@ -308,7 +307,8 @@ safe_sudo() {
             warn "Sudo command failed (attempt $attempt/$max_attempts): $* (exit code: $exit_code)"
             
             if [[ $attempt -lt $max_attempts ]]; then
-                debug "Retrying in 2 seconds..."
+                debug "Refreshing credentials and retrying in 2 seconds..."
+                sudo -v
                 sleep 2
             fi
             
@@ -1763,18 +1763,25 @@ main() {
             debug "Current sudo timeout: $current_timeout minutes"
         fi
         
-        # Simple keep-alive that doesn't interfere with terminal
+        # Aggressive keep-alive that actively refreshes credentials
         (
             local keepalive_count=0
             while true; do
-                sleep 30  # Refresh every 30 seconds
+                sleep 15  # Check every 15 seconds
                 ((keepalive_count++))
                 
-                if ! sudo -n true 2>/dev/null; then
-                    debug "Sudo keep-alive: credentials expired after $keepalive_count cycles"
-                    break
-                else
+                # Always try to refresh credentials, not just check them
+                if sudo -n true 2>/dev/null; then
                     debug "Sudo keep-alive: cycle $keepalive_count - credentials valid"
+                else
+                    debug "Sudo keep-alive: credentials expired after $keepalive_count cycles, attempting refresh"
+                    # Try to refresh without prompting (will fail silently if not possible)
+                    if ! sudo -n -v 2>/dev/null; then
+                        debug "Sudo keep-alive: unable to refresh credentials non-interactively"
+                        break
+                    else
+                        debug "Sudo keep-alive: credentials refreshed successfully"
+                    fi
                 fi
             done
             debug "Sudo keep-alive process exiting"
