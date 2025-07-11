@@ -497,9 +497,9 @@ configure_comprehensive_security() {
     
     # Enhanced Application Firewall
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
-    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
     sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsigned on
+    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setallowsignedapp on
     
     # Gatekeeper configuration
     sudo spctl --master-enable
