@@ -963,15 +963,22 @@ backup_existing_configs() {
 clone_or_update_dotfiles() {
     info "Managing dotfiles repository..."
 
-    # Check if git is available (check both system and Homebrew locations)
-    if ! command_exists git; then
-        # Double-check common git locations
-        if [[ ! -x "/Library/Developer/CommandLineTools/usr/bin/git" ]] && [[ ! -x "/opt/homebrew/bin/git" ]] && [[ ! -x "/usr/bin/git" ]]; then
-            error "Git is not available. Please install Xcode Command Line Tools first."
-            return 1
-        else
-            warn "Git found but not in PATH. Attempting to use system git..."
-        fi
+    # Determine git command to use
+    local git_cmd=""
+    if command_exists git; then
+        git_cmd="git"
+    elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
+        git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
+        warn "Using system git from Xcode Command Line Tools"
+    elif [[ -x "/opt/homebrew/bin/git" ]]; then
+        git_cmd="/opt/homebrew/bin/git"
+        warn "Using Homebrew git"
+    elif [[ -x "/usr/bin/git" ]]; then
+        git_cmd="/usr/bin/git"
+        warn "Using system git"
+    else
+        error "Git is not available. Please install Xcode Command Line Tools first."
+        return 1
     fi
 
     # Use provided repo or prompt for one
@@ -995,10 +1002,10 @@ clone_or_update_dotfiles() {
     if [[ -d "$DOTFILES_DIR" ]]; then
         info "Dotfiles directory exists, updating..."
         cd "$DOTFILES_DIR"
-        git pull origin main || git pull origin master || warn "Could not update dotfiles"
+        $git_cmd pull origin main || $git_cmd pull origin master || warn "Could not update dotfiles"
     else
         info "Cloning dotfiles repository..."
-        git clone "$DOTFILES_REPO" "$DOTFILES_DIR" || {
+        $git_cmd clone "$DOTFILES_REPO" "$DOTFILES_DIR" || {
             error "Failed to clone dotfiles repository"
             return 1
         }
@@ -1349,7 +1356,7 @@ main() {
         fi
 
         # Additional runtime check for git availability
-        if ! command_exists git; then
+        if ! command_exists git && [[ ! -x "/Library/Developer/CommandLineTools/usr/bin/git" ]] && [[ ! -x "/opt/homebrew/bin/git" ]] && [[ ! -x "/usr/bin/git" ]]; then
             warn "Git is not available. Skipping dotfiles management."
             warn "Please install Xcode Command Line Tools and run the script again."
             return 0
