@@ -262,8 +262,10 @@ refresh_sudo() {
     
     # Check if sudo credentials are still valid
     if ! sudo -n true 2>/dev/null; then
-        debug "Sudo credentials expired, refreshing..."
+        info "Refreshing administrative credentials..."
         sudo -v
+    else
+        debug "Sudo credentials still valid"
     fi
 }
 
@@ -1703,11 +1705,10 @@ main() {
         info "Requesting administrative privileges..."
         sudo -v
         
-        # Keep sudo alive in background with more frequent refresh
-        while true; do 
-            sudo -n true 2>/dev/null
-            sleep 30  # Refresh every 30 seconds instead of 60
-            kill -0 "$$" 2>/dev/null || exit
+        # Simple keep-alive that doesn't interfere with terminal
+        while true; do
+            sleep 45  # Refresh every 45 seconds (sudo timeout is typically 5-15 minutes)
+            sudo -n true 2>/dev/null || break  # Exit if we can't refresh silently
         done &
         BACKGROUND_PIDS+=($!)
         
