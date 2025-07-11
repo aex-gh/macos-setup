@@ -905,16 +905,16 @@ verify_dotfiles_tools() {
         export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
     fi
 
-    # Check for git with multiple fallbacks
+    # Check for git with multiple fallbacks (prefer absolute paths)
     local git_cmd=""
-    if command_exists git; then
-        git_cmd="git"
-    elif [[ -x "/opt/homebrew/bin/git" ]]; then
+    if [[ -x "/opt/homebrew/bin/git" ]]; then
         git_cmd="/opt/homebrew/bin/git"
     elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
         git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
     elif [[ -x "/usr/bin/git" ]]; then
         git_cmd="/usr/bin/git"
+    elif command_exists git; then
+        git_cmd="git"
     else
         error "Git is not available. Please install Xcode Command Line Tools and run the script again."
         return 1
@@ -926,12 +926,12 @@ verify_dotfiles_tools() {
         return 1
     fi
 
-    # Check for stow with multiple fallbacks
+    # Check for stow with multiple fallbacks (prefer absolute paths)
     local stow_cmd=""
-    if command_exists stow; then
-        stow_cmd="stow"
-    elif [[ -x "/opt/homebrew/bin/stow" ]]; then
+    if [[ -x "/opt/homebrew/bin/stow" ]]; then
         stow_cmd="/opt/homebrew/bin/stow"
+    elif command_exists stow; then
+        stow_cmd="stow"
     else
         error "GNU Stow is not available. Please install it with: brew install stow"
         return 1
@@ -1018,8 +1018,23 @@ backup_existing_configs() {
 clone_or_update_dotfiles() {
     info "Managing dotfiles repository..."
 
-    # Use verified git command
-    local git_cmd="${VERIFIED_GIT_CMD:-git}"
+    # Use verified git command with fallback
+    local git_cmd="${VERIFIED_GIT_CMD:-}"
+    if [[ -z "$git_cmd" ]]; then
+        # Fallback verification if environment variable is not set
+        if [[ -x "/opt/homebrew/bin/git" ]]; then
+            git_cmd="/opt/homebrew/bin/git"
+        elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
+            git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
+        elif [[ -x "/usr/bin/git" ]]; then
+            git_cmd="/usr/bin/git"
+        elif command_exists git; then
+            git_cmd="git"
+        else
+            error "Git command not found. Please install Xcode Command Line Tools."
+            return 1
+        fi
+    fi
     debug "Using verified git command: $git_cmd"
 
     # Use provided repo or prompt for one
@@ -1070,15 +1085,26 @@ apply_dotfiles_with_stow() {
         return 0
     fi
 
-    # Use verified stow command
-    local stow_cmd="${VERIFIED_STOW_CMD:-stow}"
+    # Use verified stow command with fallback
+    local stow_cmd="${VERIFIED_STOW_CMD:-}"
+    if [[ -z "$stow_cmd" ]]; then
+        # Fallback verification if environment variable is not set
+        if [[ -x "/opt/homebrew/bin/stow" ]]; then
+            stow_cmd="/opt/homebrew/bin/stow"
+        elif command_exists stow; then
+            stow_cmd="stow"
+        else
+            error "Stow command not found. Please ensure GNU Stow is installed."
+            return 1
+        fi
+    fi
     debug "Using verified stow command: $stow_cmd"
 
     cd "$DOTFILES_DIR"
 
     # Show repository structure
     debug "Dotfiles repository structure:"
-    find . -maxdepth 2 -type d | head -10 | while read dir; do
+    /usr/bin/find . -maxdepth 2 -type d | /usr/bin/head -10 | while read dir; do
         debug "  $dir"
     done
 
