@@ -896,6 +896,61 @@ configure_contacts_settings() {
 # DOTFILES MANAGEMENT (FROM OPT4)
 # =============================================================================
 
+# Verify tools are available for dotfiles management
+verify_dotfiles_tools() {
+    info "Verifying dotfiles management tools..."
+
+    # Refresh PATH to include newly installed tools
+    if [[ -d /opt/homebrew/bin ]]; then
+        export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+    fi
+
+    # Check for git with multiple fallbacks
+    local git_cmd=""
+    if command_exists git; then
+        git_cmd="git"
+    elif [[ -x "/opt/homebrew/bin/git" ]]; then
+        git_cmd="/opt/homebrew/bin/git"
+    elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
+        git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
+    elif [[ -x "/usr/bin/git" ]]; then
+        git_cmd="/usr/bin/git"
+    else
+        error "Git is not available. Please install Xcode Command Line Tools and run the script again."
+        return 1
+    fi
+
+    # Verify git is functional
+    if ! "$git_cmd" --version &>/dev/null; then
+        error "Git is installed but not functional: $git_cmd"
+        return 1
+    fi
+
+    # Check for stow with multiple fallbacks
+    local stow_cmd=""
+    if command_exists stow; then
+        stow_cmd="stow"
+    elif [[ -x "/opt/homebrew/bin/stow" ]]; then
+        stow_cmd="/opt/homebrew/bin/stow"
+    else
+        error "GNU Stow is not available. Please install it with: brew install stow"
+        return 1
+    fi
+
+    # Verify stow is functional
+    if ! "$stow_cmd" --version &>/dev/null; then
+        error "GNU Stow is installed but not functional: $stow_cmd"
+        return 1
+    fi
+
+    # Store verified commands for use in other functions
+    export VERIFIED_GIT_CMD="$git_cmd"
+    export VERIFIED_STOW_CMD="$stow_cmd"
+
+    success "Dotfiles tools verified: git ($git_cmd), stow ($stow_cmd)"
+    return 0
+}
+
 # Application configuration paths
 typeset -A APP_CONFIG_PATHS=(
     [karabiner]="$HOME/.config/karabiner"
@@ -963,24 +1018,9 @@ backup_existing_configs() {
 clone_or_update_dotfiles() {
     info "Managing dotfiles repository..."
 
-    # Determine git command to use
-    local git_cmd=""
-    if command_exists git; then
-        git_cmd="git"
-        debug "Using git from PATH: $git_cmd"
-    elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
-        git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
-        warn "Using system git from Xcode Command Line Tools: $git_cmd"
-    elif [[ -x "/opt/homebrew/bin/git" ]]; then
-        git_cmd="/opt/homebrew/bin/git"
-        warn "Using Homebrew git: $git_cmd"
-    elif [[ -x "/usr/bin/git" ]]; then
-        git_cmd="/usr/bin/git"
-        warn "Using system git: $git_cmd"
-    else
-        error "Git is not available. Please install Xcode Command Line Tools first."
-        return 1
-    fi
+    # Use verified git command
+    local git_cmd="${VERIFIED_GIT_CMD:-git}"
+    debug "Using verified git command: $git_cmd"
 
     # Use provided repo or prompt for one
     if [[ -z $DOTFILES_REPO ]]; then
@@ -1030,6 +1070,10 @@ apply_dotfiles_with_stow() {
         return 0
     fi
 
+    # Use verified stow command
+    local stow_cmd="${VERIFIED_STOW_CMD:-stow}"
+    debug "Using verified stow command: $stow_cmd"
+
     cd "$DOTFILES_DIR"
 
     # Show repository structure
@@ -1039,6 +1083,9 @@ apply_dotfiles_with_stow() {
     done
 
     # Apply each stow package
+    local applied_packages=()
+    local failed_packages=()
+
     for package in $STOW_PACKAGES; do
         if [[ -d "$package" ]]; then
             info "Stowing package: $package"
@@ -1046,33 +1093,44 @@ apply_dotfiles_with_stow() {
             # Remove conflicting files first
             case $package in
                 zsh)
-                    [[ -f "$HOME/.zshrc" ]] && rm "$HOME/.zshrc"
-                    [[ -f "$HOME/.zshenv" ]] && rm "$HOME/.zshenv"
-                    [[ -f "$HOME/.zprofile" ]] && rm "$HOME/.zprofile"
+                    [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]] && rm "$HOME/.zshrc"
+                    [[ -f "$HOME/.zshenv" && ! -L "$HOME/.zshenv" ]] && rm "$HOME/.zshenv"
+                    [[ -f "$HOME/.zprofile" && ! -L "$HOME/.zprofile" ]] && rm "$HOME/.zprofile"
                     ;;
                 git)
-                    [[ -f "$HOME/.gitconfig" ]] && rm "$HOME/.gitconfig"
+                    [[ -f "$HOME/.gitconfig" && ! -L "$HOME/.gitconfig" ]] && rm "$HOME/.gitconfig"
                     ;;
                 vim)
-                    [[ -f "$HOME/.vimrc" ]] && rm "$HOME/.vimrc"
+                    [[ -f "$HOME/.vimrc" && ! -L "$HOME/.vimrc" ]] && rm "$HOME/.vimrc"
                     ;;
                 tmux)
-                    [[ -f "$HOME/.tmux.conf" ]] && rm "$HOME/.tmux.conf"
+                    [[ -f "$HOME/.tmux.conf" && ! -L "$HOME/.tmux.conf" ]] && rm "$HOME/.tmux.conf"
                     ;;
             esac
 
-            # Apply stow package
-            if stow -v "$package" 2>&1; then
+            # Apply stow package with explicit target directory
+            if "$stow_cmd" -v --target="$HOME" "$package" 2>&1; then
                 success "Applied: $package"
+                applied_packages+=("$package")
             else
-                warn "Failed to apply: $package"
+                local exit_code=$?
+                warn "Failed to apply: $package (exit code: $exit_code)"
+                failed_packages+=("$package")
             fi
         else
             debug "Package directory not found: $package"
         fi
     done
 
-    success "Dotfiles applied with stow"
+    # Report results
+    if [[ ${#applied_packages[@]} -gt 0 ]]; then
+        info "Successfully applied packages: ${applied_packages[*]}"
+    fi
+    if [[ ${#failed_packages[@]} -gt 0 ]]; then
+        warn "Failed to apply packages: ${failed_packages[*]}"
+    fi
+
+    success "Dotfiles stow process completed"
 }
 
 verify_application_configs() {
@@ -1109,12 +1167,135 @@ setup_shell_integration() {
     fi
 
     # Source the new configuration in current session
-    if [[ -f "$HOME/.zshenv" ]]; then
-        debug "Sourcing new zsh environment..."
-        source "$HOME/.zshenv" 2>/dev/null || true
+    local configs_sourced=()
+    local configs_failed=()
+
+    # Try to source each configuration file
+    for config_file in "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.zshrc"; do
+        if [[ -f "$config_file" ]]; then
+            debug "Sourcing: $config_file"
+            if source "$config_file" 2>/dev/null; then
+                configs_sourced+=("$(basename "$config_file")")
+            else
+                configs_failed+=("$(basename "$config_file")")
+                warn "Failed to source: $config_file"
+            fi
+        fi
+    done
+
+    # Verify shell configuration
+    if [[ ${#configs_sourced[@]} -gt 0 ]]; then
+        info "Successfully sourced: ${configs_sourced[*]}"
+    fi
+    if [[ ${#configs_failed[@]} -gt 0 ]]; then
+        warn "Failed to source: ${configs_failed[*]}"
+    fi
+
+    # Verify important shell features are working
+    if command -v brew &>/dev/null; then
+        debug "Homebrew is available in shell"
+    else
+        warn "Homebrew not available in shell - PATH may need adjustment"
     fi
 
     success "Shell integration completed"
+}
+
+# Comprehensive verification of final dotfiles state
+verify_final_dotfiles_state() {
+    info "Performing final verification of dotfiles setup..."
+
+    if [[ $DRY_RUN == true ]]; then
+        info "[DRY RUN] Would verify final dotfiles state"
+        return 0
+    fi
+
+    local verification_passed=true
+
+    # Verify dotfiles repository exists and is accessible
+    if [[ -d "$DOTFILES_DIR" ]]; then
+        info "✓ Dotfiles repository exists: $DOTFILES_DIR"
+        
+        # Verify it's a git repository
+        if [[ -d "$DOTFILES_DIR/.git" ]]; then
+            info "✓ Dotfiles repository is a git repository"
+        else
+            warn "⚠ Dotfiles directory is not a git repository"
+            verification_passed=false
+        fi
+    else
+        warn "⚠ Dotfiles repository not found at: $DOTFILES_DIR"
+        verification_passed=false
+    fi
+
+    # Verify key symlinks are created
+    local expected_symlinks=(
+        "$HOME/.zshrc"
+        "$HOME/.zshenv"
+        "$HOME/.gitconfig"
+    )
+
+    for symlink in "${expected_symlinks[@]}"; do
+        if [[ -L "$symlink" ]]; then
+            local target=$(readlink "$symlink")
+            info "✓ Symlink exists: $symlink -> $target"
+        elif [[ -f "$symlink" ]]; then
+            warn "⚠ File exists but is not a symlink: $symlink"
+        else
+            debug "File not found (may be optional): $symlink"
+        fi
+    done
+
+    # Verify application config directories
+    local verified_apps=()
+    local missing_apps=()
+
+    for app_name path in ${(kv)APP_CONFIG_PATHS}; do
+        if [[ -e "$path" ]]; then
+            verified_apps+=("$app_name")
+        else
+            missing_apps+=("$app_name")
+        fi
+    done
+
+    if [[ ${#verified_apps[@]} -gt 0 ]]; then
+        info "✓ Application configs found: ${verified_apps[*]}"
+    fi
+    if [[ ${#missing_apps[@]} -gt 0 ]]; then
+        debug "Application configs not found (may be optional): ${missing_apps[*]}"
+    fi
+
+    # Verify shell integration
+    if [[ "$SHELL" == "/bin/zsh" ]]; then
+        info "✓ Default shell is zsh"
+    else
+        warn "⚠ Default shell is not zsh: $SHELL"
+        verification_passed=false
+    fi
+
+    # Verify tools are still available
+    if command -v "${VERIFIED_GIT_CMD:-git}" &>/dev/null; then
+        info "✓ Git is available: ${VERIFIED_GIT_CMD:-git}"
+    else
+        warn "⚠ Git is not available in current environment"
+        verification_passed=false
+    fi
+
+    if command -v "${VERIFIED_STOW_CMD:-stow}" &>/dev/null; then
+        info "✓ Stow is available: ${VERIFIED_STOW_CMD:-stow}"
+    else
+        warn "⚠ Stow is not available in current environment"
+        verification_passed=false
+    fi
+
+    # Overall verification result
+    if [[ $verification_passed == true ]]; then
+        success "Final dotfiles verification passed"
+        return 0
+    else
+        warn "Final dotfiles verification completed with warnings"
+        return 0  # Don't fail the entire script for verification warnings
+    fi
 }
 
 # =============================================================================
@@ -1344,7 +1525,12 @@ main() {
         info "Skipping system dependencies installation (disabled)"
     fi
 
-    # Phase 3: Dotfiles Management
+    # Final cleanup
+    if [[ $DRY_RUN == false ]]; then
+        sudo dscacheutil -flushcache
+    fi
+
+    # Phase 3: Dotfiles Management (moved to end to ensure all dependencies are available)
     if [[ $ENABLE_DOTFILES_MANAGEMENT == true ]]; then
         # Check dependency
         if [[ $ENABLE_SYSTEM_DEPENDENCIES == false ]]; then
@@ -1357,25 +1543,17 @@ main() {
             fi
         fi
 
-        # Additional runtime check for git availability
-        if ! command_exists git && [[ ! -x "/Library/Developer/CommandLineTools/usr/bin/git" ]] && [[ ! -x "/opt/homebrew/bin/git" ]] && [[ ! -x "/usr/bin/git" ]]; then
-            warn "Git is not available. Skipping dotfiles management."
-            warn "Please install Xcode Command Line Tools and run the script again."
-            return 0
-        fi
+        # Verify tools are available after dependency installation
+        verify_dotfiles_tools || return 1
 
         backup_existing_configs
         clone_or_update_dotfiles
         apply_dotfiles_with_stow
         verify_application_configs
         setup_shell_integration
+        verify_final_dotfiles_state
     else
         info "Skipping dotfiles management (disabled)"
-    fi
-
-    # Final cleanup
-    if [[ $DRY_RUN == false ]]; then
-        sudo dscacheutil -flushcache
     fi
 
     # Success message
