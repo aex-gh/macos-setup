@@ -964,7 +964,7 @@ clone_or_update_dotfiles() {
     
     # Check if git is available
     if ! command_exists git; then
-        error "Git is not available. Please install Xcode Command Line Tools first."
+        warn "Git is not available. Please install Xcode Command Line Tools first."
         return 1
     fi
     
@@ -1340,6 +1340,13 @@ main() {
                     return 0
                 fi
             fi
+        fi
+        
+        # Additional runtime check for git availability
+        if ! command_exists git; then
+            warn "Git is not available. Skipping dotfiles management."
+            warn "Please install Xcode Command Line Tools and run the script again."
+            return 0
         fi
         
         backup_existing_configs
