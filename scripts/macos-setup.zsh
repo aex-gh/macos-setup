@@ -1763,16 +1763,25 @@ main() {
             debug "Current sudo timeout: $current_timeout minutes"
         fi
         
+        # Create a more persistent sudo session by running a harmless command
+        # This helps establish a longer-lasting credential cache
+        sudo -v && sudo true
+        
         # Aggressive keep-alive that actively refreshes credentials
         (
+            # Wait a moment for the main script to get started
+            sleep 5
+            
             local keepalive_count=0
             while true; do
-                sleep 15  # Check every 15 seconds
+                sleep 10  # Check every 10 seconds for more aggressive refresh
                 ((keepalive_count++))
                 
                 # Always try to refresh credentials, not just check them
                 if sudo -n true 2>/dev/null; then
                     debug "Sudo keep-alive: cycle $keepalive_count - credentials valid"
+                    # Proactively refresh even if valid to extend timeout
+                    sudo -n -v 2>/dev/null || true
                 else
                     debug "Sudo keep-alive: credentials expired after $keepalive_count cycles, attempting refresh"
                     # Try to refresh without prompting (will fail silently if not possible)
@@ -1839,7 +1848,10 @@ main() {
 
     # Final cleanup
     if [[ $DRY_RUN == false ]]; then
-        safe_sudo dscacheutil -flushcache
+        # DNS cache flush is not critical, so don't fail the script if it fails
+        if ! safe_sudo dscacheutil -flushcache; then
+            warn "DNS cache flush failed, but continuing..."
+        fi
     fi
 
     # Phase 3: Dotfiles Management (moved to end to ensure all dependencies are available)
