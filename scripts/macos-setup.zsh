@@ -967,15 +967,16 @@ clone_or_update_dotfiles() {
     local git_cmd=""
     if command_exists git; then
         git_cmd="git"
+        debug "Using git from PATH: $git_cmd"
     elif [[ -x "/Library/Developer/CommandLineTools/usr/bin/git" ]]; then
         git_cmd="/Library/Developer/CommandLineTools/usr/bin/git"
-        warn "Using system git from Xcode Command Line Tools"
+        warn "Using system git from Xcode Command Line Tools: $git_cmd"
     elif [[ -x "/opt/homebrew/bin/git" ]]; then
         git_cmd="/opt/homebrew/bin/git"
-        warn "Using Homebrew git"
+        warn "Using Homebrew git: $git_cmd"
     elif [[ -x "/usr/bin/git" ]]; then
         git_cmd="/usr/bin/git"
-        warn "Using system git"
+        warn "Using system git: $git_cmd"
     else
         error "Git is not available. Please install Xcode Command Line Tools first."
         return 1
@@ -1002,13 +1003,14 @@ clone_or_update_dotfiles() {
     if [[ -d "$DOTFILES_DIR" ]]; then
         info "Dotfiles directory exists, updating..."
         cd "$DOTFILES_DIR"
-        $git_cmd pull origin main || $git_cmd pull origin master || warn "Could not update dotfiles"
+        "$git_cmd" pull origin main || "$git_cmd" pull origin master || warn "Could not update dotfiles"
     else
         info "Cloning dotfiles repository..."
-        $git_cmd clone "$DOTFILES_REPO" "$DOTFILES_DIR" || {
+        debug "Executing: $git_cmd clone $DOTFILES_REPO $DOTFILES_DIR"
+        if ! "$git_cmd" clone "$DOTFILES_REPO" "$DOTFILES_DIR"; then
             error "Failed to clone dotfiles repository"
             return 1
-        }
+        fi
         cd "$DOTFILES_DIR"
     fi
 
