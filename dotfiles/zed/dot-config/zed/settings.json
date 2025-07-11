@@ -263,7 +263,7 @@
   "use_autoclose": true,
   "cursor_blink": true,
   "double_click_in_multibuffer": "select",
-  "multi_cursor_modifier": "cmd",
+  "multi_cursor_modifier": "cmd_or_ctrl",
   "redact_private_values": true,
   "seed_search_query_from_cursor": "always",
   "when_closing_with_no_tabs": "platform_default",
