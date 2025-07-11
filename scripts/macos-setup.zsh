@@ -62,7 +62,7 @@ typeset -g ENABLE_SECURITY_CONFIG=true
 # Sharing services (SSH, Screen Sharing) based on Mac type
 typeset -g ENABLE_SHARING_SERVICES=true
 
-# Mail, Calendar, and Contacts app configuration
+# Mail and Calendar app configuration
 typeset -g ENABLE_MAIL_CALENDAR=true
 
 # System dependencies (Xcode CLI, Homebrew, GNU Stow)
@@ -129,7 +129,7 @@ validate_module_configuration() {
     [[ $ENABLE_POWER_MANAGEMENT == true ]] && info "  ✓ Power management"
     [[ $ENABLE_SECURITY_CONFIG == true ]] && info "  ✓ Security configuration"
     [[ $ENABLE_SHARING_SERVICES == true ]] && info "  ✓ Sharing services"
-    [[ $ENABLE_MAIL_CALENDAR == true ]] && info "  ✓ Mail, Calendar, Contacts"
+    [[ $ENABLE_MAIL_CALENDAR == true ]] && info "  ✓ Mail and Calendar"
     [[ $ENABLE_SYSTEM_DEPENDENCIES == true ]] && info "  ✓ System dependencies"
     [[ $ENABLE_DOTFILES_MANAGEMENT == true ]] && info "  ✓ Dotfiles management"
 
@@ -847,14 +847,14 @@ install_system_dependencies() {
 }
 
 # =============================================================================
-# MAIL, CALENDAR AND CONTACTS CONFIGURATION
+# MAIL AND CALENDAR CONFIGURATION
 # =============================================================================
 
-configure_mail_calendar_contacts() {
-    info "Configuring Mail, Calendar, and Contacts..."
+configure_mail_calendar() {
+    info "Configuring Mail and Calendar..."
 
     if [[ $DRY_RUN == true ]]; then
-        info "[DRY RUN] Would configure Mail, Calendar, and Contacts settings"
+        info "[DRY RUN] Would configure Mail and Calendar settings"
         return 0
     fi
 
@@ -864,10 +864,7 @@ configure_mail_calendar_contacts() {
     # Calendar.app configurations
     configure_calendar_settings
 
-    # Contacts.app configurations
-    configure_contacts_settings
-
-    success "Mail, Calendar, and Contacts configuration completed"
+    success "Mail and Calendar configuration completed"
 }
 
 configure_mail_settings() {
@@ -1012,54 +1009,6 @@ configure_calendar_settings() {
     success "Calendar.app settings configured (some settings may be restricted by macOS)"
 }
 
-configure_contacts_settings() {
-    info "Configuring Contacts.app settings..."
-
-    # Helper function to safely write defaults
-    safe_defaults_write() {
-        local domain=$1
-        local key=$2
-        local type=$3
-        local value=$4
-
-        if defaults write "$domain" "$key" "$type" "$value" 2>/dev/null; then
-            debug "Set $domain $key = $value"
-        else
-            debug "Could not set $domain $key (may be restricted in this macOS version)"
-        fi
-    }
-
-    # Display preferences (attempt to set, but don't fail if restricted)
-    safe_defaults_write com.apple.AddressBook ABNameDisplay -int 1
-    safe_defaults_write com.apple.AddressBook ABNameSorting -int 1
-    safe_defaults_write com.apple.AddressBook ABShortNameFormat -int 0
-
-    # Address format (Australian)
-    safe_defaults_write com.apple.AddressBook ABDefaultAddressCountryCode -string "au"
-    safe_defaults_write com.apple.AddressBook ABAutomaticFormatting -bool true
-
-    # Privacy settings
-    safe_defaults_write com.apple.AddressBook ABShowDebugMenu -bool false
-    safe_defaults_write com.apple.AddressBook ABBirthDayVisible -bool true
-
-    # Sync and export
-    safe_defaults_write com.apple.AddressBook ABGroupWindowShown -bool true
-    safe_defaults_write com.apple.AddressBook ABMultiValueEditingEnabled -bool true
-
-    # Integration settings
-    safe_defaults_write com.apple.AddressBook ABMapIntegrationEnabled -bool true
-    safe_defaults_write com.apple.AddressBook ABPhoneFormatting -bool true
-
-    # CardDAV and account settings
-    safe_defaults_write com.apple.AddressBook ABCardDAVSyncingEnabled -bool true
-    safe_defaults_write com.apple.AddressBook ABCardDAVAccountsEnabled -bool true
-
-    # Search and matching
-    safe_defaults_write com.apple.AddressBook ABSearchIncludesNotes -bool true
-    safe_defaults_write com.apple.AddressBook ABFuzzySearchEnabled -bool true
-
-    success "Contacts.app settings configured (some settings may be restricted by macOS)"
-}
 
 # =============================================================================
 # DOTFILES MANAGEMENT (FROM OPT4)
@@ -1597,7 +1546,7 @@ ${BOLD}MODULE CONFIGURATION${RESET}
     ENABLE_POWER_MANAGEMENT    - Hardware-specific power optimisations
     ENABLE_SECURITY_CONFIG     - Comprehensive security (firewall, FileVault)
     ENABLE_SHARING_SERVICES    - SSH, Screen Sharing based on Mac type
-    ENABLE_MAIL_CALENDAR       - Mail, Calendar, Contacts configuration
+    ENABLE_MAIL_CALENDAR       - Mail and Calendar configuration
     ENABLE_SYSTEM_DEPENDENCIES - Xcode CLI, Homebrew, GNU Stow
     ENABLE_DOTFILES_MANAGEMENT - Backup, clone, stow dotfiles
 
@@ -1832,9 +1781,9 @@ main() {
     fi
 
     if [[ $ENABLE_MAIL_CALENDAR == true ]]; then
-        configure_mail_calendar_contacts
+        configure_mail_calendar
     else
-        info "Skipping Mail, Calendar, and Contacts configuration (disabled)"
+        info "Skipping Mail and Calendar configuration (disabled)"
     fi
 
     # Phase 2: Dependencies and Tools
@@ -1892,7 +1841,7 @@ ${GREEN}╔═══════════════════════
 ║                                                                  ║
 ║  ✅ System configuration applied for $MAC_TYPE
 ║  ✅ Enhanced power and security settings configured             ║
-║  ✅ Mail, Calendar, and Contacts configured                     ║
+║  ✅ Mail and Calendar configured                                ║
 ║  ✅ System dependencies installed                               ║
 ║  ✅ Dotfiles applied with GNU Stow                              ║
 ║                                                                  ║
