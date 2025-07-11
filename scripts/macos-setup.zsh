@@ -700,61 +700,89 @@ configure_mail_calendar_contacts() {
 configure_mail_settings() {
     info "Configuring Mail.app settings..."
     
+    # Helper function to safely write defaults (reuse from contacts)
+    safe_defaults_write() {
+        local domain=$1
+        local key=$2
+        local type=$3
+        local value=$4
+        
+        if defaults write "$domain" "$key" "$type" "$value" 2>/dev/null; then
+            debug "Set $domain $key = $value"
+        else
+            debug "Could not set $domain $key (may be restricted in this macOS version)"
+        fi
+    }
+    
     # General Mail preferences
-    defaults write com.apple.mail MailThreadingEnabled -bool true
-    defaults write com.apple.mail ConversationViewSortDescending -bool true
-    defaults write com.apple.mail DisableReplyAnimations -bool true
-    defaults write com.apple.mail DisableSendAnimations -bool true
-    defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
+    safe_defaults_write com.apple.mail MailThreadingEnabled -bool true
+    safe_defaults_write com.apple.mail ConversationViewSortDescending -bool true
+    safe_defaults_write com.apple.mail DisableReplyAnimations -bool true
+    safe_defaults_write com.apple.mail DisableSendAnimations -bool true
+    safe_defaults_write com.apple.mail DisableInlineAttachmentViewing -bool true
     
     # Privacy and security
-    defaults write com.apple.mail DisableURLLoading -bool true
-    defaults write com.apple.mail OptionallyLoadURLsInMessages -bool false
-    defaults write com.apple.mail MessageViewerWebKitLoadExternalImagesAutomatically -bool false
+    safe_defaults_write com.apple.mail DisableURLLoading -bool true
+    safe_defaults_write com.apple.mail OptionallyLoadURLsInMessages -bool false
+    safe_defaults_write com.apple.mail MessageViewerWebKitLoadExternalImagesAutomatically -bool false
     
     # Threading and organisation
-    defaults write com.apple.mail NumberOfSnippetLines -int 0
-    defaults write com.apple.mail ConversationViewSpansMailboxes -bool true
-    defaults write com.apple.mail ConversationViewMarkAllAsRead -bool true
+    safe_defaults_write com.apple.mail NumberOfSnippetLines -int 0
+    safe_defaults_write com.apple.mail ConversationViewSpansMailboxes -bool true
+    safe_defaults_write com.apple.mail ConversationViewMarkAllAsRead -bool true
     
     # Performance optimisations
-    defaults write com.apple.mail IndexDecryptedMessages -bool true
-    defaults write com.apple.mail SuppressDeliveryFailure -bool false
+    safe_defaults_write com.apple.mail IndexDecryptedMessages -bool true
+    safe_defaults_write com.apple.mail SuppressDeliveryFailure -bool false
     
     # Notification settings
-    defaults write com.apple.mail MailSound -string ""
-    defaults write com.apple.mail PlayMailSounds -bool false
+    safe_defaults_write com.apple.mail MailSound -string ""
+    safe_defaults_write com.apple.mail PlayMailSounds -bool false
     
     # Account setup prompts and suggestions
     if confirm "Configure common mail provider settings?"; then
         configure_mail_provider_optimisations
     fi
     
-    success "Mail.app settings configured"
+    success "Mail.app settings configured (some settings may be restricted by macOS)"
 }
 
 configure_mail_provider_optimisations() {
     info "Configuring optimisations for common mail providers..."
     
+    # Helper function to safely write defaults (reuse from above)
+    safe_defaults_write() {
+        local domain=$1
+        local key=$2
+        local type=$3
+        local value=$4
+        
+        if defaults write "$domain" "$key" "$type" "$value" 2>/dev/null; then
+            debug "Set $domain $key = $value"
+        else
+            debug "Could not set $domain $key (may be restricted in this macOS version)"
+        fi
+    }
+    
     # Gmail optimisations
     info "Setting Gmail-friendly defaults..."
-    defaults write com.apple.mail GMAccountUseGmailLabels -bool true
-    defaults write com.apple.mail GMAccountShowGmailLabels -bool false
+    safe_defaults_write com.apple.mail GMAccountUseGmailLabels -bool true
+    safe_defaults_write com.apple.mail GMAccountShowGmailLabels -bool false
     
     # Exchange/Outlook optimisations
     info "Setting Exchange/Outlook-friendly defaults..."
-    defaults write com.apple.mail ExchangeAccountPushChanges -bool true
-    defaults write com.apple.mail ExchangeAccountSyncCalendars -bool true
-    defaults write com.apple.mail ExchangeAccountSyncContacts -bool true
+    safe_defaults_write com.apple.mail ExchangeAccountPushChanges -bool true
+    safe_defaults_write com.apple.mail ExchangeAccountSyncCalendars -bool true
+    safe_defaults_write com.apple.mail ExchangeAccountSyncContacts -bool true
     
     # IMAP optimisations for common providers
-    defaults write com.apple.mail IMAPSSLEnabled -bool true
-    defaults write com.apple.mail SMTPSSLEnabled -bool true
-    defaults write com.apple.mail POP3SSLEnabled -bool true
+    safe_defaults_write com.apple.mail IMAPSSLEnabled -bool true
+    safe_defaults_write com.apple.mail SMTPSSLEnabled -bool true
+    safe_defaults_write com.apple.mail POP3SSLEnabled -bool true
     
     # Server timeouts
-    defaults write com.apple.mail IMAPServerTimeout -int 30
-    defaults write com.apple.mail SMTPServerTimeout -int 30
+    safe_defaults_write com.apple.mail IMAPServerTimeout -int 30
+    safe_defaults_write com.apple.mail SMTPServerTimeout -int 30
     
     debug "Mail provider optimisations applied"
 }
@@ -762,74 +790,102 @@ configure_mail_provider_optimisations() {
 configure_calendar_settings() {
     info "Configuring Calendar.app settings..."
     
+    # Helper function to safely write defaults (reuse from above)
+    safe_defaults_write() {
+        local domain=$1
+        local key=$2
+        local type=$3
+        local value=$4
+        
+        if defaults write "$domain" "$key" "$type" "$value" 2>/dev/null; then
+            debug "Set $domain $key = $value"
+        else
+            debug "Could not set $domain $key (may be restricted in this macOS version)"
+        fi
+    }
+    
     # General calendar preferences
-    defaults write com.apple.iCal "first day of week" -int 1  # Monday
-    defaults write com.apple.iCal "n days of week" -int 7     # Show full week
-    defaults write com.apple.iCal "number of hours displayed" -int 12
-    defaults write com.apple.iCal "first minute of work hours" -int 540  # 9:00 AM
-    defaults write com.apple.iCal "last minute of work hours" -int 1080   # 6:00 PM
+    safe_defaults_write com.apple.iCal "first day of week" -int 1
+    safe_defaults_write com.apple.iCal "n days of week" -int 7
+    safe_defaults_write com.apple.iCal "number of hours displayed" -int 12
+    safe_defaults_write com.apple.iCal "first minute of work hours" -int 540
+    safe_defaults_write com.apple.iCal "last minute of work hours" -int 1080
     
     # Default calendar and time zone
-    defaults write com.apple.iCal "TimeZone support enabled" -bool true
-    defaults write com.apple.iCal "Show time in month view" -bool true
-    defaults write com.apple.iCal "Show heat map in month view" -bool true
+    safe_defaults_write com.apple.iCal "TimeZone support enabled" -bool true
+    safe_defaults_write com.apple.iCal "Show time in month view" -bool true
+    safe_defaults_write com.apple.iCal "Show heat map in month view" -bool true
     
     # Event defaults
-    defaults write com.apple.iCal "Default duration in minutes for new event" -int 60
-    defaults write com.apple.iCal "Default alert times" -array 15  # 15 minutes before
+    safe_defaults_write com.apple.iCal "Default duration in minutes for new event" -int 60
+    safe_defaults_write com.apple.iCal "Default alert times" -array 15
     
     # Privacy and sharing
-    defaults write com.apple.iCal "Show shared calendar messages in notification center" -bool false
-    defaults write com.apple.iCal "Shared calendar messages in notification center" -bool false
+    safe_defaults_write com.apple.iCal "Show shared calendar messages in notification center" -bool false
+    safe_defaults_write com.apple.iCal "Shared calendar messages in notification center" -bool false
     
     # Sync and accounts
-    defaults write com.apple.iCal "CalDAV sharing enabled" -bool true
-    defaults write com.apple.iCal "Enable CalDAV sharing invitations" -bool true
+    safe_defaults_write com.apple.iCal "CalDAV sharing enabled" -bool true
+    safe_defaults_write com.apple.iCal "Enable CalDAV sharing invitations" -bool true
     
     # Australian locale-specific settings
-    defaults write com.apple.iCal "Show week numbers" -bool true
-    defaults write com.apple.iCal "Imperial measurement units" -bool false
+    safe_defaults_write com.apple.iCal "Show week numbers" -bool true
+    safe_defaults_write com.apple.iCal "Imperial measurement units" -bool false
     
     # Integration with other apps
-    defaults write com.apple.iCal "Add automatically detected events" -bool false
-    defaults write com.apple.iCal "Add automatically detected events from Mail" -bool false
+    safe_defaults_write com.apple.iCal "Add automatically detected events" -bool false
+    safe_defaults_write com.apple.iCal "Add automatically detected events from Mail" -bool false
     
-    success "Calendar.app settings configured"
+    success "Calendar.app settings configured (some settings may be restricted by macOS)"
 }
 
 configure_contacts_settings() {
     info "Configuring Contacts.app settings..."
     
-    # Display preferences
-    defaults write com.apple.AddressBook ABNameDisplay -int 1  # First, Last
-    defaults write com.apple.AddressBook ABNameSorting -int 1  # Sort by last name
-    defaults write com.apple.AddressBook ABShortNameFormat -int 0  # First name first
+    # Helper function to safely write defaults
+    safe_defaults_write() {
+        local domain=$1
+        local key=$2
+        local type=$3
+        local value=$4
+        
+        if defaults write "$domain" "$key" "$type" "$value" 2>/dev/null; then
+            debug "Set $domain $key = $value"
+        else
+            debug "Could not set $domain $key (may be restricted in this macOS version)"
+        fi
+    }
+    
+    # Display preferences (attempt to set, but don't fail if restricted)
+    safe_defaults_write com.apple.AddressBook ABNameDisplay -int 1
+    safe_defaults_write com.apple.AddressBook ABNameSorting -int 1
+    safe_defaults_write com.apple.AddressBook ABShortNameFormat -int 0
     
     # Address format (Australian)
-    defaults write com.apple.AddressBook ABDefaultAddressCountryCode -string "au"
-    defaults write com.apple.AddressBook ABAutomaticFormatting -bool true
+    safe_defaults_write com.apple.AddressBook ABDefaultAddressCountryCode -string "au"
+    safe_defaults_write com.apple.AddressBook ABAutomaticFormatting -bool true
     
     # Privacy settings
-    defaults write com.apple.AddressBook ABShowDebugMenu -bool false
-    defaults write com.apple.AddressBook ABBirthDayVisible -bool true
+    safe_defaults_write com.apple.AddressBook ABShowDebugMenu -bool false
+    safe_defaults_write com.apple.AddressBook ABBirthDayVisible -bool true
     
     # Sync and export
-    defaults write com.apple.AddressBook ABGroupWindowShown -bool true
-    defaults write com.apple.AddressBook ABMultiValueEditingEnabled -bool true
+    safe_defaults_write com.apple.AddressBook ABGroupWindowShown -bool true
+    safe_defaults_write com.apple.AddressBook ABMultiValueEditingEnabled -bool true
     
     # Integration settings
-    defaults write com.apple.AddressBook ABMapIntegrationEnabled -bool true
-    defaults write com.apple.AddressBook ABPhoneFormatting -bool true
+    safe_defaults_write com.apple.AddressBook ABMapIntegrationEnabled -bool true
+    safe_defaults_write com.apple.AddressBook ABPhoneFormatting -bool true
     
     # CardDAV and account settings
-    defaults write com.apple.AddressBook ABCardDAVSyncingEnabled -bool true
-    defaults write com.apple.AddressBook ABCardDAVAccountsEnabled -bool true
+    safe_defaults_write com.apple.AddressBook ABCardDAVSyncingEnabled -bool true
+    safe_defaults_write com.apple.AddressBook ABCardDAVAccountsEnabled -bool true
     
     # Search and matching
-    defaults write com.apple.AddressBook ABSearchIncludesNotes -bool true
-    defaults write com.apple.AddressBook ABFuzzySearchEnabled -bool true
+    safe_defaults_write com.apple.AddressBook ABSearchIncludesNotes -bool true
+    safe_defaults_write com.apple.AddressBook ABFuzzySearchEnabled -bool true
     
-    success "Contacts.app settings configured"
+    success "Contacts.app settings configured (some settings may be restricted by macOS)"
 }
 
 # =============================================================================
