@@ -962,6 +962,12 @@ backup_existing_configs() {
 clone_or_update_dotfiles() {
     info "Managing dotfiles repository..."
     
+    # Check if git is available
+    if ! command_exists git; then
+        error "Git is not available. Please install Xcode Command Line Tools first."
+        return 1
+    fi
+    
     # Use provided repo or prompt for one
     if [[ -z $DOTFILES_REPO ]]; then
         if [[ $INTERACTIVE == true && $DRY_RUN == false ]]; then
