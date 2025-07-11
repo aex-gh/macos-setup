@@ -3,7 +3,8 @@
 # ABOUTME: Combines opt4's clean architecture with v3's advanced power management and security features
 
 # Ensure PATH includes standard Unix command locations FIRST
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"
+# Include Xcode Command Line Tools path for git and other development tools
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Library/Developer/CommandLineTools/usr/bin:$PATH"
 
 # macOS Setup Script v4.0 - Best of Both Worlds
 # Hybrid approach: System-level configs + External dotfiles via Stow
@@ -962,10 +963,15 @@ backup_existing_configs() {
 clone_or_update_dotfiles() {
     info "Managing dotfiles repository..."
 
-    # Check if git is available
+    # Check if git is available (check both system and Homebrew locations)
     if ! command_exists git; then
-        warn "Git is not available. Please install Xcode Command Line Tools first."
-        return 1
+        # Double-check common git locations
+        if [[ ! -x "/Library/Developer/CommandLineTools/usr/bin/git" ]] && [[ ! -x "/opt/homebrew/bin/git" ]] && [[ ! -x "/usr/bin/git" ]]; then
+            error "Git is not available. Please install Xcode Command Line Tools first."
+            return 1
+        else
+            warn "Git found but not in PATH. Attempting to use system git..."
+        fi
     fi
 
     # Use provided repo or prompt for one
