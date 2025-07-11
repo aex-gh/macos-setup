@@ -199,17 +199,25 @@ typeset -a BACKGROUND_PIDS=()
 cleanup() {
     local exit_code=$?
 
-    debug "Performing cleanup..."
+    debug "Performing final cleanup (exit code: $exit_code)..."
 
-    # Kill background processes
-    for pid in $BACKGROUND_PIDS; do
-        if kill -0 "$pid" 2>/dev/null; then
-            kill "$pid" 2>/dev/null || true
-        fi
-    done
+    # Only kill background processes on script exit, not during normal execution
+    if [[ $exit_code -ne 0 ]] || [[ ${SCRIPT_EXITING:-false} == true ]]; then
+        debug "Script is exiting, killing background processes..."
+        
+        # Kill background processes
+        for pid in $BACKGROUND_PIDS; do
+            if kill -0 "$pid" 2>/dev/null; then
+                debug "Killing background process: $pid"
+                kill "$pid" 2>/dev/null || true
+            fi
+        done
 
-    # Kill sudo keep-alive if running
-    jobs -p | xargs -r kill 2>/dev/null || true
+        # Kill sudo keep-alive if running
+        jobs -p | xargs -r kill 2>/dev/null || true
+    else
+        debug "Script continuing normally, preserving background processes"
+    fi
 
     # Remove temporary files
     [[ -d $TEMP_DIR ]] && /bin/rm -rf "$TEMP_DIR"
@@ -267,6 +275,49 @@ refresh_sudo() {
     else
         debug "Sudo credentials still valid"
     fi
+}
+
+# Bulletproof sudo wrapper function
+safe_sudo() {
+    if [[ $DRY_RUN == true ]]; then
+        info "[DRY RUN] Would execute: sudo $*"
+        return 0
+    fi
+    
+    local max_attempts=3
+    local attempt=1
+    
+    while [[ $attempt -le $max_attempts ]]; do
+        debug "Attempting sudo command (attempt $attempt/$max_attempts): $*"
+        
+        # Ensure credentials are fresh
+        if ! sudo -n true 2>/dev/null; then
+            info "Administrative credentials needed for: $1"
+            if ! sudo -v; then
+                error "Failed to obtain administrative credentials"
+                return 1
+            fi
+        fi
+        
+        # Execute the command
+        if sudo "$@"; then
+            debug "Sudo command succeeded: $*"
+            return 0
+        else
+            local exit_code=$?
+            warn "Sudo command failed (attempt $attempt/$max_attempts): $* (exit code: $exit_code)"
+            
+            if [[ $attempt -lt $max_attempts ]]; then
+                debug "Retrying in 2 seconds..."
+                sleep 2
+            fi
+            
+            ((attempt++))
+        fi
+    done
+    
+    error "Sudo command failed after $max_attempts attempts: $*"
+    return 1
 }
 
 # Version comparison utility
@@ -762,9 +813,8 @@ install_system_dependencies() {
         done
         echo
 
-        # Refresh sudo credentials before accepting license
-        refresh_sudo
-        sudo xcodebuild -license accept
+        # Accept Xcode license with safe sudo wrapper
+        safe_sudo xcodebuild -license accept
         success "Xcode Command Line Tools installed"
     else
         info "Xcode Command Line Tools already installed"
@@ -1714,10 +1764,21 @@ main() {
         fi
         
         # Simple keep-alive that doesn't interfere with terminal
-        while true; do
-            sleep 30  # Refresh every 30 seconds
-            sudo -n true 2>/dev/null || break  # Exit if we can't refresh silently
-        done &
+        (
+            local keepalive_count=0
+            while true; do
+                sleep 30  # Refresh every 30 seconds
+                ((keepalive_count++))
+                
+                if ! sudo -n true 2>/dev/null; then
+                    debug "Sudo keep-alive: credentials expired after $keepalive_count cycles"
+                    break
+                else
+                    debug "Sudo keep-alive: cycle $keepalive_count - credentials valid"
+                fi
+            done
+            debug "Sudo keep-alive process exiting"
+        ) &
         BACKGROUND_PIDS+=($!)
         
         debug "Sudo keep-alive process started (PID: $!)"
@@ -1771,8 +1832,7 @@ main() {
 
     # Final cleanup
     if [[ $DRY_RUN == false ]]; then
-        refresh_sudo
-        sudo dscacheutil -flushcache
+        safe_sudo dscacheutil -flushcache
     fi
 
     # Phase 3: Dotfiles Management (moved to end to ensure all dependencies are available)
@@ -1832,11 +1892,15 @@ EOF
     if [[ $DRY_RUN == false && $INTERACTIVE == true ]]; then
         if confirm "Restart now to complete setup?"; then
             info "Restarting system..."
-            sudo shutdown -r now
+            SCRIPT_EXITING=true
+            safe_sudo shutdown -r now
         else
             info "Setup complete. Please restart when convenient."
         fi
     fi
+    
+    # Mark script as exiting for cleanup function
+    SCRIPT_EXITING=true
 }
 
 # Execute main function if script is run directly
