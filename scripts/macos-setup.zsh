@@ -254,6 +254,19 @@ trap 'error_handler $LINENO' ERR
 
 command_exists() { command -v "$1" &> /dev/null; }
 
+# Ensure sudo credentials are fresh
+refresh_sudo() {
+    if [[ $DRY_RUN == true ]]; then
+        return 0
+    fi
+    
+    # Check if sudo credentials are still valid
+    if ! sudo -n true 2>/dev/null; then
+        debug "Sudo credentials expired, refreshing..."
+        sudo -v
+    fi
+}
+
 # Version comparison utility
 is_version_gte() {
     [ "$1" = "$(echo -e "$1\\n$2" | sort -V | tail -n1)" ]
@@ -566,15 +579,117 @@ configure_network_and_system_basics() {
     # Set DNS to Cloudflare + Google
     local primary_service=$(networksetup -listnetworkserviceorder | awk -F') ' '/\\(1\\)/ {print $2}')
     if [[ -n $primary_service ]]; then
-        sudo networksetup -setdnsservers "$primary_service" 1.1.1.1 8.8.8.8
-        success "DNS servers configured"
+        if sudo networksetup -setdnsservers "$primary_service" 1.1.1.1 8.8.8.8; then
+            success "DNS servers configured"
+        else
+            warn "Failed to configure DNS servers"
+        fi
+    else
+        warn "Could not determine primary network service for DNS configuration"
     fi
 
-    # Set timezone
-    sudo systemsetup -settimezone "Australia/Adelaide"
-    sudo systemsetup -setusingnetworktime on
+    # Set timezone with error handling
+    configure_timezone_safely
 
     success "Network and system basics configured"
+}
+
+# Safely configure timezone with fallbacks and error handling
+configure_timezone_safely() {
+    local target_timezone="Australia/Adelaide"
+    
+    info "Configuring timezone to $target_timezone..."
+    
+    # Check current timezone
+    local current_timezone=$(sudo systemsetup -gettimezone 2>/dev/null | awk -F': ' '{print $2}')
+    if [[ "$current_timezone" == "$target_timezone" ]]; then
+        info "Timezone already set to $target_timezone"
+        return 0
+    fi
+    
+    # Try primary method: systemsetup
+    if configure_timezone_systemsetup "$target_timezone"; then
+        success "Timezone configured using systemsetup"
+        return 0
+    fi
+    
+    # Try fallback method: user defaults
+    if configure_timezone_defaults "$target_timezone"; then
+        success "Timezone configured using user defaults"
+        return 0
+    fi
+    
+    # If all methods fail, provide manual instructions
+    warn "Automatic timezone configuration failed"
+    info "Please set timezone manually:"
+    info "  System Preferences → General → Date & Time → Set time zone automatically"
+    info "  Or manually select: $target_timezone"
+    
+    return 1
+}
+
+# Primary timezone configuration method
+configure_timezone_systemsetup() {
+    local timezone=$1
+    
+    debug "Attempting timezone configuration with systemsetup..."
+    
+    # First, verify the timezone is valid
+    if ! sudo systemsetup -listtimezones 2>/dev/null | grep -q "^$timezone$"; then
+        warn "Timezone '$timezone' not found in system timezone list"
+        return 1
+    fi
+    
+    # Try to set timezone with timeout to prevent hanging
+    local temp_output=$(mktemp)
+    
+    # Set timezone (suppress stderr to avoid cluttering output with internal errors)
+    if timeout 30 sudo systemsetup -settimezone "$timezone" 2>"$temp_output"; then
+        debug "Timezone set successfully"
+        
+        # Try to enable network time
+        if timeout 30 sudo systemsetup -setusingnetworktime on 2>/dev/null; then
+            debug "Network time enabled"
+        else
+            warn "Could not enable network time synchronization"
+        fi
+        
+        rm -f "$temp_output"
+        return 0
+    else
+        local exit_code=$?
+        debug "systemsetup failed with exit code: $exit_code"
+        
+        # Check if the error output contains specific error information
+        if [[ -s "$temp_output" ]]; then
+            debug "systemsetup error output: $(cat "$temp_output")"
+        fi
+        
+        rm -f "$temp_output"
+        return 1
+    fi
+}
+
+# Fallback timezone configuration method using user defaults
+configure_timezone_defaults() {
+    local timezone=$1
+    
+    debug "Attempting timezone configuration with user defaults..."
+    
+    # Set timezone for the current user
+    if defaults write NSGlobalDomain AppleICUDateFormatStrings -dict-add "1" "$timezone" 2>/dev/null; then
+        debug "User timezone preference set"
+        
+        # Try to set system timezone via launchctl if available
+        if sudo launchctl setenv TZ "$timezone" 2>/dev/null; then
+            debug "System timezone environment variable set"
+        fi
+        
+        return 0
+    else
+        debug "User defaults timezone configuration failed"
+        return 1
+    fi
 }
 
 # =============================================================================
@@ -1192,6 +1307,15 @@ setup_shell_integration() {
         success "Default shell changed to zsh"
     fi
 
+    # Verify Homebrew is available before sourcing configs
+    local homebrew_before=false
+    if command -v brew &>/dev/null; then
+        homebrew_before=true
+        debug "Homebrew available before sourcing configs: $(command -v brew)"
+    else
+        debug "Homebrew not available before sourcing configs"
+    fi
+
     # Source the new configuration in current session
     local configs_sourced=()
     local configs_failed=()
@@ -1217,14 +1341,83 @@ setup_shell_integration() {
         warn "Failed to source: ${configs_failed[*]}"
     fi
 
-    # Verify important shell features are working
+    # Verify Homebrew is available after sourcing configs
+    local homebrew_after=false
     if command -v brew &>/dev/null; then
-        debug "Homebrew is available in shell"
+        homebrew_after=true
+        debug "Homebrew available after sourcing configs: $(command -v brew)"
     else
-        warn "Homebrew not available in shell - PATH may need adjustment"
+        debug "Homebrew not available after sourcing configs"
+    fi
+
+    # Handle Homebrew PATH issues
+    if [[ $homebrew_before == true && $homebrew_after == false ]]; then
+        warn "Homebrew was available before but not after sourcing configs - dotfiles may have overridden PATH"
+        ensure_homebrew_path
+    elif [[ $homebrew_before == false && $homebrew_after == false ]]; then
+        warn "Homebrew not available in shell environment"
+        ensure_homebrew_path
+    elif [[ $homebrew_after == true ]]; then
+        debug "Homebrew is available in shell"
     fi
 
     success "Shell integration completed"
+}
+
+# Ensure Homebrew PATH is available in the current shell
+ensure_homebrew_path() {
+    info "Ensuring Homebrew PATH is available..."
+
+    # Check if Homebrew is installed
+    if [[ -x "/opt/homebrew/bin/brew" ]]; then
+        info "Homebrew found at /opt/homebrew/bin/brew, adding to PATH"
+        
+        # Add Homebrew to current session PATH
+        export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        
+        # Load Homebrew environment
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        
+        # Verify it's now available
+        if command -v brew &>/dev/null; then
+            success "Homebrew PATH restored: $(command -v brew)"
+            
+            # Provide guidance for permanent fix
+            info "To fix this permanently, ensure your dotfiles include Homebrew PATH setup:"
+            info "  Add to ~/.zprofile: eval \"\$(/opt/homebrew/bin/brew shellenv)\""
+        else
+            warn "Failed to restore Homebrew PATH"
+            debug_path_information
+        fi
+    else
+        warn "Homebrew not found at expected location: /opt/homebrew/bin/brew"
+        debug_path_information
+    fi
+}
+
+# Debug PATH information for troubleshooting
+debug_path_information() {
+    debug "PATH debugging information:"
+    debug "  Current PATH: $PATH"
+    debug "  Homebrew locations checked:"
+    for location in "/opt/homebrew/bin/brew" "/usr/local/bin/brew"; do
+        if [[ -x "$location" ]]; then
+            debug "    ✓ Found: $location"
+        else
+            debug "    ✗ Not found: $location"
+        fi
+    done
+    debug "  PATH contains Homebrew directories:"
+    if [[ "$PATH" == *"/opt/homebrew/bin"* ]]; then
+        debug "    ✓ /opt/homebrew/bin is in PATH"
+    else
+        debug "    ✗ /opt/homebrew/bin is NOT in PATH"
+    fi
+    if [[ "$PATH" == *"/usr/local/bin"* ]]; then
+        debug "    ✓ /usr/local/bin is in PATH"
+    else
+        debug "    ✗ /usr/local/bin is NOT in PATH"
+    fi
 }
 
 # Comprehensive verification of final dotfiles state
@@ -1505,10 +1698,18 @@ main() {
 
     # Request sudo and keep alive
     if [[ $DRY_RUN == false ]]; then
+        info "Requesting administrative privileges..."
         sudo -v
-        # Keep sudo alive in background
-        while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+        
+        # Keep sudo alive in background with more frequent refresh
+        while true; do 
+            sudo -n true 2>/dev/null
+            sleep 30  # Refresh every 30 seconds instead of 60
+            kill -0 "$$" 2>/dev/null || exit
+        done &
         BACKGROUND_PIDS+=($!)
+        
+        debug "Sudo keep-alive process started (PID: $!)"
     fi
 
     info "Starting configuration process..."
@@ -1527,6 +1728,8 @@ main() {
     fi
 
     if [[ $ENABLE_SECURITY_CONFIG == true ]]; then
+        # Refresh sudo credentials before security operations
+        refresh_sudo
         configure_comprehensive_security
     else
         info "Skipping security configuration (disabled)"
@@ -1568,6 +1771,9 @@ main() {
                 fi
             fi
         fi
+
+        # Refresh sudo credentials before dotfiles operations
+        refresh_sudo
 
         # Verify tools are available after dependency installation
         verify_dotfiles_tools || return 1
