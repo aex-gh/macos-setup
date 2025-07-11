@@ -1702,12 +1702,20 @@ main() {
 
     # Request sudo and keep alive
     if [[ $DRY_RUN == false ]]; then
-        info "Requesting administrative privileges..."
+        info "Requesting administrative privileges for the duration of the script..."
         sudo -v
+        
+        # Try to extend sudo timeout for this session
+        # Note: This requires the timestamp_timeout setting in /etc/sudoers
+        # If this fails, fall back to the keep-alive mechanism
+        local current_timeout=$(sudo -l 2>/dev/null | grep "timestamp_timeout" | awk '{print $NF}' || echo "")
+        if [[ -n "$current_timeout" ]]; then
+            debug "Current sudo timeout: $current_timeout minutes"
+        fi
         
         # Simple keep-alive that doesn't interfere with terminal
         while true; do
-            sleep 45  # Refresh every 45 seconds (sudo timeout is typically 5-15 minutes)
+            sleep 30  # Refresh every 30 seconds
             sudo -n true 2>/dev/null || break  # Exit if we can't refresh silently
         done &
         BACKGROUND_PIDS+=($!)
