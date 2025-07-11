@@ -1,0 +1,88 @@
+{
+  "servers": {
+    "core": [
+      {
+        "name": "filesystem",
+        "package": "@modelcontextprotocol/server-filesystem",
+        "description": "Local file system access - essential for all development work",
+        "required": true,
+        "env_vars": [],
+        "args": ["{{HOME}}/Documents", "{{HOME}}/Desktop", "{{HOME}}/Downloads", "{{HOME}}/Projects", "{{HOME}}/Developer"]
+      },
+      {
+        "name": "sequential-thinking",
+        "package": "@modelcontextprotocol/server-sequential-thinking",
+        "description": "Dynamic problem-solving through thought sequences",
+        "required": true,
+        "env_vars": [],
+        "args": []
+      },
+      {
+        "name": "context7",
+        "package": "@upstash/context7-mcp",
+        "description": "Up-to-date documentation and code examples",
+        "required": true,
+        "env_vars": [],
+        "args": []
+      },
+      {
+        "name": "memory-bank",
+        "package": "@alioshr/memory-bank-mcp",
+        "description": "Persistent memory management for AI agents",
+        "required": true,
+        "env_vars": ["MEMORY_BANK_ROOT"],
+        "args": []
+      },
+      {
+        "name": "markitdown",
+        "package": "@microsoft/markitdown-mcp",
+        "description": "Convert documents to Markdown format",
+        "required": true,
+        "env_vars": [],
+        "args": []
+      },
+      {
+        "name": "puppeteer",
+        "package": "@modelcontextprotocol/server-puppeteer",
+        "description": "Web automation and browser control",
+        "required": true,
+        "env_vars": [],
+        "args": []
+      },
+      {
+        "name": "desktop-commander",
+        "package": "@wonderwhy-er/desktop-commander-mcp",
+        "description": "Terminal control and file system operations",
+        "required": true,
+        "env_vars": [],
+        "args": []
+      }
+    ],
+    "optional": [
+      {
+        "name": "github",
+        "package": "@modelcontextprotocol/server-github",
+        "description": "GitHub integration for repository management",
+        "required": false,
+        "env_vars": ["GITHUB_TOKEN"],
+        "args": []
+      },
+      {
+        "name": "brave-search",
+        "package": "@modelcontextprotocol/server-brave-search",
+        "description": "Web search capabilities using Brave Search API",
+        "required": false,
+        "env_vars": ["BRAVE_API_KEY"],
+        "args": []
+      },
+      {
+        "name": "postgres",
+        "package": "@modelcontextprotocol/server-postgres",
+        "description": "PostgreSQL database integration",
+        "required": false,
+        "env_vars": ["DATABASE_URL"],
+        "args": []
+      }
+    ]
+  }
+}

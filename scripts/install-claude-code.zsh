@@ -13,6 +13,12 @@ readonly DOTFILES_DIR="${SCRIPT_DIR}/../dotfiles"
 # Required Node.js version
 readonly NODE_MIN_VERSION="18"
 
+# MCP server configuration
+readonly MCP_CONFIG_DIR="$HOME/.claude"
+readonly MCP_CONFIG_FILE="$MCP_CONFIG_DIR/claude_desktop_config.json"
+readonly MCP_SERVERS_CONFIG="${SCRIPT_DIR}/../configs/claude/mcp-servers.json"
+readonly MCP_TEMPLATE_FILE="${SCRIPT_DIR}/../configs/claude/claude_desktop_config.json.template"
+
 # Colour codes
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -25,6 +31,8 @@ readonly RESET='\033[0m'
 declare -g VERBOSE=false
 declare -g SKIP_DOTFILES=false
 declare -g FORCE_REINSTALL=false
+declare -g SKIP_MCP=false
+declare -g INSTALL_OPTIONAL_MCP=false
 
 # Logging functions
 log_info() {
@@ -66,6 +74,8 @@ ${BOLD}OPTIONS${RESET}
     -v, --verbose       Enable verbose output
     -f, --force         Force reinstall even if already installed
     -s, --skip-dotfiles Skip dotfiles configuration
+    -m, --skip-mcp      Skip MCP server configuration
+    -o, --optional-mcp  Install optional MCP servers (requires API keys)
     -V, --version       Show version information
 
 ${BOLD}EXAMPLES${RESET}
@@ -77,6 +87,12 @@ ${BOLD}EXAMPLES${RESET}
 
     # Install without dotfiles configuration
     $SCRIPT_NAME --skip-dotfiles
+
+    # Install with optional MCP servers
+    $SCRIPT_NAME --optional-mcp
+
+    # Install Claude Code only (no MCP servers)
+    $SCRIPT_NAME --skip-mcp
 
 ${BOLD}REQUIREMENTS${RESET}
     - macOS 11.0+ (Big Sur)
@@ -270,6 +286,307 @@ configure_dotfiles() {
     fi
 }
 
+# Check if jq is available for JSON processing
+check_jq() {
+    if ! command -v jq &> /dev/null; then
+        log_info "Installing jq for JSON processing..."
+        brew install jq
+    fi
+}
+
+# Read API key from user input
+read_api_key() {
+    local service=$1
+    local var_name=$2
+    local description=$3
+    
+    echo
+    log_info "Setting up $service integration..."
+    echo -e "${YELLOW}$description${RESET}"
+    echo -n "Enter your $service API key (or press Enter to skip): "
+    read -rs api_key
+    echo
+    
+    if [[ -n $api_key ]]; then
+        export "$var_name"="$api_key"
+        log_success "$service API key configured"
+        return 0
+    else
+        log_warn "Skipping $service integration"
+        return 1
+    fi
+}
+
+# Install individual MCP server
+install_mcp_server() {
+    local server_name=$1
+    local package_name=$2
+    local description=$3
+    local required=$4
+    
+    log_info "Installing MCP server: $server_name"
+    log_debug "Package: $package_name"
+    log_debug "Description: $description"
+    
+    # Install the package globally
+    if npm install -g "$package_name"; then
+        log_success "✓ $server_name MCP server installed"
+        return 0
+    else
+        if [[ $required == true ]]; then
+            log_error "Failed to install required MCP server: $server_name"
+            return 1
+        else
+            log_warn "Failed to install optional MCP server: $server_name"
+            return 0
+        fi
+    fi
+}
+
+# Setup environment variables for MCP servers
+setup_mcp_env_vars() {
+    local env_file="$HOME/.zshrc"
+    local temp_env_file="/tmp/mcp_env_vars.tmp"
+    
+    log_info "Setting up MCP environment variables..."
+    
+    # Create temporary file for environment variables
+    cat > "$temp_env_file" << 'EOF'
+
+# =============================================================================
+# Claude Code MCP Server Environment Variables
+# =============================================================================
+
+EOF
+    
+    # Set up memory bank directory
+    local memory_bank_dir="$HOME/.claude/memory-bank"
+    mkdir -p "$memory_bank_dir"
+    echo "export MEMORY_BANK_ROOT=\"$memory_bank_dir\"" >> "$temp_env_file"
+    
+    # Check for optional API keys if requested
+    if [[ $INSTALL_OPTIONAL_MCP == true ]]; then
+        # GitHub Token
+        if read_api_key "GitHub" "GITHUB_TOKEN" "Get your GitHub token from: https://github.com/settings/tokens"; then
+            echo "export GITHUB_TOKEN=\"$GITHUB_TOKEN\"" >> "$temp_env_file"
+        fi
+        
+        # Brave Search API Key
+        if read_api_key "Brave Search" "BRAVE_API_KEY" "Get your Brave Search API key from: https://api.search.brave.com/"; then
+            echo "export BRAVE_API_KEY=\"$BRAVE_API_KEY\"" >> "$temp_env_file"
+        fi
+        
+        # PostgreSQL Database URL
+        echo
+        log_info "Setting up PostgreSQL integration..."
+        echo -e "${YELLOW}Enter your PostgreSQL connection string (e.g., postgresql://user:password@localhost:5432/dbname)${RESET}"
+        echo -n "Database URL (or press Enter to skip): "
+        read -r database_url
+        if [[ -n $database_url ]]; then
+            echo "export DATABASE_URL=\"$database_url\"" >> "$temp_env_file"
+            log_success "PostgreSQL connection configured"
+        else
+            log_warn "Skipping PostgreSQL integration"
+        fi
+    fi
+    
+    # Add closing comment
+    echo >> "$temp_env_file"
+    echo "# End Claude Code MCP Environment Variables" >> "$temp_env_file"
+    echo "# =============================================================================" >> "$temp_env_file"
+    
+    # Append to .zshrc if not already present
+    if ! grep -q "Claude Code MCP Server Environment Variables" "$env_file" 2>/dev/null; then
+        cat "$temp_env_file" >> "$env_file"
+        log_success "Environment variables added to $env_file"
+    else
+        log_info "MCP environment variables already present in $env_file"
+    fi
+    
+    # Clean up temporary file
+    rm -f "$temp_env_file"
+    
+    # Source the environment variables for current session
+    source "$env_file"
+}
+
+# Generate MCP configuration file
+generate_mcp_config() {
+    log_info "Generating MCP server configuration..."
+    
+    # Create MCP config directory
+    mkdir -p "$MCP_CONFIG_DIR"
+    
+    # Check if template exists
+    if [[ ! -f "$MCP_TEMPLATE_FILE" ]]; then
+        log_error "MCP template file not found at $MCP_TEMPLATE_FILE"
+        return 1
+    fi
+    
+    # Read template and substitute variables
+    local config_content=$(cat "$MCP_TEMPLATE_FILE")
+    
+    # Replace template variables
+    config_content=${config_content//\{\{HOME\}\}/$HOME}
+    config_content=${config_content//\{\{GITHUB_TOKEN\}\}/$GITHUB_TOKEN}
+    config_content=${config_content//\{\{BRAVE_API_KEY\}\}/$BRAVE_API_KEY}
+    config_content=${config_content//\{\{DATABASE_URL\}\}/$DATABASE_URL}
+    
+    # Filter out servers without required environment variables
+    local final_config="{"
+    final_config+='"mcpServers": {'
+    
+    local servers_added=false
+    
+    # Always include core servers
+    final_config+='"filesystem": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "'$HOME'/Documents", "'$HOME'/Desktop", "'$HOME'/Downloads", "'$HOME'/Projects", "'$HOME'/Developer"]},'
+    final_config+='"sequential-thinking": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]},'
+    final_config+='"context7": {"command": "npx", "args": ["-y", "@upstash/context7-mcp"]},'
+    final_config+='"memory-bank": {"command": "npx", "args": ["-y", "@alioshr/memory-bank-mcp"], "env": {"MEMORY_BANK_ROOT": "'$HOME'/.claude/memory-bank"}},'
+    final_config+='"markitdown": {"command": "npx", "args": ["-y", "@microsoft/markitdown-mcp"]},'
+    final_config+='"puppeteer": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-puppeteer"]},'
+    final_config+='"desktop-commander": {"command": "npx", "args": ["-y", "@wonderwhy-er/desktop-commander-mcp"]}'
+    
+    # Add optional servers if environment variables are set
+    if [[ -n $GITHUB_TOKEN ]]; then
+        final_config+=', "github": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-github"], "env": {"GITHUB_TOKEN": "'$GITHUB_TOKEN'"}}'
+    fi
+    
+    if [[ -n $BRAVE_API_KEY ]]; then
+        final_config+=', "brave-search": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-brave-search"], "env": {"BRAVE_API_KEY": "'$BRAVE_API_KEY'"}}'
+    fi
+    
+    if [[ -n $DATABASE_URL ]]; then
+        final_config+=', "postgres": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-postgres"], "env": {"DATABASE_URL": "'$DATABASE_URL'"}}'
+    fi
+    
+    final_config+="}}"
+    
+    # Write configuration file
+    echo "$final_config" | jq '.' > "$MCP_CONFIG_FILE"
+    
+    if [[ $? -eq 0 ]]; then
+        log_success "MCP configuration file created at $MCP_CONFIG_FILE"
+        return 0
+    else
+        log_error "Failed to create MCP configuration file"
+        return 1
+    fi
+}
+
+# Install MCP servers
+install_mcp_servers() {
+    if [[ $SKIP_MCP == true ]]; then
+        log_info "Skipping MCP server installation"
+        return 0
+    fi
+    
+    log_info "Installing Claude Code MCP servers..."
+    
+    # Check dependencies
+    check_jq
+    
+    # Setup environment variables
+    setup_mcp_env_vars
+    
+    # Check if MCP servers config exists
+    if [[ ! -f "$MCP_SERVERS_CONFIG" ]]; then
+        log_warn "MCP servers configuration file not found at $MCP_SERVERS_CONFIG"
+        log_info "Installing basic MCP servers..."
+        
+        # Install basic servers manually
+        install_mcp_server "filesystem" "@modelcontextprotocol/server-filesystem" "Local file system access" true
+        install_mcp_server "sequential-thinking" "@modelcontextprotocol/server-sequential-thinking" "Dynamic problem-solving" true
+        install_mcp_server "context7" "@upstash/context7-mcp" "Up-to-date documentation" true
+        install_mcp_server "memory-bank" "@alioshr/memory-bank-mcp" "Persistent memory management" true
+        install_mcp_server "markitdown" "@microsoft/markitdown-mcp" "Document conversion" true
+        install_mcp_server "puppeteer" "@modelcontextprotocol/server-puppeteer" "Web automation" true
+        install_mcp_server "desktop-commander" "@wonderwhy-er/desktop-commander-mcp" "Terminal control" true
+        
+        # Install optional servers if requested
+        if [[ $INSTALL_OPTIONAL_MCP == true ]]; then
+            install_mcp_server "github" "@modelcontextprotocol/server-github" "GitHub integration" false
+            install_mcp_server "brave-search" "@modelcontextprotocol/server-brave-search" "Web search" false
+            install_mcp_server "postgres" "@modelcontextprotocol/server-postgres" "PostgreSQL database" false
+        fi
+    else
+        # Install servers from configuration file
+        log_info "Installing MCP servers from configuration..."
+        
+        # Install core servers
+        local core_servers=$(jq -r '.servers.core[] | .name + " " + .package + " \"" + .description + "\" " + (.required | tostring)' "$MCP_SERVERS_CONFIG")
+        
+        while IFS= read -r server_line; do
+            if [[ -n $server_line ]]; then
+                local server_info=($server_line)
+                local name=${server_info[0]}
+                local package=${server_info[1]}
+                local description=${server_info[2]}
+                local required=${server_info[3]}
+                
+                install_mcp_server "$name" "$package" "$description" "$required"
+            fi
+        done <<< "$core_servers"
+        
+        # Install optional servers if requested
+        if [[ $INSTALL_OPTIONAL_MCP == true ]]; then
+            local optional_servers=$(jq -r '.servers.optional[] | .name + " " + .package + " \"" + .description + "\" " + (.required | tostring)' "$MCP_SERVERS_CONFIG")
+            
+            while IFS= read -r server_line; do
+                if [[ -n $server_line ]]; then
+                    local server_info=($server_line)
+                    local name=${server_info[0]}
+                    local package=${server_info[1]}
+                    local description=${server_info[2]}
+                    local required=${server_info[3]}
+                    
+                    install_mcp_server "$name" "$package" "$description" "$required"
+                fi
+            done <<< "$optional_servers"
+        fi
+    fi
+    
+    # Generate MCP configuration file
+    generate_mcp_config
+    
+    log_success "MCP servers installation completed"
+}
+
+# Verify MCP installation
+verify_mcp_installation() {
+    if [[ $SKIP_MCP == true ]]; then
+        return 0
+    fi
+    
+    log_info "Verifying MCP installation..."
+    
+    # Check if configuration file exists
+    if [[ -f "$MCP_CONFIG_FILE" ]]; then
+        log_success "✓ MCP configuration file found"
+        
+        # Count configured servers
+        local server_count=$(jq '.mcpServers | length' "$MCP_CONFIG_FILE" 2>/dev/null || echo "0")
+        log_info "Configured MCP servers: $server_count"
+        
+        # List configured servers
+        if [[ $VERBOSE == true ]]; then
+            log_info "Configured MCP servers:"
+            jq -r '.mcpServers | keys[]' "$MCP_CONFIG_FILE" 2>/dev/null | while read -r server; do
+                log_info "  - $server"
+            done
+        fi
+    else
+        log_warn "MCP configuration file not found"
+    fi
+    
+    # Check if memory bank directory exists
+    if [[ -d "$HOME/.claude/memory-bank" ]]; then
+        log_success "✓ Memory bank directory created"
+    fi
+    
+    log_success "MCP installation verification completed"
+}
+
 # Display post-installation instructions
 show_instructions() {
     cat << EOF
@@ -286,23 +603,73 @@ ${BOLD}Key Features:${RESET}
   • Integrated with your project files and codebase
   • Supports multiple programming languages
   • Interactive coding conversations
+  • MCP server integrations for enhanced capabilities
 
 ${BOLD}Configuration:${RESET}
   • Global config: ${BLUE}~/.claude/CLAUDE.md${RESET}
   • Project config: Create ${BLUE}CLAUDE.md${RESET} in your project root
+  • MCP config: ${BLUE}~/.claude/claude_desktop_config.json${RESET}
   • Customise Claude behaviour for specific projects
 
+EOF
+
+    # Show MCP information if not skipped
+    if [[ $SKIP_MCP != true ]]; then
+        cat << EOF
+${BOLD}MCP Servers Installed:${RESET}
+  • ${BLUE}FileSystem${RESET}: Local file access and management
+  • ${BLUE}Sequential Thinking${RESET}: Dynamic problem-solving
+  • ${BLUE}Context7${RESET}: Up-to-date documentation
+  • ${BLUE}Memory Bank${RESET}: Persistent memory management
+  • ${BLUE}MarkItDown${RESET}: Document conversion to Markdown
+  • ${BLUE}Puppeteer${RESET}: Web automation and browser control
+  • ${BLUE}Desktop Commander${RESET}: Terminal control and file operations
+
+EOF
+        
+        # Show optional MCP servers if installed
+        if [[ $INSTALL_OPTIONAL_MCP == true ]]; then
+            cat << EOF
+${BOLD}Optional MCP Servers (if API keys provided):${RESET}
+  • ${BLUE}GitHub${RESET}: Repository integration and management
+  • ${BLUE}Brave Search${RESET}: Web search capabilities
+  • ${BLUE}PostgreSQL${RESET}: Database queries and management
+
+EOF
+        fi
+        
+        cat << EOF
+${BOLD}MCP Management:${RESET}
+  • List MCP servers: ${BLUE}claude mcp list${RESET}
+  • Check MCP status: ${BLUE}/mcp${RESET} (within Claude session)
+  • Configure permissions: ${BLUE}/permissions${RESET} (within Claude session)
+  • MCP config file: ${BLUE}~/.claude/claude_desktop_config.json${RESET}
+
+EOF
+    fi
+    
+    cat << EOF
 ${BOLD}Documentation:${RESET}
   • Official docs: ${BLUE}https://docs.anthropic.com/en/docs/claude-code${RESET}
+  • MCP documentation: ${BLUE}https://docs.anthropic.com/en/docs/claude-code/mcp${RESET}
   • Help command: ${BLUE}claude --help${RESET}
   • Version info: ${BLUE}claude --version${RESET}
 
 ${BOLD}Next Steps:${RESET}
   • Try running ${BLUE}claude${RESET} in one of your projects
   • Create project-specific CLAUDE.md files for better context
-  • Explore the interactive features and code generation capabilities
+  • Explore the MCP server capabilities and permissions
+  • Set up additional API keys for optional MCP servers
 
 EOF
+
+    # Show environment restart notice
+    if [[ $SKIP_MCP != true ]]; then
+        cat << EOF
+${YELLOW}${BOLD}⚠️  Important:${RESET} Please restart your terminal or run ${BLUE}source ~/.zshrc${RESET} to load new environment variables.
+
+EOF
+    fi
 }
 
 # Parse command line arguments
@@ -323,6 +690,14 @@ parse_args() {
                 ;;
             -s|--skip-dotfiles)
                 SKIP_DOTFILES=true
+                shift
+                ;;
+            -m|--skip-mcp)
+                SKIP_MCP=true
+                shift
+                ;;
+            -o|--optional-mcp)
+                INSTALL_OPTIONAL_MCP=true
                 shift
                 ;;
             -V|--version)
@@ -364,6 +739,12 @@ main() {
     
     # Configure dotfiles
     configure_dotfiles
+    
+    # Install MCP servers
+    install_mcp_servers
+    
+    # Verify MCP installation
+    verify_mcp_installation
     
     # Show completion message
     log_success "Claude Code installation completed successfully!"

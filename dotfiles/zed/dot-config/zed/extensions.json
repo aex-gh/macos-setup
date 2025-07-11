@@ -1,0 +1,18 @@
+{
+  "installed_extensions": [
+    "rust-lang.rust-analyzer",
+    "tamasfe.even-better-toml",
+    "bash-language-server",
+    "shellcheck",
+    "shfmt",
+    "prettier",
+    "pyright",
+    "ruff",
+    "json-language-server",
+    "yaml-language-server",
+    "xml-language-server",
+    "dockerfile-language-server",
+    "markdownlint"
+  ],
+  "extensions_dir": "~/.local/share/zed/extensions"
+}

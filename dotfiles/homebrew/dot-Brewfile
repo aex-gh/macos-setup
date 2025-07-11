@@ -6,14 +6,5 @@
 # PERSONAL PACKAGES
 #=============================================================================
 
-# Additional development tools
-brew "gh"                     # GitHub CLI
-brew "lazygit"                # Terminal UI for git
-brew "tmux"                   # Terminal multiplexer
-
-# Personal productivity
-cask "alfred"                 # Application launcher
-cask "rectangle"              # Window management
-
 # Note: Core packages are installed during bootstrap
 # This file is for personal additions and maintenance

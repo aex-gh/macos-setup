@@ -39,6 +39,7 @@
 - If the logs are supposed to contain errors, capture and test it.
 - NO EXCEPTIONS POLICY: Under no circumstances should you mark any test type as "not applicable". Every project, regardless of size or complexity, MUST have unit tests, integration tests, AND end-to-end tests. If you believe a test type doesn't apply, you need the human to say exactly "I AUTHORISE YOU TO SKIP WRITING TESTS THIS TIME".
 - NEVER test where it is destructive as this is a working system.
+- Do not verify or test on this system for installation as it is a macos setup tool that is used on new Macs only.
 
 ## We practice TDD. That means:
 

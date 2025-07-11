@@ -5,103 +5,113 @@ A configuration-driven macOS setup system that follows DRY principles and provid
 ## Directory Structure
 
 ```
-macos-setup/simple/
+macos-setup/
 ├── brewfiles/          # Categorized Homebrew package lists
 │   ├── base.brewfile    # Essential tools and modern CLI replacements
 │   ├── dev.brewfile     # Development tools and programming languages
 │   ├── productivity.brewfile  # Office and communication tools
 │   └── utilities.brewfile     # System utilities and specialized tools
-├── dotfiles/           # Dotfiles and configuration packages
-│   └── packages/       # Copied from main packages directory
-├── scripts/            # Setup scripts
-│   ├── config/         # YAML configuration files
-│   │   ├── base.yml    # Base configuration for all systems
-│   │   ├── mac-studio.yml    # Mac Studio specific config
-│   │   ├── macbook-pro.yml   # MacBook Pro specific config
-│   │   └── mac-mini.yml      # Mac Mini specific config
-│   ├── all-systems.zsh       # Common setup for all systems
-│   ├── mac-studio.zsh        # Mac Studio specific setup
-│   ├── macbook-pro.zsh       # MacBook Pro specific setup
-│   ├── mac-mini.zsh          # Mac Mini specific setup
-│   └── security-hardening.zsh # Security hardening script
-├── configs/            # Additional configuration files
-├── modules/            # Reusable configuration modules
-│   ├── network.zsh           # Network configuration
-│   ├── power-management.zsh  # Power management settings
-│   ├── security.zsh          # Security configuration
-│   ├── sharing.zsh           # File sharing and remote access
-│   └── system-preferences.zsh # System preferences
-└── README.md           # This file
+├── configs/            # Configuration files organised by category
+│   ├── applications/    # Application-specific configurations
+│   ├── assets/         # Configuration assets and resources
+│   ├── development/    # Development environment configurations
+│   ├── services/       # System service configurations
+│   ├── system/         # System-level configurations
+│   └── templates/      # Configuration templates
+├── dotfiles/           # Dotfiles packages for GNU Stow
+│   ├── claude/         # Claude Code configuration
+│   ├── git/           # Git configuration with multi-account support
+│   ├── homebrew/      # Homebrew bundle file
+│   ├── karabiner/     # Karabiner Elements keyboard configuration
+│   ├── macos/         # macOS-specific scripts and system defaults
+│   ├── ssh/           # SSH client configuration
+│   └── zsh/           # Zsh shell configuration and customisation
+├── scripts/            # Setup and utility scripts
+│   ├── setup_v4.zsh   # Enhanced macOS setup script (hybrid approach)
+│   ├── homebrew-manager.rb    # Idempotent package management
+│   ├── brew-cleanup-safe.zsh  # Safe cleanup operations
+│   ├── brew-state-tracker.zsh # Package state monitoring
+│   └── install-homebrew-idempotent.zsh # Enhanced installation
+├── docs/               # Documentation
+│   └── README.md      # This file
+└── .stowrc            # GNU Stow configuration
 ```
 
 ## Quick Start
 
-1. **Run the all-systems setup first:**
+1. **Clone the repository:**
    ```bash
-   cd macos-setup/scripts
-   ./all-systems.zsh
+   git clone https://github.com/yourusername/macos-setup.git
+   cd macos-setup
    ```
 
-2. **Run your system-specific setup:**
+2. **Run the main setup script:**
    ```bash
-   # For Mac Studio
-   ./mac-studio.zsh
-
-   # For MacBook Pro
-   ./macbook-pro.zsh
-
-   # For Mac Mini
-   ./mac-mini.zsh
+   cd scripts
+   ./setup_v4.zsh
    ```
+   
+   This enhanced setup script (v4) provides:
+   - Auto-detection of Mac model (Mac Studio, MacBook Pro, Mac Mini, etc.)
+   - Hardware-specific power management optimisation
+   - Comprehensive security configuration
+   - Automated dotfiles management with GNU Stow
+   - Module-based configuration (can enable/disable features)
 
 3. **Optional: Run security hardening:**
    ```bash
    ./security-hardening.zsh
    ```
 
+### Script Options
+
+The `setup_v4.zsh` script supports several command-line options:
+
+```bash
+# Interactive setup (default)
+./setup_v4.zsh
+
+# Non-interactive setup with defaults
+./setup_v4.zsh --non-interactive
+
+# Dry run to preview changes
+./setup_v4.zsh --dry-run --verbose
+
+# Skip security configuration
+./setup_v4.zsh --skip-security
+
+# Specify custom dotfiles repository
+./setup_v4.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
+```
+
 ## What Each Script Does
 
-### all-systems.zsh
-- Updates macOS system
-- Installs Xcode Command Line Tools
-- Installs and configures Homebrew
-- Installs essential applications (1Password, Karabiner Elements)
-- **Configures dotfiles using GNU Stow**
-- Configures remote access (SSH)
-- Enables file sharing (SMB)
-- Configures network discovery (Bonjour)
-- Applies basic security settings
-- Configures time synchronization for Adelaide, Australia
-- Applies common macOS defaults
-- Disables telemetry and analytics
-
-### System-Specific Scripts
-
-#### mac-studio.zsh
-- Configures system for always-on server operation
-- Sets static IP address (192.168.1.100)
-- Disables Wi-Fi, enables Ethernet
-- Optimizes power management (never sleep)
-- Enables comprehensive sharing services
-- Configures for high-performance operation
-
-#### macbook-pro.zsh
-- Configures system for mobile productivity
-- Enables balanced power management
-- Keeps Wi-Fi enabled for mobility
-- Enables Touch ID for sudo
-- Configures for battery optimization
-- Enables full visual effects and user experience
-
-#### mac-mini.zsh
-- Configures system for compact server operation
-- Sets static IP address (192.168.1.101)
-- Disables Wi-Fi, enables Ethernet
-- Optimizes for always-on operation with limited resources
-- Enables server-like functionality
-- Minimizes UI elements for headless operation
+### setup_v4.zsh (Main Setup Script)
+The enhanced hybrid setup script that combines the best of all previous versions:
+- **Auto-detects Mac model** (Mac Studio, MacBook Pro, Mac Mini, iMac, Mac Pro)
+- **Module-based architecture** - Enable/disable specific features:
+  - Network and system basics (DNS, timezone)
+  - Hardware-specific power management
+  - Comprehensive security configuration
+  - Sharing services (SSH, Screen Sharing)
+  - Mail, Calendar, and Contacts setup
+  - System dependencies (Xcode CLI, Homebrew, GNU Stow)
+  - Dotfiles management
+- **Hardware-specific optimisations**:
+  - Mac Studio/Mac Pro: Workstation power profile, always-on operation
+  - Mac Mini: Server power profile, headless optimisation
+  - MacBook Pro: Battery-optimised profile with AC/battery settings
+  - iMac: Desktop power profile balanced for user experience
+- **Security features**:
+  - FileVault encryption setup
+  - Enhanced firewall configuration
+  - Touch ID for sudo (portable Macs)
+  - Secure defaults for Safari and system
+- **Dotfiles integration** via GNU Stow
+- **Non-destructive** - Creates backups before changes
 
 ### security-hardening.zsh
+Additional security hardening beyond the base setup:
 - Hardens firewall configuration
 - Secures SSH daemon settings
 - Tightens system preferences
@@ -112,18 +122,64 @@ macos-setup/simple/
 - Secures browser settings
 - Generates security report
 
-## Configuration Files
+### Homebrew Management Scripts
 
-Each system has a corresponding YAML configuration file in `scripts/config/` that defines:
+#### homebrew-manager.rb
+Core Ruby script for idempotent package management:
+- Install packages from multiple Brewfiles
+- Show differences between desired and actual state
+- Sync packages (install missing, remove extra)
+- Create backups of current state
+- Protected packages feature
 
-- Hardware specifications
-- System naming
-- Network configuration
-- Power management settings
-- Security preferences
-- Sharing services
-- Performance optimizations
-- Application preferences
+#### brew-cleanup-safe.zsh
+Safe wrapper for cleanup operations:
+- Dry-run mode to preview changes
+- Automatic backup before cleanup
+- Rollback capability
+- Force mode for automated workflows
+- Comprehensive logging
+
+#### brew-state-tracker.zsh
+Monitor and track package state changes:
+- Show current package status
+- Detailed difference reporting
+- Health check functionality
+- Change monitoring
+- State persistence
+
+#### install-homebrew-idempotent.zsh
+Enhanced installation with cleanup integration:
+- System-based package installation
+- Full sync with backup
+- Dry-run support
+- Verbose logging
+
+## Configuration
+
+### Module Configuration in setup_v4.zsh
+
+The main setup script uses module toggles at the top of the file to control which features are enabled:
+
+```zsh
+# Enable/disable specific modules by changing these values to true/false
+typeset -g ENABLE_NETWORK_CONFIG=true      # DNS, timezone, system preferences
+typeset -g ENABLE_POWER_MANAGEMENT=true    # Hardware-specific power optimisations
+typeset -g ENABLE_SECURITY_CONFIG=true     # Firewall, FileVault, etc.
+typeset -g ENABLE_SHARING_SERVICES=true    # SSH, Screen Sharing
+typeset -g ENABLE_MAIL_CALENDAR=true       # Mail, Calendar, Contacts apps
+typeset -g ENABLE_SYSTEM_DEPENDENCIES=true # Xcode CLI, Homebrew, GNU Stow
+typeset -g ENABLE_DOTFILES_MANAGEMENT=true # Backup, clone, stow dotfiles
+```
+
+### Configuration Files in configs/
+
+The `configs/` directory contains various configuration files organised by category:
+- **applications/**: Application-specific configurations
+- **development/**: Development environment settings
+- **services/**: System service configurations
+- **system/**: System-level preferences
+- **templates/**: Reusable configuration templates
 
 ## Homebrew Categories
 
@@ -297,18 +353,20 @@ Dotfiles are automatically configured when you run `all-systems.zsh`. The script
 
 ### Manual Dotfiles Management
 
-You can also manage dotfiles manually using the dedicated module:
+The dotfiles are managed automatically by the `setup_v4.zsh` script using GNU Stow. However, you can also manage them manually:
 
 ```bash
-# Interactive dotfiles manager
-./modules/dotfiles.zsh
+# Navigate to the dotfiles directory
+cd dotfiles
 
-# Or source the module and use individual functions
-source modules/dotfiles.zsh
-setup_dotfiles                    # Setup all packages
-stow_package "zsh"                # Stow a specific package
-unstow_package "git"              # Remove a package
-show_dotfiles_status              # Show current status
+# Stow specific packages
+stow zsh git ssh
+
+# Remove packages
+stow -D zsh git ssh
+
+# Re-stow packages (useful after updates)
+stow -R zsh git ssh
 ```
 
 ### Adding New Dotfiles
@@ -316,8 +374,9 @@ show_dotfiles_status              # Show current status
 To add new dotfiles to the system:
 
 1. Create a new package directory in `dotfiles/`
-2. Use the `dot-` prefix for files that should become hidden (e.g., `dot-zshrc` → `~/.zshrc`)
-3. Run `stow_package <package_name>` to activate
+2. Place your configuration files in the appropriate structure
+3. Use the setup script to apply: `./scripts/setup_v4.zsh --dotfiles-repo /path/to/your/dotfiles`
+4. Or manually stow: `cd dotfiles && stow <package_name>`
 
 ## Usage Examples
 
@@ -358,19 +417,22 @@ brew bundle --file=../brewfiles/utilities.brewfile
 ./scripts/install-homebrew-idempotent.zsh --system all --backup --cleanup --track
 ```
 
-### Use individual modules:
+### Use the main setup script with different options:
 ```bash
-# Configure network settings
-source ../modules/network.zsh
-configure_network config/mac-studio.yml
+# Full interactive setup
+./scripts/setup_v4.zsh
 
-# Configure power management
-source ../modules/power-management.zsh
-configure_power_management config/macbook-pro.yml
+# Non-interactive setup with defaults
+./scripts/setup_v4.zsh --non-interactive
 
-# Configure security
-source ../modules/security.zsh
-configure_security config/base.yml
+# Dry run to preview changes
+./scripts/setup_v4.zsh --dry-run --verbose
+
+# Skip security configuration for testing
+./scripts/setup_v4.zsh --skip-security
+
+# Use specific dotfiles repository
+./scripts/setup_v4.zsh --dotfiles-repo https://github.com/yourusername/dotfiles.git
 ```
 
 ## System Requirements
@@ -388,14 +450,15 @@ configure_security config/base.yml
 4. **FileVault** - enable manually through System Settings after setup
 5. **Backup first** - ensure you have backups before running hardening scripts
 
-## Customization
+## Customisation
 
-To customize for your environment:
+To customise for your environment:
 
-1. Edit the YAML configuration files in `scripts/config/`
-2. Modify the Brewfiles to add/remove applications
-3. Adjust modules in `modules/` for different behaviours
-4. Update system-specific scripts as needed
+1. **Edit module toggles** in `scripts/setup_v4.zsh` to enable/disable features
+2. **Modify Brewfiles** in `brewfiles/` to add/remove applications
+3. **Adjust dotfiles** in `dotfiles/` for your preferences
+4. **Update configuration files** in `configs/` for specific applications
+5. **Modify the setup script** directly for custom hardware or requirements
 
 ## Troubleshooting
 
