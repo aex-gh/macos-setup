@@ -760,6 +760,8 @@ install_system_dependencies() {
         done
         echo
 
+        # Refresh sudo credentials before accepting license
+        refresh_sudo
         sudo xcodebuild -license accept
         success "Xcode Command Line Tools installed"
     else
@@ -1736,6 +1738,8 @@ main() {
     fi
 
     if [[ $ENABLE_SHARING_SERVICES == true ]]; then
+        # Refresh sudo credentials before sharing services
+        refresh_sudo
         configure_sharing_services
     else
         info "Skipping sharing services configuration (disabled)"
@@ -1749,6 +1753,8 @@ main() {
 
     # Phase 2: Dependencies and Tools
     if [[ $ENABLE_SYSTEM_DEPENDENCIES == true ]]; then
+        # Refresh sudo credentials before system dependencies installation
+        refresh_sudo
         install_system_dependencies
     else
         info "Skipping system dependencies installation (disabled)"
@@ -1756,6 +1762,7 @@ main() {
 
     # Final cleanup
     if [[ $DRY_RUN == false ]]; then
+        refresh_sudo
         sudo dscacheutil -flushcache
     fi
 
