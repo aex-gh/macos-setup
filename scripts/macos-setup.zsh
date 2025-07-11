@@ -4,7 +4,8 @@
 
 # Ensure PATH includes standard Unix command locations FIRST
 # Include Xcode Command Line Tools path for git and other development tools
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Library/Developer/CommandLineTools/usr/bin:$PATH"
+# Include Homebrew paths for stow and other essential tools
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Library/Developer/CommandLineTools/usr/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
 # macOS Setup Script v4.0 - Best of Both Worlds
 # Hybrid approach: System-level configs + External dotfiles via Stow
