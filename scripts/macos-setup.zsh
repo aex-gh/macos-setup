@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 # ABOUTME: Enhanced macOS Setup Script v4.0 - Hybrid system configuration with comprehensive power and security management
-# ABOUTME: Combines opt4's clean architecture with v3's advanced power management and security features
 
 # Ensure PATH includes standard Unix command locations FIRST
 # Include Xcode Command Line Tools path for git and other development tools
