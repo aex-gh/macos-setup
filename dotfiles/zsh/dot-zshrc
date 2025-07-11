@@ -24,6 +24,15 @@ zstyle :prompt:pure:git:dirty color yellow
 zstyle :prompt:pure:git:stash color magenta
 zstyle ':prompt:pure:prompt:continuation' color yellow
 
+# SSH connection indicator in prompt
+if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+  # Show SSH indicator in prompt
+  zstyle ':prompt:pure:host' color red
+  export PURE_PROMPT_SYMBOL="🌐"
+else
+  export PURE_PROMPT_SYMBOL="❯"
+fi
+
 # Add in zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
@@ -77,6 +86,8 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # Terminal-specific settings
 if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
   export GHOSTTY_RESOURCES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty"
+  # Enable SSH-specific features for Ghostty
+  export GHOSTTY_SSH_INTEGRATION=1
 fi
 
 # ============================================================================
@@ -331,6 +342,76 @@ add-zsh-hook chpwd auto_activate_venv
 auto_activate_venv
 
 # ============================================================================
+# SSH functions and helpers
+# ============================================================================
+
+# Enhanced SSH connection with terminal title updates
+ssh() {
+  # Set terminal title to show SSH connection
+  if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    echo -ne "\033]0;SSH: $1\007"
+  fi
+  
+  # Call the real SSH command
+  command ssh "$@"
+  
+  # Reset terminal title when connection ends
+  if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    echo -ne "\033]0;$(hostname -s)\007"
+  fi
+}
+
+# Quick SSH to personal Mac computers
+mac-mini() {
+  ssh mac-mini
+}
+
+mac-studio() {
+  ssh mac-studio
+}
+
+# SSH connection status check
+ssh-status() {
+  if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+    echo "🌐 SSH connection active"
+    echo "Client: ${SSH_CLIENT:-Unknown}"
+    echo "TTY: ${SSH_TTY:-Unknown}"
+    echo "User: $USER@$(hostname)"
+  else
+    echo "🏠 Local session"
+  fi
+}
+
+# SSH key management helpers
+ssh-keys() {
+  echo "🔑 SSH Keys:"
+  ssh-add -l 2>/dev/null || echo "No keys loaded in SSH agent"
+}
+
+ssh-key-add() {
+  echo "🔑 Adding SSH key via 1Password..."
+  ssh-add --apple-use-keychain "$@"
+}
+
+# SSH config syntax check
+ssh-config-check() {
+  ssh -F ~/.ssh/config -T git@github.com 2>&1 | grep -q "successfully authenticated" && echo "✅ SSH config looks good" || echo "❌ SSH config may have issues"
+}
+
+# Quick SSH tunnel helpers
+ssh-tunnel() {
+  local port=${1:-8080}
+  local host=${2:-localhost}
+  local remote_port=${3:-80}
+  echo "🔗 Creating SSH tunnel: localhost:$port -> $host:$remote_port"
+  ssh -L "$port:$host:$remote_port" "$host" -N
+}
+
+# SSH connection with automatic agent forwarding
+ssh-agent() {
+  ssh -A "$@"
+}
+
 # Quick functions
 # ============================================================================
 
