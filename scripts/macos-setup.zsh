@@ -1799,15 +1799,17 @@ main() {
     if [[ $DRY_RUN == false ]]; then
         # DNS cache flush is not critical, so don't fail the script if it fails
         info "Flushing DNS cache..."
-        # Temporarily disable error exit for non-critical operation
+        # Temporarily disable error handling for non-critical operation
         set +e
+        trap - ERR
         if sudo dscacheutil -flushcache 2>/dev/null; then
             success "DNS cache flushed"
         else
             warn "DNS cache flush failed, but continuing..."
         fi
-        # Re-enable error exit
+        # Re-enable error handling
         set -e
+        trap 'error_handler $LINENO' ERR
     fi
 
     # Phase 3: Dotfiles Management (moved to end to ensure all dependencies are available)
