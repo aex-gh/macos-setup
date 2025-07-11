@@ -118,3 +118,7 @@ When you are using /compact, please focus on our conversation, your most recent 
 
 - @.project-settings/macos-zsh-standards.md
 - @.project-settings/role-macos-specialist.md
+
+# Scope
+
+- Only use macos-setup folder and below

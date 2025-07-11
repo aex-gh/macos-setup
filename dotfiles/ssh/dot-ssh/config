@@ -11,7 +11,7 @@ Host gh-Personal
 	Hostname github.com
 	User git
 	IdentityFile ~/.ssh/gh-Personal.pub
-	IdentitiesOnly yes
+    IdentitiesOnly yes
 
 # Lument GitHub
 Host gh-Lument
@@ -29,15 +29,13 @@ Host gh-Pollex
 
 # Personal Computers
 Host mac-mini
-	HostName 10.20.0.187
+	HostName mac-mini.local
 	User andrew
+	IdentityFile ~/.ssh/Personal-Computers.pub
 	IdentitiesOnly yes
-	IdentityAgent $SSH_AUTH_SOCK
 
 Host mac-studio
-	HostName 10.20.0.10
+	HostName mac-studio.local
 	User andrew
-	IdentityFile ~/.ssh/mac-studio
+	IdentityFile ~/.ssh/Personal-Computers.pub
 	IdentitiesOnly yes
-	UseKeychain yes
-	AddKeysToAgent yes
