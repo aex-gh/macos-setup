@@ -155,3 +155,7 @@ macos-setupv2/
 ## Commit Guidelines
 
 - Make commits without Claude Code signature and Claude Code author
+
+## Memories
+
+- Ensure @docs/todo.md is updated as tasks completed

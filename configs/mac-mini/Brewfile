@@ -1,0 +1,143 @@
+# macOS Setup Automation - Mac Mini Brewfile
+# Lightweight development + multimedia system configuration
+# Extends the common base with media applications and home automation tools
+
+# =============================================================================
+# Include Base Configuration
+# =============================================================================
+# Note: This conceptually extends configs/common/Brewfile
+# In practice, both files will be processed during setup
+
+# =============================================================================
+# Media Applications and Playback
+# =============================================================================
+
+# Video and audio players
+cask "iina"             # Modern media player for macOS
+cask "vlc"              # Universal media player with extensive codec support
+cask "mpv"              # Minimalist command-line media player
+cask "plex"             # Media server and streaming platform
+
+# Audio processing and editing
+cask "audacity"         # Multi-track audio editor
+brew "ffmpeg"           # Multimedia processing framework
+brew "youtube-dl"       # Video download utility
+brew "yt-dlp"           # Enhanced youtube-dl fork
+
+# =============================================================================
+# Web Browsers for Media and Development
+# =============================================================================
+
+cask "zen-browser"      # Privacy-focused browser optimised for media
+cask "google-chrome"    # Chrome for web compatibility testing
+cask "firefox"          # Firefox for development and media streaming
+
+# =============================================================================
+# Remote Access and Connectivity
+# =============================================================================
+
+cask "jump-desktop-connect"  # Remote access server for headless-like operation
+cask "tailscale"        # Secure network mesh for home automation
+cask "vnc-viewer"       # VNC client for device management
+
+# =============================================================================
+# Development Tools (Lightweight)
+# =============================================================================
+
+# Simplified development environment
+brew "tmux"             # Terminal multiplexer
+brew "neovim"           # Modern vim for configuration editing
+cask "visual-studio-code"  # Lightweight IDE for scripts and configuration
+
+# Git and version control
+brew "git-lfs"          # Git Large File Storage for media files
+brew "gh"               # GitHub CLI for repository management
+
+# =============================================================================
+# Home Automation and IoT
+# =============================================================================
+
+# Home automation platforms
+cask "home-assistant"   # Open-source home automation platform
+brew "mosquitto"        # MQTT message broker for IoT devices
+brew "homebridge"       # HomeKit integration for non-compatible devices
+
+# Network and device management
+brew "nmap"             # Network device discovery
+brew "arp-scan"         # ARP packet scanner for device detection
+cask "lan-scan"         # Network scanner with GUI
+
+# =============================================================================
+# File Management and Organisation
+# =============================================================================
+
+# Enhanced file management for media libraries
+cask "hazel"            # Automated file organisation
+cask "name-mangler"     # Batch file renaming utility
+cask "permute-3"        # Media format conversion
+
+# Synchronisation and backup
+brew "rsync"            # File synchronisation
+brew "rclone"           # Cloud storage synchronisation
+cask "chronosync"       # Advanced file synchronisation
+
+# =============================================================================
+# System Monitoring and Maintenance
+# =============================================================================
+
+# Temperature and system monitoring
+cask "macs-fan-control" # Fan speed control and monitoring
+cask "istat-menus"      # Comprehensive system monitoring
+brew "htop"             # Process monitoring
+
+# =============================================================================
+# Productivity and Utilities
+# =============================================================================
+
+# Menu bar and system utilities
+cask "bartender-4"      # Menu bar organisation
+cask "amphetamine"      # Prevent system sleep
+cask "cleanmaster-business"  # System cleanup and optimisation
+
+# Quick access and automation
+cask "alfred"           # Alternative to Raycast with automation features
+cask "keyboard-maestro" # Macro automation and shortcuts
+
+# =============================================================================
+# Entertainment and Social
+# =============================================================================
+
+# Streaming and social media
+cask "spotify"          # Music streaming
+cask "discord"          # Community chat and voice
+cask "zoom"             # Video conferencing
+
+# Gaming (light)
+cask "steam"            # Gaming platform
+mas "Apple Arcade", id: 1496833156  # Apple's gaming subscription
+
+# =============================================================================
+# Mac App Store Applications
+# =============================================================================
+
+mas "Infuse 7", id: 1136220934      # Premium video player
+mas "Airmail 5", id: 1373694562     # Email client
+mas "Home", id: 1110145103          # HomeKit management
+mas "Console", id: 1000000098       # System log viewer
+
+# =============================================================================
+# Image and Photo Management
+# =============================================================================
+
+# Photo organisation and editing
+cask "adobe-lightroom"  # Photo editing and organisation
+cask "imageoptim"       # Image compression and optimisation
+cask "phototheater-pro" # Photo slideshow and presentation
+
+# =============================================================================
+# System Integration and Automation
+# =============================================================================
+
+# AppleScript and automation enhancement
+brew "osascript"        # AppleScript command-line interface
+cask "script-editor"    # Enhanced AppleScript development
