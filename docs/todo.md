@@ -5,27 +5,27 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Phase 1: Foundation Setup (Priority: High)
 
 ### Repository Initialisation
-- [ ] 🔴 Initialise git repository with `git init`
-- [ ] 🔴 Create comprehensive `.gitignore` for macOS and secrets
-- [ ] 🔴 Make initial commit with existing documentation
-- [ ] 🔴 Configure git user settings (name, email, default branch)
+- [x] 🟢 Initialise git repository with `git init`
+- [x] 🟢 Create comprehensive `.gitignore` for macOS and secrets
+- [x] 🟢 Make initial commit with existing documentation
+- [x] 🟢 Configure git user settings (name, email, default branch)
 
 ## Phase 2: Project Structure Creation (Priority: High)
 
 ### Directory Structure
-- [ ] 🔴 Create `configs/` directory
-- [ ] 🔴 Create `configs/common/` for base configurations
-- [ ] 🔴 Create `configs/macbook-pro/` for portable development configs
-- [ ] 🔴 Create `configs/mac-studio/` for server infrastructure configs
-- [ ] 🔴 Create `configs/mac-mini/` for lightweight development configs
-- [ ] 🔴 Create `scripts/` directory for setup and utility scripts
-- [ ] 🔴 Create `dotfiles/` directory for chezmoi source files
-- [ ] 🔴 Create `tests/` directory for BATS test files
+- [x] 🟢 Create `configs/` directory
+- [x] 🟢 Create `configs/common/` for base configurations
+- [x] 🟢 Create `configs/macbook-pro/` for portable development configs
+- [x] 🟢 Create `configs/mac-studio/` for server infrastructure configs
+- [x] 🟢 Create `configs/mac-mini/` for lightweight development configs
+- [x] 🟢 Create `scripts/` directory for setup and utility scripts
+- [x] 🟢 Create `dotfiles/` directory for chezmoi source files
+- [x] 🟢 Create `tests/` directory for BATS test files
 
 ### Documentation Organisation
-- [ ] 🔴 Move existing docs to `docs/` subdirectory
-- [ ] 🔴 Update CLAUDE.md with correct file paths
-- [ ] 🔴 Create `README.md` with project overview and usage
+- [x] 🟢 Move existing docs to `docs/` subdirectory
+- [x] 🟢 Update CLAUDE.md with correct file paths
+- [x] 🟢 Create `README.md` with project overview and usage
 
 ## Phase 3: Core Brewfiles (Priority: High)
 
@@ -186,7 +186,7 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 - [ ] 🔴 Create test data and mock environments
 
 ### Documentation
-- [ ] 🔴 Write comprehensive README with usage instructions
+- [x] 🟢 Write comprehensive README with usage instructions
 - [ ] 🔴 Document troubleshooting procedures
 - [ ] 🔴 Create examples for common customisation scenarios
 - [ ] 🔴 Document security considerations and best practices
@@ -200,9 +200,9 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Milestones
 
 ### Milestone 1: Foundation Complete
-- ✅ Repository initialized with proper structure
-- ✅ Core dependencies installed and verified
-- ✅ Basic project structure created
+- ✅ Repository initialised with proper structure
+- ✅ Phase 1: Repository initialisation completed
+- ✅ Phase 2: Project structure creation completed
 
 ### Milestone 2: Core Functionality
 - ✅ All Brewfiles created and validated
