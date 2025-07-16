@@ -27,6 +27,7 @@ brew "mackup"           # Application settings backup and sync
 brew "duti"             # Default application setter
 brew "zsh-completions"  # Additional zsh completion definitions
 brew "zsh-syntax-highlighting"  # Fish shell-like syntax highlighting for zsh
+brew "pure"             # Minimal and fast zsh prompt
 
 cask "orbstack"         # Fast, light, simple container and VM management
 cask "1password"        # Password manager and secure vault
