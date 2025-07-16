@@ -1,0 +1,60 @@
+# chezmoi configuration file
+# This template configures chezmoi for Australian locale and device-specific settings
+
+{{- $device_type := "" }}
+{{- $hostname := .chezmoi.hostname }}
+{{- if hasPrefix "MacBook" $hostname }}
+{{-   $device_type = "macbook-pro" }}
+{{- else if contains "studio" (lower $hostname) }}
+{{-   $device_type = "mac-studio" }}
+{{- else if contains "mini" (lower $hostname) }}
+{{-   $device_type = "mac-mini" }}
+{{- else }}
+{{-   $device_type = "unknown" }}
+{{- end }}
+
+[data]
+    device_type = {{ $device_type | quote }}
+    hostname = {{ .chezmoi.hostname | quote }}
+    username = {{ .chezmoi.username | quote }}
+    
+    # Australian locale settings
+    timezone = "Australia/Adelaide"
+    locale = "en_AU.UTF-8"
+    
+    # Standardised theme
+    theme = "gruvbox-dark-soft"
+    font = "Maple Mono Nerd Font"
+    
+    # Family members
+    family_users = ["andrew", "ali", "amelia", "annabelle"]
+    
+    # Network configuration
+    {{- if eq $device_type "mac-studio" }}
+    static_ip = "10.20.0.10"
+    network_interface = "Ethernet"
+    {{- else if eq $device_type "mac-mini" }}
+    static_ip = "10.20.0.12"
+    network_interface = "Ethernet"
+    {{- else if eq $device_type "macbook-pro" }}
+    static_ip = "10.20.0.11"
+    network_interface = "Wi-Fi"
+    {{- end }}
+
+[encryption]
+    # Use age encryption for sensitive files
+    # Age recipients should be configured separately
+
+[edit]
+    # Use Zed as the default editor
+    command = "zed"
+    args = ["--wait"]
+
+[git]
+    # Auto-commit changes to dotfiles repository
+    autoCommit = true
+    autoPush = false
+
+[status]
+    # Exclude certain file types from status checking
+    exclude = ["scripts", "externals"]

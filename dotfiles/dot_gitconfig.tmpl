@@ -1,0 +1,138 @@
+# Git configuration - managed by chezmoi
+# Device: {{ .device_type }}
+
+[user]
+	name = Andrew Exley
+	email = andrew@exley.net.au
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEkw7d1+vkE2t1xLz3Q4Y2u8K7c5m9n2P3j6k8l1M4o7
+
+[core]
+	editor = zed --wait
+	autocrlf = input
+	safecrlf = true
+	excludesfile = ~/.gitignore_global
+	pager = bat --style=plain
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	default = simple
+	autoSetupRemote = true
+
+[branch]
+	autosetupmerge = always
+	autosetuprebase = always
+
+[rebase]
+	autoStash = true
+
+[merge]
+	conflictstyle = diff3
+	tool = zed
+
+[mergetool "zed"]
+	cmd = zed --wait "$MERGED"
+	trustExitCode = true
+
+[diff]
+	tool = zed
+	colorMoved = default
+
+[difftool "zed"]
+	cmd = zed --wait --diff "$LOCAL" "$REMOTE"
+
+[color]
+	ui = auto
+	branch = auto
+	diff = auto
+	status = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[alias]
+	# Common shortcuts
+	st = status
+	ci = commit
+	co = checkout
+	br = branch
+	df = diff
+	dc = diff --cached
+	lg = log --oneline --graph --decorate --all
+	
+	# More complex aliases
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	
+	# Show commits in a nice tree format
+	tree = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	
+	# Show modified files in last commit
+	dl = "!git ll -1"
+	
+	# Show a diff last commit
+	dlc = diff --cached HEAD^
+	
+	# Show content of a commit
+	dr  = "!f() { git diff "$1"^.."$1"; }; f"
+	lc  = "!f() { git ll "$1"^.."$1"; }; f"
+	diffr  = "!f() { git diff "$1"^.."$1"; }; f"
+	
+	# Find a file path in codebase
+	f = "!git ls-files | grep -i"
+	
+	# Search/grep on codebase
+	grep = grep -Ii
+	gr = grep -Ii
+	
+	# Grep from root folder
+	gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
+	
+	# List all aliases
+	la = "!git config -l | grep alias | cut -c7-"
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = "/Applications/1Password 7 - Password Manager.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true
+
+[credential]
+	helper = 
+	helper = /opt/homebrew/bin/op-credential-helper
+
+# Device-specific configurations
+{{- if eq .device_type "mac-studio" }}
+[safe]
+	directory = /Users/Shared/git-repos
+{{- end }}
+
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig-work
+
+[includeIf "gitdir:~/personal/"]
+	path = ~/.gitconfig-personal

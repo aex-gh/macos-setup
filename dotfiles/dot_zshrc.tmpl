@@ -1,0 +1,173 @@
+# Zsh configuration - managed by chezmoi
+# Device: {{ .device_type }}
+# Hostname: {{ .hostname }}
+
+# Set Australian locale
+export LANG="{{ .locale }}"
+export LC_ALL="{{ .locale }}"
+export TZ="{{ .timezone }}"
+
+# Gruvbox Dark Soft theme colours
+export GRUVBOX_DARK_BG0_SOFT="#32302f"
+export GRUVBOX_DARK_FG="#ebdbb2"
+export GRUVBOX_DARK_RED="#fb4934"
+export GRUVBOX_DARK_GREEN="#b8bb26"
+export GRUVBOX_DARK_YELLOW="#fabd2f"
+export GRUVBOX_DARK_BLUE="#83a598"
+export GRUVBOX_DARK_PURPLE="#d3869b"
+export GRUVBOX_DARK_AQUA="#8ec07c"
+export GRUVBOX_DARK_ORANGE="#fe8019"
+
+# History configuration
+HISTFILE="${HOME}/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+
+# Zsh options
+setopt AUTO_CD
+setopt GLOB_DOTS
+setopt EXTENDED_GLOB
+setopt CORRECT
+setopt CORRECT_ALL
+
+# Homebrew
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/usr/local/bin/brew" ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# 1Password CLI
+if command -v op >/dev/null 2>&1; then
+    eval "$(op completion zsh)"
+    compdef _op op
+fi
+
+# Modern CLI tools
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza --color=always --group-directories-first'
+    alias ll='eza -l --color=always --group-directories-first'
+    alias la='eza -la --color=always --group-directories-first'
+    alias lt='eza --tree --color=always --group-directories-first'
+fi
+
+if command -v bat >/dev/null 2>&1; then
+    alias cat='bat --style=plain --paging=never'
+    alias batcat='bat'
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
+if command -v rg >/dev/null 2>&1; then
+    alias grep='rg'
+fi
+
+# FZF configuration with Gruvbox theme
+if command -v fzf >/dev/null 2>&1; then
+    export FZF_DEFAULT_OPTS="
+        --color=bg+:$GRUVBOX_DARK_BG0_SOFT,bg:$GRUVBOX_DARK_BG0_SOFT,spinner:$GRUVBOX_DARK_RED,hl:$GRUVBOX_DARK_RED
+        --color=fg:$GRUVBOX_DARK_FG,header:$GRUVBOX_DARK_RED,info:$GRUVBOX_DARK_AQUA,pointer:$GRUVBOX_DARK_RED
+        --color=marker:$GRUVBOX_DARK_RED,fg+:$GRUVBOX_DARK_FG,prompt:$GRUVBOX_DARK_AQUA,hl+:$GRUVBOX_DARK_RED
+        --layout=reverse --border
+    "
+    
+    if command -v rg >/dev/null 2>&1; then
+        export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+    fi
+    
+    # Key bindings
+    source "$(brew --prefix)/share/fzf/shell/key-bindings.zsh" 2>/dev/null
+    source "$(brew --prefix)/share/fzf/shell/completion.zsh" 2>/dev/null
+fi
+
+# Python (uv)
+if command -v uv >/dev/null 2>&1; then
+    eval "$(uv generate-shell-completion zsh)"
+fi
+
+# Node.js version management
+export N_PREFIX="${HOME}/.n"
+export PATH="${N_PREFIX}/bin:${PATH}"
+
+# Ruby version management
+if [[ -d "/opt/homebrew/opt/ruby/bin" ]]; then
+    export PATH="/opt/homebrew/opt/ruby/bin:${PATH}"
+fi
+
+# Go development
+if [[ -d "${HOME}/go/bin" ]]; then
+    export PATH="${HOME}/go/bin:${PATH}"
+fi
+
+# Rust development
+if [[ -f "${HOME}/.cargo/env" ]]; then
+    source "${HOME}/.cargo/env"
+fi
+
+# Device-specific configurations
+{{- if eq .device_type "mac-studio" }}
+# Mac Studio - server environment
+export SERVER_MODE=true
+alias server-status='sudo launchctl list | grep -E "(ssh|vnc|sharing)"'
+alias backup-status='tmutil status'
+{{- end }}
+
+{{- if eq .device_type "macbook-pro" }}
+# MacBook Pro - portable development
+alias battery='pmset -g batt'
+alias wifi-scan='sudo wdutil info'
+{{- end }}
+
+{{- if eq .device_type "mac-mini" }}
+# Mac Mini - media and light development
+alias media-centre='open /Applications/IINA.app'
+{{- end }}
+
+# Family environment aliases
+alias family-users='dscl . list /Users | grep -E "(andrew|ali|amelia|annabelle)"'
+alias shared-space='cd /Users/Shared'
+
+# Git aliases
+alias g='git'
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate'
+alias gd='git diff'
+
+# System utilities
+alias update-brew='brew update && brew upgrade && brew cleanup'
+alias update-all='update-brew && softwareupdate -i -a'
+alias cleanup='sudo periodic daily weekly monthly'
+
+# Quick navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ~='cd ~'
+alias docs='cd ~/Documents'
+alias dl='cd ~/Downloads'
+alias dt='cd ~/Desktop'
+
+# Safety aliases
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Network utilities
+alias myip='curl -s https://ipinfo.io/ip'
+alias localip='ipconfig getifaddr en0'
+alias netstat-listening='sudo lsof -i -P | grep LISTEN'
+
+# Load local customisations if they exist
+[[ -f "${HOME}/.zshrc.local" ]] && source "${HOME}/.zshrc.local"
+
+# Starship prompt (if installed)
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+fi

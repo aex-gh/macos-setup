@@ -1,0 +1,165 @@
+{
+  // Zed configuration - managed by chezmoi
+  // Device: {{ .device_type }}
+  
+  // Theme and appearance
+  "theme": "Gruvbox Dark Soft",
+  "buffer_font_family": "{{ .font }}",
+  "buffer_font_size": 14,
+  "ui_font_family": "{{ .font }}",
+  "ui_font_size": 13,
+  
+  // Editor behaviour
+  "vim_mode": true,
+  "relative_line_numbers": true,
+  "show_whitespace": "selection",
+  "tab_size": 2,
+  "hard_tabs": false,
+  "soft_wrap": "editor_width",
+  "preferred_line_length": 100,
+  "show_wrap_guides": true,
+  "wrap_guides": [80, 100],
+  
+  // File handling
+  "auto_save": "on_focus_change",
+  "ensure_final_newline_on_save": true,
+  "format_on_save": "on",
+  "remove_trailing_whitespace_on_save": true,
+  
+  // Git integration
+  "git": {
+    "inline_blame": {
+      "enabled": true
+    }
+  },
+  
+  // Terminal
+  "terminal": {
+    "shell": {
+      "program": "zsh"
+    },
+    "font_family": "{{ .font }}",
+    "font_size": 13,
+    "working_directory": "current_project_directory"
+  },
+  
+  // Language servers and formatters
+  "languages": {
+    "TypeScript": {
+      "format_on_save": "on",
+      "formatter": "prettier"
+    },
+    "JavaScript": {
+      "format_on_save": "on",
+      "formatter": "prettier"
+    },
+    "JSON": {
+      "format_on_save": "on",
+      "formatter": "prettier"
+    },
+    "Markdown": {
+      "format_on_save": "on",
+      "formatter": "prettier",
+      "soft_wrap": "preferred_line_length"
+    },
+    "Python": {
+      "format_on_save": "on",
+      "formatter": "ruff"
+    },
+    "Rust": {
+      "format_on_save": "on"
+    },
+    "Go": {
+      "format_on_save": "on"
+    },
+    "Shell Script": {
+      "format_on_save": "on"
+    }
+  },
+  
+  // File explorer
+  "project_panel": {
+    "dock": "left",
+    "default_width": 240
+  },
+  
+  // Search
+  "search": {
+    "include_ignored": false,
+    "regex": false,
+    "whole_word": false,
+    "case_sensitive": false
+  },
+  
+  // Collaboration
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  
+  // Chat panel
+  "chat_panel": {
+    "dock": "right"
+  },
+  
+  // Assistant panel
+  "assistant": {
+    "dock": "right",
+    "default_width": 400,
+    "default_height": 320
+  },
+  
+  // Outline panel
+  "outline_panel": {
+    "dock": "right"
+  },
+  
+  // Notifications panel
+  "notification_panel": {
+    "dock": "right"
+  },
+  
+  // Tasks
+  "task": {
+    "show_status_indicator": true
+  },
+  
+  // Scrollbar
+  "scrollbar": {
+    "show": "auto"
+  },
+  
+  // Cursor
+  "cursor_blink": false,
+  "show_completions_on_input": true,
+  "use_autoclose": true,
+  
+  // Inlay hints
+  "inlay_hints": {
+    "enabled": true
+  },
+  
+  // Copilot
+  "features": {
+    "copilot": true
+  },
+  
+  // Telemetry
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  
+  // Auto-update
+  "auto_update": true,
+  
+  // Hour format
+  "hour_format": "hour24",
+  
+  // File associations
+  "file_types": {
+    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
+    "JSON": ["*.json", "*.jsonc"],
+    "YAML": ["*.yml", "*.yaml"],
+    "Shell Script": ["*.zsh", "*.bash"]
+  }
+}

@@ -1,0 +1,120 @@
+[
+  // Zed keymap configuration - managed by chezmoi
+  
+  // Vim-style navigation improvements
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      // Quick save
+      "cmd-s": "workspace::Save",
+      
+      // Buffer navigation
+      "cmd-shift-[": "pane::ActivatePrevItem",
+      "cmd-shift-]": "pane::ActivateNextItem",
+      
+      // Split navigation
+      "cmd-k cmd-h": "workspace::ActivatePaneInDirection(Left)",
+      "cmd-k cmd-l": "workspace::ActivatePaneInDirection(Right)",
+      "cmd-k cmd-k": "workspace::ActivatePaneInDirection(Up)",
+      "cmd-k cmd-j": "workspace::ActivatePaneInDirection(Down)",
+      
+      // Terminal
+      "cmd-j": "workspace::ToggleBottomDock",
+      "cmd-shift-t": "terminal::NewTerminal",
+      
+      // File explorer
+      "cmd-shift-e": "workspace::ToggleLeftDock",
+      
+      // Command palette
+      "cmd-shift-p": "command_palette::Toggle",
+      
+      // Go to file
+      "cmd-p": "file_finder::Toggle",
+      
+      // Find in project
+      "cmd-shift-f": "search::ToggleFocus",
+      
+      // Zen mode
+      "cmd-k z": "workspace::ToggleZenMode"
+    }
+  },
+  
+  // Insert mode bindings
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // Quick escape
+      "j j": "vim::NormalBefore",
+      
+      // Save in insert mode
+      "cmd-s": "workspace::Save"
+    }
+  },
+  
+  // Visual mode bindings
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      // Indent/outdent
+      ">": "editor::Indent",
+      "<": "editor::Outdent"
+    }
+  },
+  
+  // Terminal bindings
+  {
+    "context": "Terminal",
+    "bindings": {
+      "cmd-w": "pane::CloseActiveItem",
+      "cmd-t": "terminal::NewTerminal"
+    }
+  },
+  
+  // Project panel bindings
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "shift-a": "project_panel::NewDirectory",
+      "d": "project_panel::Delete",
+      "r": "project_panel::Rename",
+      "x": "project_panel::Cut",
+      "c": "project_panel::Copy",
+      "p": "project_panel::Paste"
+    }
+  },
+  
+  // Global workspace bindings
+  {
+    "context": "Workspace",
+    "bindings": {
+      // Panel toggles
+      "cmd-1": "workspace::ToggleLeftDock",
+      "cmd-2": "workspace::ToggleRightDock",
+      "cmd-3": "workspace::ToggleBottomDock",
+      
+      // Quick actions
+      "cmd-shift-d": "editor::DuplicateLineDown",
+      "cmd-/": "editor::ToggleComments",
+      
+      // Multi-cursor
+      "cmd-d": "editor::SelectNext",
+      "cmd-shift-d": "editor::SelectPrevious",
+      "cmd-shift-l": "editor::SelectAllMatches",
+      
+      // Code actions
+      "cmd-.": "editor::ToggleCodeActions",
+      "f2": "editor::Rename",
+      "f12": "editor::GoToDefinition",
+      "cmd-f12": "editor::GoToDefinitionSplit",
+      "shift-f12": "editor::FindAllReferences",
+      
+      // Format
+      "cmd-shift-i": "editor::Format",
+      
+      // Fold/unfold
+      "cmd-shift-[": "editor::Fold",
+      "cmd-shift-]": "editor::Unfold"
+    }
+  }
+]

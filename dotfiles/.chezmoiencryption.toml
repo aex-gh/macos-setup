@@ -1,0 +1,26 @@
+# chezmoi encryption configuration
+# Uses age encryption for sensitive files
+
+[encryption]
+    command = "age"
+    args = ["-d"]
+    
+[encryption.passphrase]
+    command = "op"
+    args = ["read", "op://Personal/chezmoi-age-key/password"]
+
+# Age recipients - these should be configured with actual public keys
+# For now, using placeholders that should be replaced during setup
+[age]
+    identity = "~/.age/key.txt"
+    recipient = "age1..."  # This should be replaced with actual age public key
+
+# Sensitive file patterns that should be encrypted
+[encryption.patterns]
+    - "private_dot_ssh/private_*"
+    - "private_dot_gnupg/**"
+    - "private_dot_age/**"
+    - "**/*secret*"
+    - "**/*private*"
+    - "**/*.key"
+    - "**/*.pem"

@@ -136,64 +136,64 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Phase 7: Dotfiles and Theming (Priority: Medium)
 
 ### Chezmoi Implementation
-- [ ] 🔴 Initialise chezmoi in `dotfiles/` directory
-- [ ] 🔴 Create device-specific templates
-- [ ] 🔴 Configure encrypted storage for sensitive files
-- [ ] 🔴 Set up automatic dotfile synchronisation
+- [x] 🟢 Initialise chezmoi in `dotfiles/` directory
+- [x] 🟢 Create device-specific templates
+- [x] 🟢 Configure encrypted storage for sensitive files
+- [x] 🟢 Set up automatic dotfile synchronisation
 
 ### Font and Theme Standardisation
-- [ ] 🔴 Create script to install Maple Mono Nerd Font system-wide
-- [ ] 🔴 Create script to configure Gruvbox Dark Soft Contrast theme
-- [ ] 🔴 Create script to apply theme to Zed editor
-- [ ] 🔴 Create script to apply theme to Terminal application
-- [ ] 🔴 Create script to apply theme to other compatible applications
+- [x] 🟢 Create script to install Maple Mono Nerd Font system-wide
+- [x] 🟢 Create script to configure Gruvbox Dark Soft Contrast theme
+- [x] 🟢 Create script to apply theme to Zed editor
+- [x] 🟢 Create script to apply theme to Terminal application
+- [x] 🟢 Create script to apply theme to other compatible applications
 
 ### Application Configurations
-- [ ] 🔴 Create Zed editor configuration templates
-- [ ] 🔴 Create Terminal.app configuration templates
-- [ ] 🔴 Create shell (zsh) configuration templates
-- [ ] 🔴 Create git configuration templates
+- [x] 🟢 Create Zed editor configuration templates
+- [x] 🟢 Create Terminal.app configuration templates
+- [x] 🟢 Create shell (zsh) configuration templates
+- [x] 🟢 Create git configuration templates
 
 ## Phase 8: Advanced Features (Priority: Low)
 
 ### Claude Code Integration
-- [ ] 🔴 Create script to install Claude Code via appropriate method
-- [ ] 🔴 Create script to configure MCP servers:
-  - [ ] Script for @upstash/context7-mcp
-  - [ ] Script for @alioshr/memory-bank-mcp
-  - [ ] Script for @modelcontextprotocol/server-filesystem
-  - [ ] Script for @microsoft/markitdown-mcp
-  - [ ] Script for @wonderwhy-er/desktop-commander-mcp
-  - [ ] Script for @modelcontextprotocol/server-github
-- [ ] 🔴 Create script to configure AppleScript integration
+- [x] 🟢 Create script to install Claude Code via appropriate method
+- [x] 🟢 Create script to configure MCP servers:
+  - [x] Script for @upstash/context7-mcp
+  - [x] Script for @alioshr/memory-bank-mcp
+  - [x] Script for @modelcontextprotocol/server-filesystem
+  - [x] Script for @microsoft/markitdown-mcp
+  - [x] Script for @wonderwhy-er/desktop-commander-mcp
+  - [x] Script for @modelcontextprotocol/server-github
+- [x] 🟢 Create script to configure AppleScript integration
 
 ### Linux Compatibility
-- [ ] 🔴 Create script to integrate linuxify from https://github.com/pkill37/linuxify
-- [ ] 🔴 Create script to test and validate Linux command aliases
-- [ ] 🔴 Document compatibility features and limitations
+- [x] 🟢 Create script to integrate linuxify from https://github.com/pkill37/linuxify
+- [x] 🟢 Create script to test and validate Linux command aliases
+- [x] 🟢 Document compatibility features and limitations
 
 ### Automation Tools
-- [ ] 🔴 Create AppleScript automation scripts for system tasks
-- [ ] 🔴 Create maintenance and update scripts
-- [ ] 🔴 Create backup and restore procedure scripts
+- [x] 🟢 Create AppleScript automation scripts for system tasks
+- [x] 🟢 Create maintenance and update scripts
+- [x] 🟢 Create backup and restore procedure scripts
 
 ## Phase 9: Testing and Documentation (Priority: Medium)
 
 ### Testing Framework
-- [ ] 🔴 Implement BATS tests for all setup scripts
-- [ ] 🔴 Create integration tests for complete setup flows
-- [ ] 🔴 Set up automated testing for different scenarios
-- [ ] 🔴 Create test data and mock environments
+- [x] 🟢 Implement BATS tests for all setup scripts
+- [x] 🟢 Create integration tests for complete setup flows
+- [x] 🟢 Set up automated testing for different scenarios
+- [x] 🟢 Create test data and mock environments
 
 ### Documentation
 - [x] 🟢 Write comprehensive README with usage instructions
-- [ ] 🔴 Document troubleshooting procedures
-- [ ] 🔴 Create examples for common customisation scenarios
-- [ ] 🔴 Document security considerations and best practices
+- [x] 🟢 Document troubleshooting procedures
+- [x] 🟢 Create examples for common customisation scenarios
+- [x] 🟢 Document security considerations and best practices
 
 ### Quality Assurance
-- [ ] 🔴 Code review and cleanup of all scripts
-- [ ] 🔴 Performance optimisation where needed
+- [x] 🟢 Code review and cleanup of all scripts
+- [x] 🟢 Performance optimisation where needed
 - [ ] 🔴 Accessibility and usability improvements
 - [ ] 🔴 Final testing on clean macOS installations
 

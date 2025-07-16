@@ -1,0 +1,55 @@
+# Files and directories to ignore when applying dotfiles
+
+# macOS system files
+.DS_Store
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Secrets and keys (these should be encrypted separately)
+.ssh/id_*
+.gnupg/
+.age/
+
+# Device-specific files that shouldn't be shared
+{{- if ne .device_type "mac-studio" }}
+# Mac Studio specific files
+server-configs/
+{{- end }}
+
+{{- if ne .device_type "macbook-pro" }}
+# MacBook Pro specific files
+portable-configs/
+{{- end }}
+
+{{- if ne .device_type "mac-mini" }}
+# Mac Mini specific files
+media-configs/
+{{- end }}
+
+# Test files
+*_test.*
+test_*
+*.test
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Cache directories
+.cache/
+cache/
