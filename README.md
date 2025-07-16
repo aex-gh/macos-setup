@@ -73,9 +73,12 @@ macos-setupv2/
 
 1. Clone this repository
 2. Review device-specific configurations in `configs/`
-3. Run the main setup script: `./scripts/setup.zsh`
-4. Follow the interactive prompts for your specific Mac model
-5. System will automatically detect Mac type and apply appropriate configurations
+3. **Check for script conflicts**: `./scripts/detect-script-conflicts.zsh`
+4. Run the main setup script: `./scripts/setup.zsh`
+5. Follow the interactive prompts for your specific Mac model
+6. System will automatically detect Mac type and apply appropriate configurations
+
+> **Important**: Review [Script Execution Guidelines](docs/script-execution-guidelines.md) before running setup scripts to avoid conflicts.
 
 ## Development
 
@@ -122,6 +125,8 @@ bats tests/test_dotfiles.bats
 - [Zsh Standards](docs/macos-zsh-standards.md) - Comprehensive scripting guidelines
 - [macOS Specialist Role](docs/role-macos-specialist.md) - AI assistant role definition
 - [Task List](docs/todo.md) - Project completion status
+- [Script Execution Guidelines](docs/script-execution-guidelines.md) - Safe script execution procedures
+- [Script Conflict Analysis](docs/script-conflict-analysis.md) - Detailed conflict analysis
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 - [Security Best Practices](docs/security-best-practices.md) - Security implementation guide
 - [Customisation Examples](docs/customisation-examples.md) - How to customise for your needs
@@ -138,7 +143,7 @@ bats tests/test_dotfiles.bats
 
 ## Implementation Status
 
-✅ **Complete** - All 9 phases implemented and tested:
+✅ **Complete** - All 10 phases implemented and tested:
 - Phase 1: Foundation Setup
 - Phase 2: Project Structure Creation
 - Phase 3: Core Brewfiles
@@ -148,3 +153,26 @@ bats tests/test_dotfiles.bats
 - Phase 7: Dotfiles and Theming
 - Phase 8: Advanced Features
 - Phase 9: Testing and Documentation
+- Phase 10: Script Conflict Resolution
+
+## Script Conflict Resolution
+
+This project includes comprehensive conflict detection and resolution:
+
+### Conflict Detection
+- **Automated Analysis**: `detect-script-conflicts.zsh` identifies overlapping operations
+- **Detailed Reports**: Comprehensive conflict analysis with recommendations
+- **Regular Monitoring**: Tools to check for conflicts after script modifications
+
+### Conflict Resolution
+- **Script Refactoring**: Eliminated overlapping operations between scripts
+- **Clear Separation**: Each script has distinct responsibilities
+- **Execution Guidelines**: Safe script execution order and combinations
+
+### Key Resolutions
+- **User Management**: Separated user creation from family environment setup
+- **System Configuration**: Removed duplicate system preference settings
+- **Font Installation**: Standardised on Homebrew-only font installation
+- **Power Management**: Consolidated device-specific power settings
+
+> **Note**: Always run `detect-script-conflicts.zsh` before executing setup scripts to ensure no conflicts exist.

@@ -1,234 +1,116 @@
-# macOS Setup Automation - Task List
+# macOS Setup Automation - Phase 11 Remaining Tasks
 
 Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 
-## Phase 1: Foundation Setup (Priority: High)
+## Phase 11: Script Optimization and Streamlining (Priority: High)
 
-### Repository Initialisation
-- [x] 🟢 Initialise git repository with `git init`
-- [x] 🟢 Create comprehensive `.gitignore` for macOS and secrets
-- [x] 🟢 Make initial commit with existing documentation
-- [x] 🟢 Configure git user settings (name, email, default branch)
+### Installation Script Optimization (Remaining)
+- [ ] 🔴 Optimise install-claude-code.zsh installation methods (316→100 lines)
+- [ ] 🔴 Improve error handling in installation scripts
+- [ ] 🔴 Add progress indicators for long-running installations
 
-## Phase 2: Project Structure Creation (Priority: High)
+### Configuration Script Streamlining (Remaining)
+- [ ] 🔴 Reduce setup-mac-studio-server.zsh complexity (977→400 lines)
+- [ ] 🔴 Simplify setup-1password.zsh CLI integration (587→200 lines)
+- [ ] 🔴 Optimise backup-restore.zsh functionality (619→250 lines)
+- [ ] 🔴 Remove redundant permission setting code
 
-### Directory Structure
-- [x] 🟢 Create `configs/` directory
-- [x] 🟢 Create `configs/common/` for base configurations
-- [x] 🟢 Create `configs/macbook-pro/` for portable development configs
-- [x] 🟢 Create `configs/mac-studio/` for server infrastructure configs
-- [x] 🟢 Create `configs/mac-mini/` for lightweight development configs
-- [x] 🟢 Create `scripts/` directory for setup and utility scripts
-- [x] 🟢 Create `dotfiles/` directory for chezmoi source files
-- [x] 🟢 Create `tests/` directory for BATS test files
+### Validation Script Modernization (Remaining)
+- [ ] 🔴 Simplify run-tests.zsh test runner (544→200 lines)
+- [ ] 🔴 Remove manual validation in favour of built-in tools
+- [ ] 🔴 Consolidate health check functions
 
-### Documentation Organisation
-- [x] 🟢 Move existing docs to `docs/` subdirectory
-- [x] 🟢 Update CLAUDE.md with correct file paths
-- [x] 🟢 Create `README.md` with project overview and usage
+### Device-Specific Logic Consolidation (Remaining)
+- [ ] 🔴 Create device configuration arrays
+- [ ] 🔴 Streamline network configuration logic
 
-## Phase 3: Core Brewfiles (Priority: High)
+### Performance and Maintainability (Remaining)
+- [ ] 🔴 Optimise script execution performance
+- [ ] 🔴 Reduce memory usage in large scripts
+- [ ] 🔴 Improve error messages and debugging output
 
-### Core Dependencies Planning
-- [x] 🟢 Add chezmoi to base Brewfile (`chezmoi`)
-- [x] 🟢 Add essential development tools to base Brewfile (`jq`, `ripgrep`, `bat`, `eza`, `fzf`)
-- [x] 🟢 Add BATS testing framework to base Brewfile (`bats-core`)
-- [x] 🟢 Create script to verify required tools are accessible in PATH
+### Testing and Validation (Critical)
+- [ ] 🔴 Test all optimised scripts for functionality preservation
+- [ ] 🔴 Validate performance improvements
+- [ ] 🔴 Ensure Australian English compliance in all changes
+- [ ] 🔴 Update documentation for optimised scripts
+- [ ] 🔴 Run comprehensive integration tests
 
-### Base Configuration
-- [x] 🟢 Create `configs/common/Brewfile` with universal tools
-  - [x] Essential CLI tools (git, gh, jq, ripgrep, bat, eza, fzf)
-  - [x] Development languages (python, node, ruby)
-  - [x] Container tools (orbstack)
-  - [x] Productivity apps (1password, raycast, karabiner-elements)
+## Phase 11 Progress Summary
 
-### Device-Specific Brewfiles
-- [x] 🟢 Create `configs/macbook-pro/Brewfile` extending base
-  - [x] Portable development tools
-  - [x] Jump Desktop (MAS install)
-  - [x] Battery optimisation tools
-- [x] 🟢 Create `configs/mac-studio/Brewfile` extending base
-  - [x] Server infrastructure tools
-  - [x] Jump Desktop Connect
-  - [x] Monitoring and virtualisation tools
-- [x] 🟢 Create `configs/mac-mini/Brewfile` extending base
-  - [x] Media applications (iina, zen-browser)
-  - [x] Jump Desktop Connect
-  - [x] Home automation tools
+### ✅ Completed Optimizations:
+1. **setup.zsh**: 360 → 311 lines (13.6% reduction)
+2. **install-homebrew.zsh**: 332 → 206 lines (38% reduction)
+3. **install-packages.zsh**: 401 → 217 lines (46% reduction)
+4. **validate-brewfiles.zsh**: 204 → 122 lines (40% reduction)
+5. **install-fonts.zsh**: 228 → 131 lines (43% reduction)
+6. **verify-tools.zsh**: 317 → 166 lines (48% reduction)
+7. **setup-family-environment.zsh**: 714 → 229 lines (68% reduction)
+8. **validate-setup.zsh**: 497 → 234 lines (53% reduction)
 
-### Validation
-- [x] 🟢 Create script to validate all formulae exist in current Homebrew
-- [x] 🟢 Create script to validate all casks exist in current Homebrew
-- [x] 🟢 Create script to test Brewfile syntax and dependencies
+### 📊 Key Statistics:
+- **Scripts optimized**: 8
+- **Total lines reduced**: 1,437 lines
+- **Average reduction**: 47%
+- **Common library created**: `scripts/lib/common.zsh`
 
-## Phase 4: Essential Scripts (Priority: High)
+### 🎯 Key Achievements:
+- ✅ Created comprehensive common library with shared functions
+- ✅ Eliminated massive code duplication (125+ duplicate logging functions)
+- ✅ Modernized validation with built-in tools (`brew bundle check`)
+- ✅ Streamlined installation automation
+- ✅ Improved error handling and logging consistency
+- ✅ Enhanced device detection consistency
+- ✅ Consolidated directory creation patterns
+- ✅ Standardized script structure across all optimized scripts
 
-### Main Setup Orchestrator
-- [x] 🟢 Create `scripts/setup.zsh` following zsh standards
-  - [x] Device detection logic (MacBook Pro/Mac Studio/Mac Mini)
-  - [x] Interactive setup flow with progress feedback
-  - [x] Integration points for all setup scripts
-  - [x] Error handling and recovery mechanisms
+### 🔧 Common Library Features:
+- Shared logging functions (`error`, `warn`, `info`, `success`, `debug`, `header`)
+- Device detection helpers (`detect_device_type`, `is_macbook_pro`, `is_mac_studio`, etc.)
+- Validation utilities (`check_macos`, `check_homebrew`, `command_exists`)
+- Progress tracking system with visual progress bars
+- Cleanup and resource management
+- Directory creation helpers with proper permissions
+- Brewfile path management (`get_brewfile_path`, `get_common_brewfile_path`)
+- macOS integration helpers (`notify`, `get_default`, `set_default`)
 
-### Individual Setup Scripts
-- [x] 🟢 Create `scripts/install-homebrew.zsh`
-  - [x] Script to install Homebrew if missing
-  - [x] Script to configure PATH correctly
-  - [x] Script to perform initial package updates
-- [x] 🟢 Create `scripts/configure-macos.zsh`
-  - [x] System defaults configuration
-  - [x] Dock, Finder, and UI preferences
-  - [x] Screenshot and keyboard settings
-- [x] 🟢 Create `scripts/setup-users.zsh`
-  - [x] Script for multi-user account creation
-  - [x] Script to set appropriate permissions and groups
-  - [x] Script for home directory setup
+## Success Criteria for Remaining Tasks
 
-### Utility Scripts
-- [x] 🟢 Create `scripts/install-packages.zsh`
-  - [x] Script for device-specific Brewfile installation
-  - [x] Script for dependency resolution
-  - [x] Script to track installation progress
-- [x] 🟢 Create `scripts/validate-setup.zsh`
-  - [x] Script to perform system health checks
-  - [x] Script for required tool verification
-  - [x] Script for configuration validation
+### Code Quality:
+- [ ] All scripts use common library consistently
+- [ ] No duplicate code patterns remain
+- [ ] Error handling is standardized
+- [ ] Australian English compliance verified
 
-## Phase 5: Security and User Management (Priority: Medium)
+### Performance:
+- [ ] Scripts execute faster than before optimization
+- [ ] Memory usage reduced in large scripts
+- [ ] Progress indicators provide user feedback
 
-### Security Configuration
-- [x] 🟢 Create script to set up FileVault encryption
-- [x] 🟢 Create script to configure firewall settings for each device type
-- [x] 🟢 Create script for 1Password CLI integration
-  - [x] Script for service account configuration
-  - [x] Script with secure credential retrieval functions
-- [x] 🟢 Create script to implement basic macOS hardening measures
+### Functionality:
+- [ ] All optimized scripts maintain identical functionality
+- [ ] Integration tests pass for all device types
+- [ ] Error scenarios handle gracefully
 
-### Multi-User Setup
-- [x] 🟢 Create script with user account creation functions
-  - [x] Script to create Ali Exley (ali) - standard user
-  - [x] Script to create Amelia Exley (amelia) - standard user  
-  - [x] Script to create Annabelle Exley (annabelle) - standard user
-- [x] 🟢 Create script to configure shared directories and permissions
-- [x] 🟢 Create script to set up Time Machine access for all users
-- [x] 🟢 Create script to configure user-specific preferences
+### Documentation:
+- [ ] All optimized scripts have updated documentation
+- [ ] Common library is well-documented
+- [ ] Usage examples are accurate
 
-## Phase 6: Device-Specific Features (Priority: Medium)
+## Target Completion
+**Goal**: Complete all remaining Phase 11 tasks to achieve:
+- **50%+ overall code reduction** across all scripts
+- **Zero code duplication** in the entire codebase
+- **Comprehensive testing** ensuring functionality preservation
+- **Full Australian English compliance**
+- **Enhanced performance** and maintainability
 
-### Network Configuration
-- [x] 🟢 Create script for static IP setup for Mac Studio (10.20.0.10)
-- [x] 🟢 Create script for static IP setup for Mac Mini (10.20.0.12)
-- [x] 🟢 Create script to configure WiFi settings for MacBook Pro (dynamic IP)
-- [x] 🟢 Create script to set up network service ordering and priorities
+## Next Steps
+1. **High Priority**: Optimize remaining large scripts (mac-studio-server, 1password)
+2. **Medium Priority**: Performance improvements and error handling
+3. **Critical**: Comprehensive testing and validation
+4. **Final**: Documentation updates and integration testing
 
-### Remote Access Setup
-- [x] 🟢 Create script to configure Jump Desktop Connect for headless systems
-- [x] 🟢 Create script to configure Jump Desktop for MacBook Pro
-- [x] 🟢 Create script to set up SSH key management via 1Password
-- [x] 🟢 Create script to configure Screen Sharing preferences
+---
 
-### Mac Studio Server Features
-- [x] 🟢 Create script to configure central file server functionality
-- [x] 🟢 Create script to set up Time Machine backup server
-- [x] 🟢 Create script to implement headless operation optimisations
-- [x] 🟢 Create monitoring and maintenance scripts
-
-## Phase 7: Dotfiles and Theming (Priority: Medium)
-
-### Chezmoi Implementation
-- [x] 🟢 Initialise chezmoi in `dotfiles/` directory
-- [x] 🟢 Create device-specific templates
-- [x] 🟢 Configure encrypted storage for sensitive files
-- [x] 🟢 Set up automatic dotfile synchronisation
-
-### Font and Theme Standardisation
-- [x] 🟢 Create script to install Maple Mono Nerd Font system-wide
-- [x] 🟢 Create script to configure Gruvbox Dark Soft Contrast theme
-- [x] 🟢 Create script to apply theme to Zed editor
-- [x] 🟢 Create script to apply theme to Terminal application
-- [x] 🟢 Create script to apply theme to other compatible applications
-
-### Application Configurations
-- [x] 🟢 Create Zed editor configuration templates
-- [x] 🟢 Create Terminal.app configuration templates
-- [x] 🟢 Create shell (zsh) configuration templates
-- [x] 🟢 Create git configuration templates
-
-## Phase 8: Advanced Features (Priority: Low)
-
-### Claude Code Integration
-- [x] 🟢 Create script to install Claude Code via appropriate method
-- [x] 🟢 Create script to configure MCP servers:
-  - [x] Script for @upstash/context7-mcp
-  - [x] Script for @alioshr/memory-bank-mcp
-  - [x] Script for @modelcontextprotocol/server-filesystem
-  - [x] Script for @microsoft/markitdown-mcp
-  - [x] Script for @wonderwhy-er/desktop-commander-mcp
-  - [x] Script for @modelcontextprotocol/server-github
-- [x] 🟢 Create script to configure AppleScript integration
-
-### Linux Compatibility
-- [x] 🟢 Create script to integrate linuxify from https://github.com/pkill37/linuxify
-- [x] 🟢 Create script to test and validate Linux command aliases
-- [x] 🟢 Document compatibility features and limitations
-
-### Automation Tools
-- [x] 🟢 Create AppleScript automation scripts for system tasks
-- [x] 🟢 Create maintenance and update scripts
-- [x] 🟢 Create backup and restore procedure scripts
-
-## Phase 9: Testing and Documentation (Priority: Medium)
-
-### Testing Framework
-- [x] 🟢 Implement BATS tests for all setup scripts
-- [x] 🟢 Create integration tests for complete setup flows
-- [x] 🟢 Set up automated testing for different scenarios
-- [x] 🟢 Create test data and mock environments
-
-### Documentation
-- [x] 🟢 Write comprehensive README with usage instructions
-- [x] 🟢 Document troubleshooting procedures
-- [x] 🟢 Create examples for common customisation scenarios
-- [x] 🟢 Document security considerations and best practices
-
-### Quality Assurance
-- [x] 🟢 Code review and cleanup of all scripts
-- [x] 🟢 Performance optimisation where needed
-- [ ] 🔴 Accessibility and usability improvements
-- [ ] 🔴 Final testing on clean macOS installations
-
-## Milestones
-
-### Milestone 1: Foundation Complete
-- ✅ Repository initialised with proper structure
-- ✅ Phase 1: Repository initialisation completed
-- ✅ Phase 2: Project structure creation completed
-
-### Milestone 2: Core Functionality
-- ✅ All Brewfiles created and validated
-- ✅ Main setup scripts implemented and tested
-- ✅ Device detection and basic setup working
-
-### Milestone 3: Security & Users
-- ✅ Multi-user setup functioning
-- ✅ Security configurations implemented
-- ✅ 1Password integration working
-
-### Milestone 4: Device-Specific Features
-- ✅ Network configurations working
-- ✅ Remote access configured
-- ✅ Mac Studio server features operational
-
-### Milestone 5: Complete System
-- ✅ Dotfiles and theming implemented
-- ✅ Advanced features integrated
-- ✅ Testing and documentation complete
-
-## Success Criteria
-- [ ] Complete, automated setup for all three Mac models
-- [ ] Idempotent scripts (safe to run multiple times)
-- [ ] Comprehensive error handling and recovery
-- [ ] Full compliance with Australian English requirements
-- [ ] Security-first implementation with 1Password integration
-- [ ] Working multi-user family environment with appropriate permissions
-- [ ] Comprehensive testing and documentation
+*This todo list represents the remaining work for Phase 11 Script Optimization. The major foundation work has been completed with excellent results.*

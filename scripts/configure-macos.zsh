@@ -245,8 +245,8 @@ configure_finder() {
 configure_dock() {
     info "Configuring Dock..."
 
-    # Set the icon size of Dock items to 36 pixels
-    set_default "com.apple.dock" "tilesize" "36" "int"
+    # Set the icon size of Dock items to 40 pixels (neutral size)
+    set_default "com.apple.dock" "tilesize" "40" "int"
 
     # Change minimize/maximize window effect to scale
     set_default "com.apple.dock" "mineffect" "scale"
@@ -284,8 +284,8 @@ configure_dock() {
     # Remove the animation when hiding/showing the Dock
     set_default "com.apple.dock" "autohide-time-modifier" "0" "float"
 
-    # Automatically hide and show the Dock
-    set_default "com.apple.dock" "autohide" "true" "bool"
+    # Do not automatically hide the Dock (family-friendly default)
+    set_default "com.apple.dock" "autohide" "false" "bool"
 
     # Make Dock icons of hidden applications translucent
     set_default "com.apple.dock" "showhidden" "true" "bool"
@@ -316,16 +316,11 @@ configure_device_specific() {
             ;;
 
         "mac-studio"|"mac-mini")
-            # Headless/desktop settings
+            # Desktop settings (basic configuration only)
             info "Configuring desktop Mac specific settings..."
 
-            # Never sleep
-            sudo pmset -a sleep 0 displaysleep 15 2>/dev/null || warn "Could not set power settings"
-
-            # Disable wake for network access for desktop Macs
-            sudo pmset -a womp 0 2>/dev/null || warn "Could not disable wake on network"
-
-            # Enable automatic restart on power loss
+            # Basic power management for desktop Macs
+            sudo pmset -a sleep 0 displaysleep 30 2>/dev/null || warn "Could not set power settings"
             sudo pmset -a autorestart 1 2>/dev/null || warn "Could not enable auto restart"
             ;;
     esac

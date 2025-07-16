@@ -182,84 +182,19 @@ EOF
     fi
 }
 
-# Configure shared directories
-setup_shared_directories() {
-    info "Setting up shared directories..."
-    
-    local shared_dir="/Users/Shared"
-    
-    # Create family shared directory
-    local family_shared="$shared_dir/Family"
-    if [[ ! -d "$family_shared" ]]; then
-        sudo mkdir -p "$family_shared"
-        sudo chown root:staff "$family_shared"
-        sudo chmod 775 "$family_shared"
-        success "✓ Created shared family directory: $family_shared"
-    fi
-    
-    # Create documents shared directory
-    local docs_shared="$family_shared/Documents"
-    if [[ ! -d "$docs_shared" ]]; then
-        sudo mkdir -p "$docs_shared"
-        sudo chown root:staff "$docs_shared"
-        sudo chmod 775 "$docs_shared"
-        success "✓ Created shared documents directory: $docs_shared"
-    fi
-    
-    # Create media shared directory
-    local media_shared="$family_shared/Media"
-    if [[ ! -d "$media_shared" ]]; then
-        sudo mkdir -p "$media_shared"
-        sudo chown root:staff "$media_shared"
-        sudo chmod 775 "$media_shared"
-        success "✓ Created shared media directory: $media_shared"
-    fi
-    
-    success "Shared directories configured"
-}
-
-# Configure Time Machine access
-setup_time_machine_access() {
-    info "Configuring Time Machine access..."
-    
-    case "$DEVICE_TYPE" in
-        "mac-studio")
-            info "Configuring Mac Studio as Time Machine server..."
-            
-            # Enable Time Machine server (requires macOS Server or built-in sharing)
-            # This is a placeholder for Time Machine server configuration
-            warn "Time Machine server configuration requires manual setup"
-            warn "Enable File Sharing and Time Machine in System Preferences > Sharing"
-            ;;
-        
-        "macbook-pro"|"mac-mini")
-            info "Configuring Time Machine client for backup to Mac Studio..."
-            
-            # Set up automatic discovery of Time Machine server
-            # This would typically be configured to point to the Mac Studio
-            warn "Time Machine client configuration requires manual setup"
-            warn "Configure backup destination in System Preferences > Time Machine"
-            ;;
-    esac
-    
-    success "Time Machine access configured"
-}
-
-# Set user-specific preferences
-configure_user_preferences() {
+# Set basic user-specific preferences (minimal configuration)
+configure_basic_user_preferences() {
     local username="$1"
     
-    info "Configuring preferences for user: $username"
+    info "Configuring basic preferences for user: $username"
     
-    # Run as the specific user to set their preferences
-    sudo -u "$username" defaults write com.apple.finder "AppleShowAllFiles" -bool true
-    sudo -u "$username" defaults write NSGlobalDomain "AppleShowAllExtensions" -bool true
+    # Only set essential Australian locale settings
     sudo -u "$username" defaults write NSGlobalDomain "AppleLanguages" "(en-AU)"
     sudo -u "$username" defaults write NSGlobalDomain "AppleLocale" "en_AU@currency=AUD"
     sudo -u "$username" defaults write NSGlobalDomain "AppleMeasurementUnits" "Centimeters"
     sudo -u "$username" defaults write NSGlobalDomain "AppleMetricUnits" -bool true
     
-    success "✓ Preferences configured for $username"
+    success "✓ Basic preferences configured for $username"
 }
 
 # Main user setup process
@@ -274,7 +209,7 @@ setup_family_users() {
         info "Processing user: $username"
         
         if create_user "$username" "$full_name" "$account_type"; then
-            configure_user_preferences "$username"
+            configure_basic_user_preferences "$username"
             ((created_users++))
         else
             error "Failed to create user: $username"
@@ -301,8 +236,8 @@ USAGE:
     $SCRIPT_NAME [DEVICE_TYPE]
 
 DESCRIPTION:
-    Sets up multi-user family environment with standard user accounts
-    for family members, shared directories, and appropriate permissions.
+    Creates family user accounts with basic configuration. This script
+    focuses solely on user account creation and basic shell setup.
 
 DEVICE_TYPE:
     macbook-pro    Portable development workstation
@@ -319,19 +254,17 @@ FAMILY USERS:
 CONFIGURATION:
     • Creates user accounts with Australian English locale
     • Sets up basic shell configuration (zsh)
-    • Configures shared family directories
-    • Sets appropriate file permissions
-    • Configures Time Machine access (device-specific)
+    • Configures basic user preferences
 
 EXAMPLES:
     $SCRIPT_NAME                    # Setup for MacBook Pro
-    $SCRIPT_NAME mac-studio         # Setup for Mac Studio with server features
+    $SCRIPT_NAME mac-studio         # Setup for Mac Studio
     
 NOTES:
     • Requires administrator privileges
     • Users are created as standard (non-admin) accounts
-    • Shared directories created in /Users/Shared/Family/
-    • Time Machine configuration may require manual setup
+    • Only handles core user creation - no shared directories
+    • Run setup-family-environment.zsh for family features
 
 EOF
 }
@@ -355,19 +288,11 @@ main() {
     setup_family_users
     echo
     
-    # Configure shared directories
-    setup_shared_directories
-    echo
-    
-    # Configure Time Machine access
-    setup_time_machine_access
-    echo
-    
     success "=========================================="
-    success "Multi-user setup completed successfully!"
+    success "User account setup completed successfully!"
     success "=========================================="
     info "Family users configured for: $DEVICE_TYPE"
-    info "Shared directories available in /Users/Shared/Family/"
+    info "Note: Run setup-family-environment.zsh to configure shared directories and family features"
     
     return 0
 }

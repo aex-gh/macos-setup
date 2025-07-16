@@ -1,82 +1,39 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
-# Script metadata and colour codes
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
 readonly SCRIPT_DIR="${0:A:h}"
 readonly PROJECT_ROOT="${SCRIPT_DIR}/.."
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly MAGENTA=$(tput setaf 5)
-readonly CYAN=$(tput setaf 6)
-readonly RESET=$(tput sgr0)
+
+# Load common library
+source "${SCRIPT_DIR}/lib/common.zsh"
 
 # Global variables
 DEVICE_TYPE=""
 DETECTED_MODEL=""
 DRY_RUN=false
 SKIP_CONFIRMATION=false
-VERBOSE=false
+DEBUG=false
 
-# Logging functions
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*" >&2
-}
-
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-debug() {
-    if [[ "$VERBOSE" == "true" ]]; then
-        echo "${CYAN}[DEBUG]${RESET} $*" >&2
-    fi
-}
-
-header() {
-    echo "${MAGENTA}[SETUP]${RESET} $*"
-}
-
-# macOS notification function
-notify() {
-    local title="$1"
-    local message="$2"
-    osascript -e "display notification \"$message\" with title \"$title\""
-}
-
-# Device detection logic
-detect_device_type() {
-    local model_identifier
-    model_identifier=$(system_profiler SPHardwareDataType | grep "Model Identifier" | awk '{print $3}')
-    DETECTED_MODEL="$model_identifier"
+# Enhanced device detection using common library
+detect_and_display_device_type() {
+    DEVICE_TYPE=$(detect_device_type)
+    DETECTED_MODEL=$(get_mac_model)
     
-    debug "Detected model identifier: $model_identifier"
+    debug "Detected model identifier: $DETECTED_MODEL"
     
-    case "$model_identifier" in
-        MacBookPro*)
-            DEVICE_TYPE="macbook-pro"
+    case "$DEVICE_TYPE" in
+        macbook-pro)
             info "Detected: MacBook Pro (Portable Development Workstation)"
             ;;
-        Macmini*)
-            DEVICE_TYPE="mac-mini" 
+        mac-mini)
             info "Detected: Mac Mini (Lightweight Development + Multimedia)"
             ;;
-        MacStudio*)
-            DEVICE_TYPE="mac-studio"
+        mac-studio)
             info "Detected: Mac Studio (Headless Server Infrastructure)"
             ;;
         *)
-            warn "Unknown Mac model: $model_identifier"
+            warn "Unknown Mac model: $DETECTED_MODEL"
             warn "Defaulting to MacBook Pro configuration"
             DEVICE_TYPE="macbook-pro"
             ;;
@@ -241,14 +198,8 @@ main_setup() {
     return 0
 }
 
-# Cleanup function
-cleanup() {
-    debug "Cleanup function called"
-    # Add any cleanup logic here
-}
-
-# Trap for cleanup
-trap cleanup EXIT INT TERM
+# Register any additional cleanup functions if needed
+# (Basic cleanup is already handled by common library)
 
 # Help function
 usage() {
@@ -312,7 +263,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -v|--verbose)
-            VERBOSE=true
+            DEBUG=true
             shift
             ;;
         -h|--help)
@@ -343,7 +294,7 @@ fi
 
 # Main execution
 if [[ -z "$DEVICE_TYPE" ]]; then
-    detect_device_type
+    detect_and_display_device_type
     
     if [[ "$SKIP_CONFIRMATION" != "true" ]]; then
         select_device_type
