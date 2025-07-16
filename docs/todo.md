@@ -116,22 +116,22 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Phase 6: Device-Specific Features (Priority: Medium)
 
 ### Network Configuration
-- [ ] 🔴 Create script for static IP setup for Mac Studio (10.20.0.10)
-- [ ] 🔴 Create script for static IP setup for Mac Mini (10.20.0.12)
-- [ ] 🔴 Create script to configure WiFi settings for MacBook Pro (dynamic IP)
-- [ ] 🔴 Create script to set up network service ordering and priorities
+- [x] 🟢 Create script for static IP setup for Mac Studio (10.20.0.10)
+- [x] 🟢 Create script for static IP setup for Mac Mini (10.20.0.12)
+- [x] 🟢 Create script to configure WiFi settings for MacBook Pro (dynamic IP)
+- [x] 🟢 Create script to set up network service ordering and priorities
 
 ### Remote Access Setup
-- [ ] 🔴 Create script to configure Jump Desktop Connect for headless systems
-- [ ] 🔴 Create script to configure Jump Desktop for MacBook Pro
-- [ ] 🔴 Create script to set up SSH key management via 1Password
-- [ ] 🔴 Create script to configure Screen Sharing preferences
+- [x] 🟢 Create script to configure Jump Desktop Connect for headless systems
+- [x] 🟢 Create script to configure Jump Desktop for MacBook Pro
+- [x] 🟢 Create script to set up SSH key management via 1Password
+- [x] 🟢 Create script to configure Screen Sharing preferences
 
 ### Mac Studio Server Features
-- [ ] 🔴 Create script to configure central file server functionality
-- [ ] 🔴 Create script to set up Time Machine backup server
-- [ ] 🔴 Create script to implement headless operation optimisations
-- [ ] 🔴 Create monitoring and maintenance scripts
+- [x] 🟢 Create script to configure central file server functionality
+- [x] 🟢 Create script to set up Time Machine backup server
+- [x] 🟢 Create script to implement headless operation optimisations
+- [x] 🟢 Create monitoring and maintenance scripts
 
 ## Phase 7: Dotfiles and Theming (Priority: Medium)
 
