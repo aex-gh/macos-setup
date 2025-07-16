@@ -30,36 +30,36 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Phase 3: Core Brewfiles (Priority: High)
 
 ### Core Dependencies Planning
-- [ ] 🔴 Add chezmoi to base Brewfile (`chezmoi`)
-- [ ] 🔴 Add essential development tools to base Brewfile (`jq`, `ripgrep`, `bat`, `eza`, `fzf`)
-- [ ] 🔴 Add BATS testing framework to base Brewfile (`bats-core`)
-- [ ] 🔴 Create script to verify required tools are accessible in PATH
+- [x] 🟢 Add chezmoi to base Brewfile (`chezmoi`)
+- [x] 🟢 Add essential development tools to base Brewfile (`jq`, `ripgrep`, `bat`, `eza`, `fzf`)
+- [x] 🟢 Add BATS testing framework to base Brewfile (`bats-core`)
+- [x] 🟢 Create script to verify required tools are accessible in PATH
 
 ### Base Configuration
-- [ ] 🔴 Create `configs/common/Brewfile` with universal tools
-  - [ ] Essential CLI tools (git, gh, jq, ripgrep, bat, eza, fzf)
-  - [ ] Development languages (python, node, ruby)
-  - [ ] Container tools (orbstack)
-  - [ ] Productivity apps (1password, raycast, karabiner-elements)
+- [x] 🟢 Create `configs/common/Brewfile` with universal tools
+  - [x] Essential CLI tools (git, gh, jq, ripgrep, bat, eza, fzf)
+  - [x] Development languages (python, node, ruby)
+  - [x] Container tools (orbstack)
+  - [x] Productivity apps (1password, raycast, karabiner-elements)
 
 ### Device-Specific Brewfiles
-- [ ] 🔴 Create `configs/macbook-pro/Brewfile` extending base
-  - [ ] Portable development tools
-  - [ ] Jump Desktop (MAS install)
-  - [ ] Battery optimisation tools
-- [ ] 🔴 Create `configs/mac-studio/Brewfile` extending base
-  - [ ] Server infrastructure tools
-  - [ ] Jump Desktop Connect
-  - [ ] Monitoring and virtualisation tools
-- [ ] 🔴 Create `configs/mac-mini/Brewfile` extending base
-  - [ ] Media applications (iina, zen-browser)
-  - [ ] Jump Desktop Connect
-  - [ ] Home automation tools
+- [x] 🟢 Create `configs/macbook-pro/Brewfile` extending base
+  - [x] Portable development tools
+  - [x] Jump Desktop (MAS install)
+  - [x] Battery optimisation tools
+- [x] 🟢 Create `configs/mac-studio/Brewfile` extending base
+  - [x] Server infrastructure tools
+  - [x] Jump Desktop Connect
+  - [x] Monitoring and virtualisation tools
+- [x] 🟢 Create `configs/mac-mini/Brewfile` extending base
+  - [x] Media applications (iina, zen-browser)
+  - [x] Jump Desktop Connect
+  - [x] Home automation tools
 
 ### Validation
-- [ ] 🔴 Create script to validate all formulae exist in current Homebrew
-- [ ] 🔴 Create script to validate all casks exist in current Homebrew
-- [ ] 🔴 Create script to test Brewfile syntax and dependencies
+- [x] 🟢 Create script to validate all formulae exist in current Homebrew
+- [x] 🟢 Create script to validate all casks exist in current Homebrew
+- [x] 🟢 Create script to test Brewfile syntax and dependencies
 
 ## Phase 4: Essential Scripts (Priority: High)
 
