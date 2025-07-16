@@ -1,19 +1,11 @@
 # macOS Setup Automation - Common Base Brewfile
 # Universal tools and applications for all Mac models
-# This file forms the foundation layer for all device-specific configurations
 
-# =============================================================================
-# Core System Tools
-# =============================================================================
-
-# Essential CLI tools for development and system administration
 brew "git"              # Version control system
 brew "gh"               # GitHub CLI for repository management
 brew "jq"               # JSON processor for API interactions
 brew "curl"             # Data transfer tool
 brew "wget"             # Web content retrieval
-
-# Modern CLI replacements for better UX
 brew "ripgrep"          # Fast grep replacement with better defaults
 brew "bat"              # Cat replacement with syntax highlighting
 brew "eza"              # Modern ls replacement with git integration
@@ -21,65 +13,24 @@ brew "fzf"              # Fuzzy finder for command line
 brew "fd"               # Fast find replacement
 brew "htop"             # Interactive process viewer
 brew "tree"             # Directory structure visualisation
-
-# =============================================================================
-# Development Environment
-# =============================================================================
-
-# Programming languages and package managers
-brew "python@3.12"     # Python programming language
+brew "python@3.13"     # Python programming language
 brew "node"             # Node.js JavaScript runtime
 brew "ruby"             # Ruby programming language
 brew "uv"               # Fast Python package installer and resolver
 brew "pipx"             # Install Python applications in isolated environments
-
-# Development tools
 brew "chezmoi"          # Dotfile management system
 brew "bats-core"        # Bash Automated Testing System
-
-# =============================================================================
-# Container and Virtualisation
-# =============================================================================
-
-cask "orbstack"         # Fast, light, simple container and VM management
-
-# =============================================================================
-# Security and Password Management
-# =============================================================================
-
-cask "1password"        # Password manager and secure vault
+brew "zen"              # Zen browser
 brew "1password-cli"    # 1Password CLI for automation and scripting
-
-# =============================================================================
-# Productivity Applications
-# =============================================================================
-
-cask "raycast"          # Productivity launcher and workspace
-cask "karabiner-elements"  # Keyboard customisation and remapping
-
-# =============================================================================
-# Development Editors and IDEs
-# =============================================================================
-
-cask "zed"              # High-performance code editor
-
-# =============================================================================
-# System Utilities
-# =============================================================================
-
 brew "mas"              # Mac App Store command line interface
 brew "mackup"           # Application settings backup and sync
 brew "duti"             # Default application setter
-
-# =============================================================================
-# Fonts
-# =============================================================================
-
-cask "font-maple-mono-nerd-font"  # Standardised development font
-
-# =============================================================================
-# Terminal and Shell Enhancement
-# =============================================================================
-
 brew "zsh-completions"  # Additional zsh completion definitions
 brew "zsh-syntax-highlighting"  # Fish shell-like syntax highlighting for zsh
+
+cask "orbstack"         # Fast, light, simple container and VM management
+cask "1password"        # Password manager and secure vault
+cask "raycast"          # Productivity launcher and workspace
+cask "karabiner-elements"  # Keyboard customisation and remapping
+cask "zed"              # High-performance code editor
+cask "font-maple-mono-nf"  # Standardised development font

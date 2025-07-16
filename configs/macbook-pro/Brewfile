@@ -1,94 +1,28 @@
 # macOS Setup Automation - MacBook Pro Brewfile
 # Portable development workstation configuration
-# Extends the common base with mobile development and productivity tools
 
-# =============================================================================
-# Include Base Configuration
-# =============================================================================
-# Note: This conceptually extends configs/common/Brewfile
-# In practice, both files will be processed during setup
-
-# =============================================================================
-# Portable Development Tools
-# =============================================================================
-
-# Mobile-specific development tools
 brew "ios-deploy"       # Deploy and debug iOS apps from command line
 brew "xcodes"           # Xcode version management
 brew "fastlane"         # iOS and Android deployment automation
-
-# Development utilities for on-the-go coding
 brew "tmux"             # Terminal multiplexer for session management
 brew "neovim"           # Modern vim implementation for terminal editing
 brew "mosh"             # Mobile shell for unstable connections
 
-# =============================================================================
-# Remote Access and Connectivity
-# =============================================================================
-
 cask "jump-desktop"     # Remote desktop client for accessing other Macs
 cask "tailscale"        # Secure network connectivity mesh
-cask "nordvpn"          # VPN service for secure connections
-
-# =============================================================================
-# Battery and Power Management
-# =============================================================================
-
-cask "coconutbattery"   # Battery health monitoring
-cask "al-dente-pro"     # Battery charge limiting for longevity
-
-# =============================================================================
-# Mobile Productivity
-# =============================================================================
-
-cask "noteship"         # Note-taking optimised for quick capture
-cask "pastebot"         # Advanced clipboard management
-cask "bartender-4"      # Menu bar organisation and hiding
-
-# =============================================================================
-# Design and Media Tools
-# =============================================================================
-
-cask "figma"            # Interface design and prototyping
-cask "imageoptim"       # Image compression and optimisation
-cask "keewordrebuilder" # Keyword and metadata management
-
-# =============================================================================
-# File Management and Synchronisation
-# =============================================================================
-
-cask "dropzone-4"       # Drag and drop file management
-cask "hazel"            # Automated file organisation
+cask "affinity-designer"   # Vector design and illustration
+cask "affinity-photo"      # Photo editing and manipulation
+cask "affinity-publisher"  # Desktop publishing and layout
 cask "syncthing"        # Continuous file synchronisation
-
-# =============================================================================
-# Web Browsers for Testing
-# =============================================================================
-
 cask "google-chrome"    # Chrome for web development testing
 cask "firefox"          # Firefox for cross-browser compatibility
 cask "safari-technology-preview"  # Latest Safari features
-
-# =============================================================================
-# Mac App Store Applications
-# =============================================================================
-
-mas "Xcode", id: 497799835          # Apple's development environment
-mas "TestFlight", id: 899247664     # iOS app beta testing
-mas "Finder", id: 1288404208        # Enhanced file manager features
-mas "Amphetamine", id: 937984704    # Prevent system sleep during work
-
-# =============================================================================
-# Communication and Collaboration
-# =============================================================================
-
 cask "slack"            # Team communication
 cask "zoom"             # Video conferencing
 cask "discord"          # Community and team chat
-
-# =============================================================================
-# Entertainment and Media
-# =============================================================================
-
 cask "spotify"          # Music streaming
 cask "vlc"              # Universal media player
+
+mas "Xcode", id: 497799835          # Apple's development environment
+mas "TestFlight", id: 899247664     # iOS app beta testing
+mas "Amphetamine", id: 937984704    # Prevent system sleep during work

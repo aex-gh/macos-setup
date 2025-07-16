@@ -1,126 +1,48 @@
 # macOS Setup Automation - Mac Studio Brewfile
 # Headless server infrastructure configuration
-# Extends the common base with server, monitoring, and virtualisation tools
 
-# =============================================================================
-# Include Base Configuration
-# =============================================================================
-# Note: This conceptually extends configs/common/Brewfile
-# In practice, both files will be processed during setup
-
-# =============================================================================
-# Server Infrastructure Tools
-# =============================================================================
-
-# Web servers and reverse proxies
 brew "nginx"            # High-performance web server and reverse proxy
 brew "caddy"            # Modern web server with automatic HTTPS
 brew "traefik"          # Cloud-native reverse proxy and load balancer
-
-# Database systems
-brew "postgresql@15"    # Advanced relational database system
+brew "postgresql@17"    # Advanced relational database system
 brew "redis"            # In-memory data structure store
 brew "sqlite"           # Lightweight database engine
-
-# =============================================================================
-# Remote Access and Management
-# =============================================================================
-
-cask "jump-desktop-connect"  # Remote access server for headless operation
 brew "openssh"          # Secure Shell for remote administration
 brew "mosh"             # Mobile shell for reliable connections
 brew "screen"           # Terminal session management
 brew "tmux"             # Advanced terminal multiplexer
-
-# =============================================================================
-# Monitoring and System Administration
-# =============================================================================
-
-# System monitoring and metrics
 brew "htop"             # Interactive process monitor
 brew "iotop"            # I/O monitoring
 brew "nethogs"          # Network bandwidth monitoring per process
 brew "nload"            # Network traffic monitoring
 brew "glances"          # Cross-platform system monitoring
 brew "ncdu"             # Disk usage analyser
-
-# Log management and analysis
 brew "lnav"             # Advanced log file navigator
 brew "logrotate"        # Log file rotation management
-
-# =============================================================================
-# Virtualisation and Container Management
-# =============================================================================
-
-# Enhanced container and VM tools for server workloads
 brew "docker"           # Container platform CLI
 brew "docker-compose"   # Multi-container application orchestration
 brew "qemu"             # Generic machine emulator and virtualiser
-
-# =============================================================================
-# Network Services and File Sharing
-# =============================================================================
-
-# File sharing and network services
 brew "samba"            # SMB/CIFS file sharing
-brew "nfs-utils"        # Network File System utilities
 brew "rsync"            # File synchronisation and transfer
 brew "rclone"           # Cloud storage synchronisation
-
-# Network diagnostics and tools
 brew "nmap"             # Network discovery and security auditing
 brew "iperf3"           # Network bandwidth testing
 brew "mtr"              # Network diagnostic combining ping and traceroute
-
-# =============================================================================
-# Backup and Storage Management
-# =============================================================================
-
-# Time Machine and backup tools
 brew "tmutil"           # Time Machine utility
 brew "restic"           # Modern backup program
 brew "duplicity"        # Encrypted backup using rsync
-
-# =============================================================================
-# Automation and Scripting
-# =============================================================================
-
-# Enhanced scripting and automation tools
 brew "parallel"         # Execute jobs in parallel
 brew "expect"           # Automate interactive applications
 brew "pv"               # Progress viewer for pipes
-
-# =============================================================================
-# Security and System Hardening
-# =============================================================================
-
-# Security monitoring and intrusion detection
 brew "fail2ban"         # Intrusion prevention system
 brew "lynis"            # Security auditing and hardening tool
 brew "rkhunter"         # Rootkit scanner
-
-# =============================================================================
-# Development and CI/CD (Server-side)
-# =============================================================================
-
-# CI/CD and automation platforms
 brew "jenkins"          # Continuous integration and deployment
 brew "ansible"          # IT automation and configuration management
+brew "smartmontools"    # Hard drive health monitoring
+brew "supervisor"       # Process control system
 
-# =============================================================================
-# Mac App Store Applications (Minimal for headless)
-# =============================================================================
+cask "jump-desktop-connect"  # Remote access server for headless operation
+cask "vmware-fusion"    # Professional virtualisation platform
 
 mas "Server", id: 1173315362        # macOS Server app for additional services
-
-# =============================================================================
-# System Utilities for Server Management
-# =============================================================================
-
-# Hardware monitoring and control
-brew "lm-sensors"       # Hardware monitoring (Linux compatibility)
-brew "smartmontools"    # Hard drive health monitoring
-
-# Process and service management
-brew "supervisor"       # Process control system
-brew "launchctl-gui"    # GUI for launchctl service management
