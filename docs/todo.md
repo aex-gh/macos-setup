@@ -97,21 +97,21 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ## Phase 5: Security and User Management (Priority: Medium)
 
 ### Security Configuration
-- [ ] 🔴 Create script to set up FileVault encryption
-- [ ] 🔴 Create script to configure firewall settings for each device type
-- [ ] 🔴 Create script for 1Password CLI integration
-  - [ ] Script for service account configuration
-  - [ ] Script with secure credential retrieval functions
-- [ ] 🔴 Create script to implement basic macOS hardening measures
+- [x] 🟢 Create script to set up FileVault encryption
+- [x] 🟢 Create script to configure firewall settings for each device type
+- [x] 🟢 Create script for 1Password CLI integration
+  - [x] Script for service account configuration
+  - [x] Script with secure credential retrieval functions
+- [x] 🟢 Create script to implement basic macOS hardening measures
 
 ### Multi-User Setup
-- [ ] 🔴 Create script with user account creation functions
-  - [ ] Script to create Ali Exley (ali) - standard user
-  - [ ] Script to create Amelia Exley (amelia) - standard user  
-  - [ ] Script to create Annabelle Exley (annabelle) - standard user
-- [ ] 🔴 Create script to configure shared directories and permissions
-- [ ] 🔴 Create script to set up Time Machine access for all users
-- [ ] 🔴 Create script to configure user-specific preferences
+- [x] 🟢 Create script with user account creation functions
+  - [x] Script to create Ali Exley (ali) - standard user
+  - [x] Script to create Amelia Exley (amelia) - standard user  
+  - [x] Script to create Annabelle Exley (annabelle) - standard user
+- [x] 🟢 Create script to configure shared directories and permissions
+- [x] 🟢 Create script to set up Time Machine access for all users
+- [x] 🟢 Create script to configure user-specific preferences
 
 ## Phase 6: Device-Specific Features (Priority: Medium)
 
