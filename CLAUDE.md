@@ -27,7 +27,7 @@ Common Base Layer   ← Universal tools and macOS defaults
 ## Technology Stack
 
 **Core Tools:**
-- **Shell:** Zsh (with comprehensive scripting standards in `macos-zsh-standards.md`)
+- **Shell:** Zsh (with comprehensive scripting standards in `docs/macos-zsh-standards.md`)
 - **Package Management:** Homebrew with Brewfiles for each device type
 - **Dotfile Management:** chezmoi for reproducible user configurations
 - **Development:** Python (uv/ruff), Node.js, Ruby, containerisation via OrbStack
@@ -57,7 +57,7 @@ Common Base Layer   ← Universal tools and macOS defaults
 ## Development Workflows
 
 **Zsh Scripting Standards:**
-- Follow comprehensive standards documented in `macos-zsh-standards.md`
+- Follow comprehensive standards documented in `docs/macos-zsh-standards.md`
 - Use strict error handling: `set -euo pipefail`
 - Implement colour-coded logging with context tracking
 - Include cleanup functions and proper trap handling
@@ -92,7 +92,8 @@ macos-setupv2/
 ├── docs/                    # Documentation and planning
 │   ├── project-plan.md
 │   ├── macos-zsh-standards.md
-│   └── role-macos-specialist.md
+│   ├── role-macos-specialist.md
+│   └── todo.md
 ├── configs/                 # Device-specific configurations
 │   ├── common/             # Base layer configurations
 │   ├── macbook-pro/        # Portable development configs
@@ -150,3 +151,7 @@ macos-setupv2/
 ## Claude AI Guidelines
 
 - Do not generate code specifically for this system. It has to be generic for multiple models.
+
+## Commit Guidelines
+
+- Make commits without Claude Code signature and Claude Code author
