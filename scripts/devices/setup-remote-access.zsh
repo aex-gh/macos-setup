@@ -1,33 +1,15 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-# Script metadata and colour codes
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
+
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Device type from command line
 DEVICE_TYPE="${1:-macbook-pro}"
-
-# Logging functions
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*" >&2
-}
-
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
 
 # Configure SSH access
 configure_ssh_access() {
@@ -370,9 +352,9 @@ configure_wake_on_lan() {
             
             # Get Ethernet MAC address for Wake-on-LAN
             local ethernet_mac
-            ethernet_mac=$(ifconfig en0 2>/dev/null | grep ether | awk '{print $2}' || echo "not found")
+            ethernet_mac=$(get_interface_mac "en0")
             
-            if [[ "$ethernet_mac" != "not found" ]]; then
+            if [[ -n "$ethernet_mac" ]]; then
                 success "✓ Ethernet MAC address: $ethernet_mac"
                 info "Use this MAC address for Wake-on-LAN from other devices"
                 

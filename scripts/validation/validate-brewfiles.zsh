@@ -8,31 +8,7 @@ readonly PROJECT_ROOT="${SCRIPT_DIR}/.."
 # Load common library
 source "${SCRIPT_DIR}/../lib/common.zsh"
 
-# Validate Brewfile using brew bundle check
-validate_brewfile() {
-    local brewfile="$1"
-    local brewfile_name="${brewfile:t}"
-    local brewfile_dir="${brewfile:h}"
-    
-    if ! file_readable "$brewfile"; then
-        error "Brewfile not found: $brewfile"
-        return 1
-    fi
-    
-    info "Validating $brewfile_name..."
-    
-    # Change to brewfile directory for proper relative path handling
-    cd "$brewfile_dir" || return 1
-    
-    # Use brew bundle check for validation
-    if brew bundle check --file="$brewfile" --verbose; then
-        success "✓ $brewfile_name validation passed"
-        return 0
-    else
-        error "✗ $brewfile_name validation failed"
-        return 1
-    fi
-}
+# Note: validate_brewfile function is now in common library
 
 # Help function
 usage() {

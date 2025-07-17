@@ -1,42 +1,23 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
-# Script metadata and colour codes
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
+
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Device type from command line
 DEVICE_TYPE="${1:-macbook-pro}"
 
-# Logging functions
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*" >&2
-}
-
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
 # Check FileVault status
 check_filevault_status() {
-    local status
-    status=$(fdesetup status 2>/dev/null || echo "unknown")
+    local filevault_status
+    filevault_status=$(fdesetup status 2>/dev/null || echo "unknown")
     
-    info "Current FileVault status: $status"
+    info "Current FileVault status: $filevault_status"
     
-    case "$status" in
+    case "$filevault_status" in
         *"FileVault is On"*)
             success "FileVault is already enabled and active"
             return 0
@@ -54,7 +35,7 @@ check_filevault_status() {
             return 1
             ;;
         *)
-            warn "Unknown FileVault status: $status"
+            warn "Unknown FileVault status: $filevault_status"
             return 1
             ;;
     esac
@@ -68,7 +49,7 @@ check_user_eligibility() {
     info "Checking FileVault eligibility for user: $current_user"
     
     # Check if user is admin
-    if groups "$current_user" | grep -q "\badmin\b"; then
+    if is_user_admin "$current_user"; then
         success "Current user ($current_user) has admin privileges"
     else
         error "Current user ($current_user) does not have admin privileges"
@@ -122,11 +103,11 @@ enable_filevault() {
         success "FileVault has been enabled successfully"
         
         # Get encryption status
-        local status
-        status=$(fdesetup status 2>/dev/null || echo "unknown")
-        info "Status: $status"
+        local filevault_status
+        filevault_status=$(fdesetup status 2>/dev/null || echo "unknown")
+        info "Status: $filevault_status"
         
-        if [[ "$status" == *"Encryption in progress"* ]]; then
+        if [[ "$filevault_status" == *"Encryption in progress"* ]]; then
             info "Encryption is now running in the background"
             info "Your Mac will encrypt data while you use it"
             info "Check progress with: sudo fdesetup status"
@@ -204,10 +185,10 @@ check_encryption_progress() {
         return 1
     fi
     
-    local status
-    status=$(fdesetup status 2>/dev/null || echo "unknown")
+    local filevault_status
+    filevault_status=$(fdesetup status 2>/dev/null || echo "unknown")
     
-    if [[ "$status" == *"Encryption in progress"* ]]; then
+    if [[ "$filevault_status" == *"Encryption in progress"* ]]; then
         info "Checking encryption progress..."
         
         # Try to get percentage if available
@@ -223,7 +204,7 @@ check_encryption_progress() {
         
         info "Encryption will continue in the background"
         info "Your Mac remains fully usable during encryption"
-    elif [[ "$status" == *"FileVault is On"* ]]; then
+    elif [[ "$filevault_status" == *"FileVault is On"* ]]; then
         success "Encryption is complete and FileVault is fully active"
     fi
 }

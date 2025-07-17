@@ -1,14 +1,18 @@
 #!/usr/bin/env zsh
 # Performance caching utilities for setup scripts
 
-# Command existence cache
+# Load common library for consistent functionality
+readonly SCRIPT_DIR="${0:A:h}"
+source "${SCRIPT_DIR}/../lib/common.zsh"
+
+# Command existence cache (extending common.zsh functionality)
 declare -A COMMAND_CACHE
 
-# Check if command exists (cached)
-command_exists() {
+# Enhanced command_exists with caching (extends common.zsh)
+cached_command_exists() {
     local cmd="$1"
     if [[ -z "${COMMAND_CACHE[$cmd]:-}" ]]; then
-        if command -v "$cmd" >/dev/null 2>&1; then
+        if command_exists "$cmd"; then
             COMMAND_CACHE[$cmd]="true"
         else
             COMMAND_CACHE[$cmd]="false"
@@ -17,11 +21,11 @@ command_exists() {
     [[ "${COMMAND_CACHE[$cmd]}" == "true" ]]
 }
 
-# System information cache
+# System information cache (extending common.zsh functionality)
 declare -A SYSTEM_INFO_CACHE
 
-# Get cached system information
-get_system_info() {
+# Get cached system information (extends common.zsh)
+get_cached_system_info() {
     local key="$1"
     
     if [[ -z "${SYSTEM_INFO_CACHE[$key]:-}" ]]; then
@@ -30,17 +34,16 @@ get_system_info() {
                 SYSTEM_INFO_CACHE[$key]=$(hostname)
                 ;;
             "macos_version")
-                SYSTEM_INFO_CACHE[$key]=$(sw_vers -productVersion)
+                SYSTEM_INFO_CACHE[$key]=$(get_macos_version)
                 ;;
             "device_type")
-                local model_name
-                model_name=$(system_profiler SPHardwareDataType | grep "Model Name" | cut -d: -f2 | xargs)
-                case "$model_name" in
-                    *"MacBook Pro"*) SYSTEM_INFO_CACHE[$key]="macbook-pro" ;;
-                    *"Mac Studio"*) SYSTEM_INFO_CACHE[$key]="mac-studio" ;;
-                    *"Mac mini"*) SYSTEM_INFO_CACHE[$key]="mac-mini" ;;
-                    *) SYSTEM_INFO_CACHE[$key]="unknown" ;;
-                esac
+                SYSTEM_INFO_CACHE[$key]=$(detect_device_type)
+                ;;
+            "cpu_info")
+                SYSTEM_INFO_CACHE[$key]=$(get_cpu_info)
+                ;;
+            "memory_info")
+                SYSTEM_INFO_CACHE[$key]=$(get_memory_info)
                 ;;
         esac
     fi
@@ -68,9 +71,15 @@ run_parallel() {
     wait  # Wait for remaining jobs
 }
 
-# Batch Homebrew operations
+# Batch Homebrew operations (uses common.zsh validation)
 brew_batch_install() {
     local packages=("$@")
+    
+    # Check Homebrew availability using common library
+    if ! check_homebrew; then
+        error "Homebrew not available for batch installation"
+        return 1
+    fi
     
     if [[ ${#packages[@]} -gt 0 ]]; then
         info "Installing packages in batch: ${packages[*]}"

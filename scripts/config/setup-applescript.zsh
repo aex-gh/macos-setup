@@ -1,44 +1,17 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
 
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*"
-}
-
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-cleanup() {
-    local exit_code=$?
-    if [[ ${exit_code} -ne 0 ]]; then
-        error "Script failed with exit code ${exit_code}"
-    fi
-    exit ${exit_code}
-}
-
-trap cleanup EXIT INT TERM
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 create_applescript_directory() {
     info "Creating AppleScript automation directory..."
     
     local script_dir="${HOME}/Library/Scripts/Setup Automation"
-    mkdir -p "${script_dir}"
+    create_directory "${script_dir}" 755 "$USER" staff
     
     success "Created AppleScript directory: ${script_dir}"
 }
@@ -348,30 +321,38 @@ create_applescript_runner() {
 #!/usr/bin/env zsh
 # AppleScript Runner Utility
 
-set -euo pipefail
+# Script metadata
+readonly SCRIPT_NAME="${0:t}"
+readonly SCRIPT_DIR_TOOL="${0:A:h}"
 
-readonly SCRIPT_DIR="${HOME}/Library/Scripts/Setup Automation"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+# Load common library if available
+if [[ -f "${SCRIPT_DIR_TOOL}/../scripts/lib/common.zsh" ]]; then
+    source "${SCRIPT_DIR_TOOL}/../scripts/lib/common.zsh"
+else
+    # Fallback logging functions
+    readonly RED=$(tput setaf 1)
+    readonly GREEN=$(tput setaf 2)
+    readonly BLUE=$(tput setaf 4)
+    readonly RESET=$(tput sgr0)
+    info() { echo "${BLUE}[INFO]${RESET} $*"; }
+    success() { echo "${GREEN}[SUCCESS]${RESET} $*"; }
+    error() { echo "${RED}[ERROR]${RESET} $*" >&2; }
+fi
 
-info() { echo "${BLUE}[INFO]${RESET} $*"; }
-success() { echo "${GREEN}[SUCCESS]${RESET} $*"; }
-error() { echo "${RED}[ERROR]${RESET} $*" >&2; }
+readonly APPLESCRIPT_DIR="${HOME}/Library/Scripts/Setup Automation"
 
 list_scripts() {
     info "Available AppleScript automation scripts:"
-    if [[ -d "${SCRIPT_DIR}" ]]; then
-        find "${SCRIPT_DIR}" -name "*.applescript" -exec basename {} .applescript \; | sort
+    if [[ -d "${APPLESCRIPT_DIR}" ]]; then
+        find "${APPLESCRIPT_DIR}" -name "*.applescript" -exec basename {} .applescript \; | sort
     else
-        error "Script directory not found: ${SCRIPT_DIR}"
+        error "Script directory not found: ${APPLESCRIPT_DIR}"
     fi
 }
 
 run_script() {
     local script_name="$1"
-    local script_path="${SCRIPT_DIR}/${script_name}.applescript"
+    local script_path="${APPLESCRIPT_DIR}/${script_name}.applescript"
     
     if [[ ! -f "${script_path}" ]]; then
         error "Script not found: ${script_path}"
@@ -463,7 +444,7 @@ verify_installation() {
         error "AppleScript directory not found"
     fi
     
-    if command -v run-applescript >/dev/null 2>&1; then
+    if command_exists run-applescript; then
         success "AppleScript runner utility is accessible"
     else
         warn "AppleScript runner not in PATH"
@@ -471,14 +452,30 @@ verify_installation() {
 }
 
 main() {
-    info "Setting up AppleScript automation..."
+    header "Setting up AppleScript automation..."
     
+    # Initialize progress tracking
+    init_progress 7
+    
+    update_progress 1 "Creating AppleScript directory..."
     create_applescript_directory
+    
+    update_progress 1 "Creating system preference scripts..."
     create_system_preference_scripts
+    
+    update_progress 1 "Creating application automation scripts..."
     create_application_automation_scripts
+    
+    update_progress 1 "Creating development environment scripts..."
     create_development_environment_scripts
+    
+    update_progress 1 "Creating maintenance scripts..."
     create_maintenance_scripts
+    
+    update_progress 1 "Creating AppleScript runner utility..."
     create_applescript_runner
+    
+    update_progress 1 "Compiling and verifying installation..."
     compile_applescripts
     verify_installation
     
@@ -488,6 +485,9 @@ main() {
     
     warn "Note: Some scripts may require manual interaction or permissions"
     info "Test scripts individually before using in automated workflows"
+    
+    # Send completion notification
+    notify "AppleScript Setup" "AppleScript automation setup complete!"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

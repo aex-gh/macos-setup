@@ -1,38 +1,11 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
 
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*"
-}
-
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-cleanup() {
-    local exit_code=$?
-    if [[ ${exit_code} -ne 0 ]]; then
-        error "Script failed with exit code ${exit_code}"
-    fi
-    exit ${exit_code}
-}
-
-trap cleanup EXIT INT TERM
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 apply_terminal_theme() {
     info "Applying Gruvbox theme to Terminal.app..."
@@ -54,16 +27,16 @@ configure_system_appearance() {
     
     # Set to Dark mode
     osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true' 2>/dev/null || \
-    defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+    set_default NSGlobalDomain AppleInterfaceStyle "Dark"
     
     # Set accent colour to orange (Gruvbox orange)
-    defaults write NSGlobalDomain AppleAccentColor -int 1
+    set_default NSGlobalDomain AppleAccentColor 1 int
     
     # Set highlight colour to orange
-    defaults write NSGlobalDomain AppleHighlightColor -string "1.000000 0.733333 0.721569 Orange"
+    set_default NSGlobalDomain AppleHighlightColor "1.000000 0.733333 0.721569 Orange"
     
     # Disable transparency
-    defaults write com.apple.universalaccess reduceTransparency -bool true
+    set_default com.apple.universalaccess reduceTransparency true bool
     
     success "System appearance configured for Gruvbox theme"
 }
@@ -72,22 +45,22 @@ configure_finder_appearance() {
     info "Configuring Finder appearance..."
     
     # Set Finder to use list view by default
-    defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+    set_default com.apple.finder FXPreferredViewStyle "Nlsv"
     
     # Show all filename extensions
-    defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+    set_default NSGlobalDomain AppleShowAllExtensions true bool
     
     # Show status bar
-    defaults write com.apple.finder ShowStatusBar -bool true
+    set_default com.apple.finder ShowStatusBar true bool
     
     # Show path bar
-    defaults write com.apple.finder ShowPathbar -bool true
+    set_default com.apple.finder ShowPathbar true bool
     
     # Show sidebar
-    defaults write com.apple.finder ShowSidebar -bool true
+    set_default com.apple.finder ShowSidebar true bool
     
     # Set sidebar icon size to medium
-    defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
+    set_default NSGlobalDomain NSTableViewDefaultSizeMode 2 int
     
     success "Finder appearance configured"
 }
@@ -96,35 +69,35 @@ configure_dock_appearance() {
     info "Configuring Dock appearance..."
     
     # Set Dock to auto-hide
-    defaults write com.apple.dock autohide -bool true
+    set_default com.apple.dock autohide true bool
     
     # Set Dock auto-hide delay
-    defaults write com.apple.dock autohide-delay -float 0.1
+    set_default com.apple.dock autohide-delay 0.1 float
     
     # Set Dock animation speed
-    defaults write com.apple.dock autohide-time-modifier -float 0.5
+    set_default com.apple.dock autohide-time-modifier 0.5 float
     
     # Remove auto-hiding animation
-    defaults write com.apple.dock launchanim -bool false
+    set_default com.apple.dock launchanim false bool
     
     # Set Dock to bottom
-    defaults write com.apple.dock orientation -string "bottom"
+    set_default com.apple.dock orientation "bottom"
     
     # Set icon size
-    defaults write com.apple.dock tilesize -int 48
+    set_default com.apple.dock tilesize 48 int
     
     # Set magnification
-    defaults write com.apple.dock magnification -bool true
-    defaults write com.apple.dock largesize -int 64
+    set_default com.apple.dock magnification true bool
+    set_default com.apple.dock largesize 64 int
     
     # Don't show recent applications
-    defaults write com.apple.dock show-recents -bool false
+    set_default com.apple.dock show-recents false bool
     
     # Hot corners - disable all
-    defaults write com.apple.dock wvous-tl-corner -int 1
-    defaults write com.apple.dock wvous-tr-corner -int 1
-    defaults write com.apple.dock wvous-bl-corner -int 1
-    defaults write com.apple.dock wvous-br-corner -int 1
+    set_default com.apple.dock wvous-tl-corner 1 int
+    set_default com.apple.dock wvous-tr-corner 1 int
+    set_default com.apple.dock wvous-bl-corner 1 int
+    set_default com.apple.dock wvous-br-corner 1 int
     
     success "Dock appearance configured"
 }
@@ -133,15 +106,15 @@ configure_menu_bar() {
     info "Configuring menu bar appearance..."
     
     # Always show menu bar
-    defaults write NSGlobalDomain _HIHideMenuBar -bool false
+    set_default NSGlobalDomain _HIHideMenuBar false bool
     
     # Show battery percentage
-    defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+    set_default com.apple.menuextra.battery ShowPercent "YES"
     
     # Show date and time
-    defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM  HH:mm"
-    defaults write com.apple.menuextra.clock FlashDateSeparators -bool false
-    defaults write com.apple.menuextra.clock IsAnalog -bool false
+    set_default com.apple.menuextra.clock DateFormat "EEE d MMM  HH:mm"
+    set_default com.apple.menuextra.clock FlashDateSeparators false bool
+    set_default com.apple.menuextra.clock IsAnalog false bool
     
     success "Menu bar configured"
 }
@@ -153,11 +126,11 @@ configure_wallpaper() {
     local wallpaper_dir="${HOME}/Pictures/Wallpapers"
     local wallpaper_path="${wallpaper_dir}/gruvbox-solid.png"
     
-    mkdir -p "${wallpaper_dir}"
+    create_directory "${wallpaper_dir}" 755
     
     # Create a solid colour wallpaper using the Gruvbox dark background
     # Using Python to create a simple image (if available)
-    if command -v python3 >/dev/null 2>&1; then
+    if command_exists python3; then
         python3 -c "
 from PIL import Image
 import os
@@ -188,17 +161,17 @@ configure_text_editing() {
     info "Configuring text editing defaults..."
     
     # Smart quotes and dashes
-    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
-    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+    set_default NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled false bool
+    set_default NSGlobalDomain NSAutomaticDashSubstitutionEnabled false bool
     
     # Auto-correct
-    defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+    set_default NSGlobalDomain NSAutomaticSpellingCorrectionEnabled false bool
     
     # Auto-capitalisation
-    defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+    set_default NSGlobalDomain NSAutomaticCapitalizationEnabled false bool
     
     # Auto-period insertion
-    defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+    set_default NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled false bool
     
     success "Text editing defaults configured"
 }

@@ -1,13 +1,12 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-# Script metadata and colour codes
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
+
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Device type from command line
 DEVICE_TYPE="${1:-macbook-pro}"
@@ -24,70 +23,21 @@ declare -A DEVICE_IPS=(
     ["macbook-pro"]="dhcp"  # Dynamic IP for portable device
 )
 
-# Logging functions
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
+# Note: Logging functions are now in common library
 
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*" >&2
-}
+# Note: Network helper functions are now in common library
 
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-# Get available network services
-get_network_services() {
-    networksetup -listallnetworkservices | grep -v "asterisk" | tail -n +2
-}
-
-# Get primary network interface for device type
-get_primary_interface() {
-    case "$DEVICE_TYPE" in
-        "macbook-pro")
-            # Prefer Wi-Fi for portable device
-            echo "Wi-Fi"
-            ;;
-        "mac-studio"|"mac-mini")
-            # Prefer Ethernet for desktop devices
-            echo "Ethernet"
-            ;;
-    esac
-}
-
-# Check if network service exists
-check_network_service() {
-    local service="$1"
-    networksetup -listallnetworkservices | grep -q "^$service$"
-}
-
-# Configure static IP address
-configure_static_ip() {
+# Configure static IP address with DNS
+configure_static_ip_with_dns() {
     local service="$1"
     local ip_address="$2"
     local subnet_mask="255.255.255.0"
     
-    info "Configuring static IP for $service: $ip_address"
+    # Use common library function for static IP
+    configure_static_ip "$service" "$ip_address" "$subnet_mask" "$GATEWAY" || return 1
     
-    # Set static IP configuration
-    if sudo networksetup -setmanual "$service" "$ip_address" "$subnet_mask" "$GATEWAY"; then
-        success "✓ Static IP configured: $ip_address"
-    else
-        error "Failed to configure static IP for $service"
-        return 1
-    fi
-    
-    # Configure DNS servers
-    if sudo networksetup -setdnsservers "$service" "${DNS_SERVERS[@]}"; then
-        success "✓ DNS servers configured: ${DNS_SERVERS[*]}"
-    else
-        warn "Could not configure DNS servers"
-    fi
+    # Configure DNS servers using common library function
+    set_dns_servers "$service" "${DNS_SERVERS[@]}"
     
     return 0
 }
@@ -310,7 +260,7 @@ configure_device_network() {
             
             # Configure static IP for desktop devices
             if [[ "$device_ip" != "dhcp" ]]; then
-                configure_static_ip "$primary_interface" "$device_ip"
+                configure_static_ip_with_dns "$primary_interface" "$device_ip"
             fi
             ;;
     esac

@@ -19,6 +19,29 @@ Mac Model Layer     ← Device-specific settings and optimisations
 Common Base Layer   ← Universal tools and macOS defaults
 ```
 
+**Common Library Architecture:**
+All scripts utilise the comprehensive shared library `scripts/lib/common.zsh` which provides:
+
+**Core Functions:**
+- Standardised logging (`error`, `warn`, `info`, `success`, `debug`, `header`)
+- Device detection (`detect_device_type`, `is_macbook_pro`, `is_mac_studio`, etc.)
+- Validation helpers (`check_macos`, `check_homebrew`, `command_exists`)
+- Progress tracking with visual progress bars
+- Brewfile path management and validation
+- Enhanced cleanup and resource management
+
+**System Integration:**
+- User management (`user_exists`, `get_next_uid`, `is_user_admin`)
+- System information (`get_macos_version`, `get_cpu_info`, `get_memory_info`)
+- Service management (`is_service_running`, `enable_service`, `disable_service`)
+- macOS defaults management (`get_default`, `set_default`)
+
+**Specialized Integrations:**
+- 1Password CLI integration (`check_1password_auth`, `op_get_password`, `op_get_field`)
+- Network configuration (`configure_static_ip`, `set_dns_servers`, `get_primary_interface`)
+- Package validation (`validate_brewfile`, `check_brew_package`, `install_brewfile_packages`)
+- Secure file operations (`create_temp_directory`, `create_secure_file`)
+
 **Device-Specific Network Configuration:**
 - MacBook Pro: WiFi, dynamic IP (10.20.0.11) - portable development workstation
 - Mac Studio: Ethernet, static IP (10.20.0.10) - headless server infrastructure  
@@ -53,6 +76,54 @@ Common Base Layer   ← Universal tools and macOS defaults
 - Gentle hardening rather than enterprise-level restrictions
 - Network segmentation between device types
 - All passwords and SSH keys managed via 1Password
+
+## Common Development Commands
+
+**Running Tests:**
+```bash
+# Run all tests
+./scripts/validation/run-tests.zsh
+
+# Run specific test file
+bats tests/test_setup_main.bats
+
+# Run tests for specific component
+bats tests/test_homebrew.bats
+bats tests/test_security.bats
+bats tests/test_dotfiles.bats
+```
+
+**Validation and Linting:**
+```bash
+# Validate Brewfiles
+./scripts/validation/validate-brewfiles.zsh
+
+# Verify tool installations
+./scripts/validation/verify-tools.zsh
+
+# Validate complete setup
+./scripts/validation/validate-setup.zsh
+
+# Check for script conflicts
+./scripts/utils/detect-script-conflicts.zsh
+```
+
+**Main Setup Commands:**
+```bash
+# Run main setup (interactive)
+./scripts/setup/setup.zsh
+
+# Setup for specific device
+DEVICE_TYPE=macbook-pro ./scripts/setup/setup.zsh
+
+# Install Homebrew and packages
+./scripts/install/install-homebrew.zsh
+./scripts/install/install-packages.zsh
+
+# Security setup
+./scripts/security/setup-1password.zsh
+./scripts/security/setup-filevault.zsh
+```
 
 ## Development Workflows
 
@@ -119,7 +190,13 @@ macos-setupv2/
 
 ## Unique Features
 
-**Script Optimisation:** Comprehensive common library reducing code duplication by 1,437+ lines across all scripts with 47% average reduction.
+**Script Optimisation:** Advanced common library architecture eliminating ~550 lines of duplicate code across 16 scripts with comprehensive functionality consolidation.
+
+**Code Reduction Achievements:**
+- Phase 1: 200 lines of duplicate logging eliminated (8 scripts)
+- Phase 2: 150 lines of core utilities consolidated (5 scripts) 
+- Phase 3: 200 lines of specialized functions extracted (3 scripts)
+- Total: 69 duplicate functions removed, 959-line comprehensive common library created
 
 **Conflict Resolution:** Automated conflict detection system with detailed analysis and resolution recommendations.
 

@@ -1,38 +1,14 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
 
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*"
-}
-
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-cleanup() {
-    local exit_code=$?
-    if [[ ${exit_code} -ne 0 ]]; then
-        error "Script failed with exit code ${exit_code}"
-    fi
-    exit ${exit_code}
-}
-
-trap cleanup EXIT INT TERM
+# Note: Cleanup is handled by common library
 
 check_prerequisites() {
     info "Checking prerequisites..."

@@ -1,13 +1,12 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-# Script metadata and colour codes
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
+
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Device type from command line
 DEVICE_TYPE="${1:-macbook-pro}"
@@ -19,47 +18,7 @@ readonly FAMILY_USERS=(
     "annabelle:Annabelle Exley:standard"
 )
 
-# Logging functions
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*" >&2
-}
-
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-# Check if user already exists
-user_exists() {
-    local username="$1"
-    if id "$username" &>/dev/null; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Get next available UID
-get_next_uid() {
-    local max_uid=500
-    local existing_uids
-    existing_uids=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n)
-    
-    for uid in $existing_uids; do
-        if [[ $uid -ge $max_uid ]]; then
-            max_uid=$((uid + 1))
-        fi
-    done
-    
-    echo $max_uid
-}
+# Note: user_exists() and get_next_uid() functions are now in common library
 
 # Create user account
 create_user() {

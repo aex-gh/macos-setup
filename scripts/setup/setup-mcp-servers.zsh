@@ -1,56 +1,29 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
+# Script metadata
 readonly SCRIPT_NAME="${0:t}"
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
+readonly SCRIPT_DIR="${0:A:h}"
 
-info() {
-    echo "${BLUE}[INFO]${RESET} $*"
-}
-
-success() {
-    echo "${GREEN}[SUCCESS]${RESET} $*"
-}
-
-warn() {
-    echo "${YELLOW}[WARN]${RESET} $*"
-}
-
-error() {
-    echo "${RED}[ERROR]${RESET} $*" >&2
-}
-
-cleanup() {
-    local exit_code=$?
-    if [[ ${exit_code} -ne 0 ]]; then
-        error "Script failed with exit code ${exit_code}"
-    fi
-    exit ${exit_code}
-}
-
-trap cleanup EXIT INT TERM
+# Load common library
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 check_prerequisites() {
     info "Checking prerequisites for MCP server setup..."
     
     # Check for npm/node
-    if ! command -v npm >/dev/null 2>&1; then
+    if ! command_exists npm; then
         error "npm is required for MCP server installation. Please install Node.js first."
         exit 1
     fi
     
     # Check for Python (required for some MCP servers)
-    if ! command -v python3 >/dev/null 2>&1; then
+    if ! command_exists python3; then
         error "Python 3 is required for some MCP servers. Please install Python first."
         exit 1
     fi
     
     # Check for uv (Python package manager)
-    if ! command -v uv >/dev/null 2>&1; then
+    if ! command_exists uv; then
         warn "uv not found. Some Python MCP servers may not install correctly."
     fi
     
@@ -61,7 +34,7 @@ create_mcp_config_directory() {
     info "Creating MCP configuration directory..."
     
     local mcp_dir="${HOME}/.config/mcp"
-    mkdir -p "${mcp_dir}/servers"
+    create_directory "${mcp_dir}/servers" 755
     
     # Create global MCP configuration
     cat > "${mcp_dir}/config.json" << 'EOF'
@@ -139,7 +112,7 @@ install_markitdown_server() {
         warn "npm installation failed, trying alternative method..."
         
         # Alternative: install via uv if available
-        if command -v uv >/dev/null 2>&1; then
+        if command_exists uv; then
             if uv tool install markitdown; then
                 success "MarkItDown installed via uv"
                 add_server_to_config "${server_name}" "uv" "tool" "run markitdown-mcp" '{}'
@@ -251,7 +224,7 @@ EOF
     fi
     
     # Use jq to add server if available, otherwise manual JSON manipulation
-    if command -v jq >/dev/null 2>&1; then
+    if command_exists jq; then
         local temp_config
         temp_config=$(mktemp)
         jq --arg name "${name}" --argjson config "${server_config}" \
@@ -280,7 +253,7 @@ configure_claude_code_mcp() {
     fi
     
     # Use jq to merge MCP servers into Claude Code config
-    if command -v jq >/dev/null 2>&1; then
+    if command_exists jq; then
         local mcp_servers
         mcp_servers=$(jq '.mcpServers' "${mcp_config}")
         
@@ -304,24 +277,15 @@ create_mcp_management_script() {
 #!/usr/bin/env zsh
 # MCP Server Management Script
 
-set -euo pipefail
-
-readonly RED=$(tput setaf 1)
-readonly GREEN=$(tput setaf 2)
-readonly YELLOW=$(tput setaf 3)
-readonly BLUE=$(tput setaf 4)
-readonly RESET=$(tput sgr0)
-
-info() { echo "${BLUE}[INFO]${RESET} $*"; }
-success() { echo "${GREEN}[SUCCESS]${RESET} $*"; }
-warn() { echo "${YELLOW}[WARN]${RESET} $*"; }
-error() { echo "${RED}[ERROR]${RESET} $*" >&2; }
+# Load common library
+readonly SCRIPT_DIR="${0:A:h}/.."
+source "${SCRIPT_DIR}/scripts/lib/common.zsh"
 
 CONFIG_FILE="${HOME}/.config/mcp/config.json"
 
 list_servers() {
     info "Configured MCP servers:"
-    if [[ -f "${CONFIG_FILE}" ]] && command -v jq >/dev/null 2>&1; then
+    if [[ -f "${CONFIG_FILE}" ]] && command_exists jq; then
         jq -r '.mcpServers | keys[]' "${CONFIG_FILE}" 2>/dev/null || echo "No servers configured"
     else
         warn "Cannot list servers (config file or jq missing)"
@@ -332,7 +296,7 @@ test_server() {
     local server_name="$1"
     info "Testing MCP server: ${server_name}"
     
-    if [[ -f "${CONFIG_FILE}" ]] && command -v jq >/dev/null 2>&1; then
+    if [[ -f "${CONFIG_FILE}" ]] && command_exists jq; then
         local server_config
         server_config=$(jq -r ".mcpServers[\"${server_name}\"]" "${CONFIG_FILE}")
         
@@ -409,7 +373,7 @@ verify_installation() {
     if [[ -f "${config_file}" ]]; then
         success "MCP configuration file exists"
         
-        if command -v jq >/dev/null 2>&1; then
+        if command_exists jq; then
             local server_count
             server_count=$(jq '.mcpServers | length' "${config_file}")
             info "Configured servers: ${server_count}"
@@ -425,7 +389,7 @@ verify_installation() {
     fi
     
     # Check if mcp-manager is available
-    if command -v mcp-manager >/dev/null 2>&1; then
+    if command_exists mcp-manager; then
         success "MCP manager script is accessible"
     else
         warn "MCP manager script not in PATH"

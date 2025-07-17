@@ -420,6 +420,521 @@ standard_cleanup() {
 register_cleanup standard_cleanup
 
 #=============================================================================
+# USER MANAGEMENT HELPERS
+#=============================================================================
+
+# Check if user exists
+user_exists() {
+    local username="$1"
+    if id "$username" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Get next available UID
+get_next_uid() {
+    local max_uid=500
+    local existing_uids
+    existing_uids=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n)
+    
+    for uid in $existing_uids; do
+        if [[ $uid -ge $max_uid ]]; then
+            max_uid=$((uid + 1))
+        fi
+    done
+    
+    echo $max_uid
+}
+
+# Check if user is admin
+is_user_admin() {
+    local username="${1:-$USER}"
+    dscl . -read /Groups/admin GroupMembership 2>/dev/null | grep -q "\b$username\b"
+}
+
+# Get user's full name
+get_user_full_name() {
+    local username="${1:-$USER}"
+    dscl . -read "/Users/$username" RealName 2>/dev/null | sed -n 's/^RealName: //p'
+}
+
+# Get user's home directory
+get_user_home() {
+    local username="${1:-$USER}"
+    dscl . -read "/Users/$username" NFSHomeDirectory 2>/dev/null | sed -n 's/^NFSHomeDirectory: //p'
+}
+
+#=============================================================================
+# SYSTEM INFORMATION HELPERS
+#=============================================================================
+
+# Get macOS version
+get_macos_version() {
+    sw_vers -productVersion
+}
+
+# Get macOS build version
+get_macos_build() {
+    sw_vers -buildVersion
+}
+
+# Get system uptime
+get_system_uptime() {
+    uptime | sed 's/.*up \([^,]*\),.*/\1/'
+}
+
+# Get CPU information
+get_cpu_info() {
+    sysctl -n machdep.cpu.brand_string
+}
+
+# Get memory information (in GB)
+get_memory_info() {
+    echo $(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 ))GB
+}
+
+# Get disk usage for path
+get_disk_usage() {
+    local path="${1:-/}"
+    df -h "$path" | awk 'NR==2 {print $5}' | sed 's/%//'
+}
+
+# Get network interface MAC address
+get_interface_mac() {
+    local interface="${1:-en0}"
+    ifconfig "$interface" 2>/dev/null | awk '/ether/{print $2}'
+}
+
+#=============================================================================
+# SERVICE MANAGEMENT HELPERS
+#=============================================================================
+
+# Check if service is running
+is_service_running() {
+    local service_name="$1"
+    launchctl list | grep -q "$service_name"
+}
+
+# Get service status
+get_service_status() {
+    local service_name="$1"
+    launchctl list | grep "$service_name" | awk '{print $1}' | head -1
+}
+
+# Enable service
+enable_service() {
+    local service_name="$1"
+    local service_path="$2"
+    
+    if [[ -f "$service_path" ]]; then
+        launchctl load "$service_path"
+        success "Enabled service: $service_name"
+    else
+        error "Service file not found: $service_path"
+        return 1
+    fi
+}
+
+# Disable service
+disable_service() {
+    local service_name="$1"
+    local service_path="$2"
+    
+    if [[ -f "$service_path" ]]; then
+        launchctl unload "$service_path"
+        success "Disabled service: $service_name"
+    else
+        warn "Service file not found: $service_path"
+    fi
+}
+
+#=============================================================================
+# ENHANCED CLEANUP HELPERS
+#=============================================================================
+
+# Create secure temporary directory
+create_temp_directory() {
+    local template="${1:-setup.XXXXXX}"
+    local temp_dir
+    
+    temp_dir=$(mktemp -d -t "$template") || {
+        error "Failed to create temporary directory"
+        return 1
+    }
+    
+    # Set secure permissions
+    chmod 700 "$temp_dir"
+    
+    # Register for cleanup
+    register_cleanup "rm -rf '$temp_dir'"
+    
+    echo "$temp_dir"
+}
+
+# Secure file creation
+create_secure_file() {
+    local file_path="$1"
+    local permissions="${2:-600}"
+    local owner="${3:-$USER}"
+    local group="${4:-staff}"
+    
+    # Create file with secure permissions
+    touch "$file_path"
+    chmod "$permissions" "$file_path"
+    chown "$owner:$group" "$file_path"
+    
+    success "Created secure file: $file_path"
+}
+
+# Enhanced cleanup with resource tracking
+typeset -g TEMP_FILES=()
+typeset -g TEMP_DIRECTORIES=()
+
+# Register temporary file for cleanup
+register_temp_file() {
+    local file_path="$1"
+    TEMP_FILES+=("$file_path")
+    register_cleanup "rm -f '$file_path'"
+}
+
+# Register temporary directory for cleanup
+register_temp_directory() {
+    local dir_path="$1"
+    TEMP_DIRECTORIES+=("$dir_path")
+    register_cleanup "rm -rf '$dir_path'"
+}
+
+# Enhanced standard cleanup
+enhanced_cleanup() {
+    debug "Running enhanced cleanup..."
+    
+    # Clean up temporary files
+    for file in "${TEMP_FILES[@]}"; do
+        [[ -f "$file" ]] && rm -f "$file"
+    done
+    
+    # Clean up temporary directories
+    for dir in "${TEMP_DIRECTORIES[@]}"; do
+        [[ -d "$dir" ]] && rm -rf "$dir"
+    done
+    
+    # Clear arrays
+    TEMP_FILES=()
+    TEMP_DIRECTORIES=()
+}
+
+# Register enhanced cleanup
+register_cleanup enhanced_cleanup
+
+#=============================================================================
+# 1PASSWORD INTEGRATION HELPERS
+#=============================================================================
+
+# Check if 1Password app is installed
+check_1password_app() {
+    [[ -d "/Applications/1Password 7 - Password Manager.app" || -d "/Applications/1Password.app" ]] && {
+        return 0
+    }
+    return 1
+}
+
+# Check if 1Password CLI is installed
+check_1password_cli() {
+    command_exists op && {
+        return 0
+    }
+    return 1
+}
+
+# Check if 1Password CLI is authenticated
+check_1password_auth() {
+    command_exists op || return 1
+    op account list &>/dev/null && return 0
+    return 1
+}
+
+# Install 1Password CLI via Homebrew
+install_1password_cli() {
+    info "Installing 1Password CLI..."
+    check_homebrew || return 1
+    
+    if brew install --cask 1password-cli; then
+        success "1Password CLI installed"
+        return 0
+    else
+        error "Failed to install 1Password CLI"
+        return 1
+    fi
+}
+
+# Authenticate 1Password CLI
+authenticate_1password_cli() {
+    command_exists op || { error "1Password CLI not installed"; return 1; }
+    check_1password_auth && return 0
+    
+    info "1Password CLI requires authentication"
+    if op signin; then
+        success "1Password CLI authenticated"
+        return 0
+    else
+        error "1Password CLI authentication failed"
+        return 1
+    fi
+}
+
+# Get password from 1Password item
+op_get_password() {
+    [[ $# -eq 0 ]] && { echo "Usage: op_get_password \"Item Name\""; return 1; }
+    check_1password_auth || { error "1Password CLI not authenticated"; return 1; }
+    
+    op item get "$1" --fields password 2>/dev/null || {
+        error "Error retrieving password for '$1'"
+        return 1
+    }
+}
+
+# Get field from 1Password item
+op_get_field() {
+    [[ $# -lt 2 ]] && { echo "Usage: op_get_field \"Item\" \"field\""; return 1; }
+    check_1password_auth || { error "1Password CLI not authenticated"; return 1; }
+    
+    op item get "$1" --fields "$2" 2>/dev/null || {
+        error "Error retrieving field '$2' from '$1'"
+        return 1
+    }
+}
+
+# Get SSH key from 1Password item
+op_get_ssh_key() {
+    [[ $# -eq 0 ]] && { echo "Usage: op_get_ssh_key \"Key Name\""; return 1; }
+    check_1password_auth || { error "1Password CLI not authenticated"; return 1; }
+    
+    op item get "$1" --fields "private key" 2>/dev/null || {
+        error "Error retrieving SSH key '$1'"
+        return 1
+    }
+}
+
+# List 1Password items
+op_list_items() {
+    check_1password_auth || { error "1Password CLI not authenticated"; return 1; }
+    op item list --format=table 2>/dev/null || {
+        error "Error listing 1Password items"
+        return 1
+    }
+}
+
+# Search 1Password items
+op_search() {
+    [[ $# -eq 0 ]] && { echo "Usage: op_search \"term\""; return 1; }
+    check_1password_auth || { error "1Password CLI not authenticated"; return 1; }
+    
+    op item list --format=table | grep -i "$1" || {
+        warn "No items found matching: $1"
+        return 1
+    }
+}
+
+#=============================================================================
+# NETWORK CONFIGURATION HELPERS
+#=============================================================================
+
+# Get available network services
+get_network_services() {
+    networksetup -listallnetworkservices | grep -v "asterisk" | tail -n +2
+}
+
+# Check if network service exists
+check_network_service() {
+    local service="$1"
+    networksetup -listallnetworkservices | grep -q "^$service$"
+}
+
+# Get primary network interface for device type
+get_primary_interface() {
+    local device_type="${1:-$(detect_device_type)}"
+    
+    case "$device_type" in
+        "macbook-pro"|"macbook-air")
+            # Prefer Wi-Fi for portable devices
+            echo "Wi-Fi"
+            ;;
+        "mac-studio"|"mac-mini"|"imac"|"mac-pro")
+            # Prefer Ethernet for desktop devices
+            echo "Ethernet"
+            ;;
+        *)
+            # Default to Wi-Fi
+            echo "Wi-Fi"
+            ;;
+    esac
+}
+
+# Configure static IP address
+configure_static_ip() {
+    local service="$1"
+    local ip_address="$2"
+    local subnet_mask="${3:-255.255.255.0}"
+    local gateway="${4:-10.20.0.1}"
+    
+    info "Configuring static IP for $service: $ip_address"
+    
+    if sudo networksetup -setmanual "$service" "$ip_address" "$subnet_mask" "$gateway"; then
+        success "Static IP configured: $ip_address"
+        return 0
+    else
+        error "Failed to configure static IP"
+        return 1
+    fi
+}
+
+# Configure DHCP for network service
+configure_dhcp() {
+    local service="$1"
+    
+    info "Configuring DHCP for $service"
+    
+    if sudo networksetup -setdhcp "$service"; then
+        success "DHCP configured for $service"
+        return 0
+    else
+        error "Failed to configure DHCP for $service"
+        return 1
+    fi
+}
+
+# Set DNS servers
+set_dns_servers() {
+    local service="$1"
+    shift
+    local dns_servers=("$@")
+    
+    info "Setting DNS servers for $service: ${dns_servers[*]}"
+    
+    if sudo networksetup -setdnsservers "$service" "${dns_servers[@]}"; then
+        success "DNS servers configured"
+        return 0
+    else
+        error "Failed to set DNS servers"
+        return 1
+    fi
+}
+
+# Get current IP address for interface
+get_current_ip() {
+    local interface="${1:-en0}"
+    ifconfig "$interface" 2>/dev/null | awk '/inet /{print $2}' | head -1
+}
+
+# Get network service for interface
+get_network_service_for_interface() {
+    local interface="$1"
+    networksetup -listallhardwareports | awk "/Device: $interface/{getline; print \$2 \$3 \$4}" | sed 's/Service://'
+}
+
+#=============================================================================
+# PACKAGE VALIDATION HELPERS
+#=============================================================================
+
+# Validate Brewfile using brew bundle check
+validate_brewfile() {
+    local brewfile="$1"
+    local brewfile_name="${brewfile:t}"
+    local brewfile_dir="${brewfile:h}"
+    
+    if ! file_readable "$brewfile"; then
+        error "Brewfile not found: $brewfile"
+        return 1
+    fi
+    
+    info "Validating $brewfile_name..."
+    
+    # Change to brewfile directory for proper relative path handling
+    local current_dir="$PWD"
+    cd "$brewfile_dir" || return 1
+    
+    # Use brew bundle check for validation
+    if brew bundle check --file="$brewfile" --verbose; then
+        success "✓ $brewfile_name validation passed"
+        cd "$current_dir"
+        return 0
+    else
+        error "✗ $brewfile_name validation failed"
+        cd "$current_dir"
+        return 1
+    fi
+}
+
+# Validate multiple Brewfiles
+validate_brewfiles() {
+    local brewfiles=("$@")
+    local failed_files=()
+    
+    for brewfile in "${brewfiles[@]}"; do
+        if ! validate_brewfile "$brewfile"; then
+            failed_files+=("$brewfile")
+        fi
+    done
+    
+    if [[ ${#failed_files[@]} -eq 0 ]]; then
+        success "All Brewfiles validated successfully"
+        return 0
+    else
+        error "Failed to validate: ${failed_files[*]}"
+        return 1
+    fi
+}
+
+# Check if formula/cask exists in Homebrew
+check_brew_package() {
+    local package="$1"
+    local type="${2:-formula}"  # formula or cask
+    
+    case "$type" in
+        "formula")
+            brew search --formula "$package" | grep -q "^$package$"
+            ;;
+        "cask")
+            brew search --cask "$package" | grep -q "^$package$"
+            ;;
+        *)
+            # Try both
+            brew search --formula "$package" | grep -q "^$package$" || \
+            brew search --cask "$package" | grep -q "^$package$"
+            ;;
+    esac
+}
+
+# Install missing packages from Brewfile
+install_brewfile_packages() {
+    local brewfile="$1"
+    local brewfile_dir="${brewfile:h}"
+    
+    if ! file_readable "$brewfile"; then
+        error "Brewfile not found: $brewfile"
+        return 1
+    fi
+    
+    info "Installing packages from ${brewfile:t}..."
+    
+    # Change to brewfile directory for proper relative path handling
+    local current_dir="$PWD"
+    cd "$brewfile_dir" || return 1
+    
+    if brew bundle install --file="$brewfile" --verbose; then
+        success "Package installation completed"
+        cd "$current_dir"
+        return 0
+    else
+        error "Package installation failed"
+        cd "$current_dir"
+        return 1
+    fi
+}
+
+#=============================================================================
 # INITIALIZATION
 #=============================================================================
 
