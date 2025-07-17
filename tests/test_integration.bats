@@ -17,7 +17,7 @@ teardown() {
     mock_macbook_pro
     
     # Test that all major scripts can run in dry-run mode
-    run "${BATS_TEST_DIRNAME}/../scripts/setup.zsh" --dry-run --device macbook-pro
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup.zsh" --dry-run --device macbook-pro
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"MacBook"* ]]
@@ -26,7 +26,7 @@ teardown() {
 @test "complete setup workflow for mac studio" {
     mock_mac_studio
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup.zsh" --dry-run --device mac-studio
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup.zsh" --dry-run --device mac-studio
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"Studio"* ]]
@@ -35,7 +35,7 @@ teardown() {
 @test "complete setup workflow for mac mini" {
     mock_mac_mini
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup.zsh" --dry-run --device mac-mini
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup.zsh" --dry-run --device mac-mini
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"mini"* ]]
@@ -46,7 +46,7 @@ teardown() {
     rm -f "${TEST_HOME_DIR}/.local/bin/git"
     rm -f "${TEST_HOME_DIR}/.local/bin/brew"
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup.zsh" --check-deps
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup.zsh" --check-deps
     
     [[ "${status}" -ne 0 ]]
     [[ "${output}" == *"dependency"* ]] || [[ "${output}" == *"missing"* ]]
@@ -57,7 +57,7 @@ teardown() {
     
     # Test MacBook Pro configuration
     mock_macbook_pro
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-dotfiles.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-dotfiles.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"dotfiles"* ]] || [[ "${output}" == *"chezmoi"* ]]
@@ -70,19 +70,19 @@ teardown() {
     run "${BATS_TEST_DIRNAME}/../scripts/setup-1password.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
 }
 
 @test "homebrew and package installation integration" {
     # Test that Homebrew setup integrates with package installation
-    run "${BATS_TEST_DIRNAME}/../scripts/install-homebrew.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/install/install-homebrew.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/install-packages.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/install/install-packages.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
 }
 
@@ -92,50 +92,50 @@ teardown() {
     create_mock_command "node" 0 "v18.0.0"
     
     # Test Claude Code and MCP integration
-    run "${BATS_TEST_DIRNAME}/../scripts/install-claude-code.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/install/install-claude-code.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-mcp-servers.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-mcp-servers.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
 }
 
 @test "theme and fonts integration" {
     # Test that theme and font setup work together
-    run "${BATS_TEST_DIRNAME}/../scripts/install-fonts.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/install/install-fonts.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-theme.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-theme.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
 }
 
 @test "maintenance and backup integration" {
     # Test maintenance and backup systems
-    run "${BATS_TEST_DIRNAME}/../scripts/system-maintenance.zsh" --automated
+    run "${BATS_TEST_DIRNAME}/../scripts/utils/system-maintenance.zsh" --automated
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/backup-restore.zsh" list
+    run "${BATS_TEST_DIRNAME}/../scripts/utils/backup-restore.zsh" list
     [[ "${status}" -eq 0 ]]
 }
 
 @test "user setup integration with family environment" {
     # Test multi-user family setup
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-users.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-users.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-family-environment.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-family-environment.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
 }
 
 @test "network configuration integration with device types" {
     # Test Mac Studio (static IP)
     mock_mac_studio
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-network.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/config/setup-network.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"static"* ]] || [[ "${output}" == *"10.20.0.10"* ]]
     
     # Test MacBook Pro (dynamic IP)
     mock_macbook_pro
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-network.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/config/setup-network.zsh" --dry-run
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"WiFi"* ]] || [[ "${output}" == *"dynamic"* ]]
 }
@@ -158,7 +158,7 @@ teardown() {
     # Test that validation works after setup
     create_test_brewfile "${TEST_HOME_DIR}/test-Brewfile"
     
-    run "${BATS_TEST_DIRNAME}/../scripts/validate-brewfiles.zsh" "${TEST_HOME_DIR}/test-Brewfile"
+    run "${BATS_TEST_DIRNAME}/../scripts/validation/validate-brewfiles.zsh" "${TEST_HOME_DIR}/test-Brewfile"
     [[ "${status}" -eq 0 ]]
     
     run "${BATS_TEST_DIRNAME}/../scripts/validate-setup.zsh" --dry-run
@@ -171,7 +171,7 @@ teardown() {
     # Simulate a failure in one component
     create_mock_command "git" 1 "git failed"
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup.zsh" --dry-run
     
     # Should handle the error gracefully
     [[ "${status}" -ne 0 ]] || [[ "${output}" == *"error"* ]] || [[ "${output}" == *"failed"* ]]

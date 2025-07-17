@@ -274,10 +274,10 @@ create_performance_improvements() {
         
         # Analyze specific scripts for optimization opportunities
         local heavy_scripts=(
-            "scripts/install-homebrew.zsh:Homebrew installation and configuration"
-            "scripts/setup-dotfiles.zsh:Dotfiles setup and chezmoi operations"
-            "scripts/install-packages.zsh:Package installation and validation"
-            "scripts/system-maintenance.zsh:System maintenance and updates"
+            "scripts/install/install-homebrew.zsh:Homebrew installation and configuration"
+            "scripts/setup/setup-dotfiles.zsh:Dotfiles setup and chezmoi operations"
+            "scripts/install/install-packages.zsh:Package installation and validation"
+            "scripts/utils/system-maintenance.zsh:System maintenance and updates"
         )
         
         for script_info in "${heavy_scripts[@]}"; do
@@ -366,10 +366,10 @@ create_performance_improvements() {
         echo "### Benchmarking"
         echo '```bash'
         echo '# Time script execution'
-        echo 'time ./scripts/setup.zsh --dry-run'
+        echo 'time ./scripts/setup/setup.zsh --dry-run'
         echo ''
         echo '# Memory usage monitoring'
-        echo '/usr/bin/time -l ./scripts/setup.zsh --dry-run'
+        echo '/usr/bin/time -l ./scripts/setup/setup.zsh --dry-run'
         echo '```'
         echo ""
         
@@ -382,7 +382,7 @@ create_performance_improvements() {
 implement_caching_optimizations() {
     info "Implementing caching optimizations..."
     
-    local cache_script="scripts/performance-cache.zsh"
+    local cache_script="scripts/utils/performance-cache.zsh"
     
     cat > "${cache_script}" << 'EOF'
 #!/usr/bin/env zsh
@@ -506,15 +506,15 @@ benchmark_current_performance() {
         # Test main setup script
         echo "Main Setup Script Performance:"
         echo "------------------------------"
-        /usr/bin/time -l timeout 120 scripts/setup.zsh --dry-run 2>&1 || echo "Timeout or error"
+        /usr/bin/time -l timeout 120 scripts/setup/setup.zsh --dry-run 2>&1 || echo "Timeout or error"
         echo
         
         # Test individual components
         local test_scripts=(
-            "scripts/install-homebrew.zsh"
-            "scripts/setup-dotfiles.zsh"
-            "scripts/install-packages.zsh"
-            "scripts/validate-setup.zsh"
+            "scripts/install/install-homebrew.zsh"
+            "scripts/setup/setup-dotfiles.zsh"
+            "scripts/install/install-packages.zsh"
+            "scripts/validation/validate-setup.zsh"
         )
         
         echo "Individual Script Performance:"

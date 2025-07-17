@@ -6,7 +6,7 @@ readonly SCRIPT_DIR="${0:A:h}"
 readonly PROJECT_ROOT="${SCRIPT_DIR}/.."
 
 # Load common library
-source "${SCRIPT_DIR}/lib/common.zsh"
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Global variables
 DEVICE_TYPE=""

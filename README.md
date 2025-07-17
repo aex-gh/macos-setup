@@ -30,7 +30,15 @@ macos-setupv2/
 │   ├── macbook-pro/        # Portable development configs
 │   ├── mac-studio/         # Server infrastructure configs
 │   └── mac-mini/           # Lightweight development configs
-├── scripts/                # Setup and utility scripts
+├── scripts/                # Setup and utility scripts (organized)
+│   ├── setup/              # Core setup orchestration scripts
+│   ├── install/             # Installation scripts (Homebrew, packages, tools)
+│   ├── config/              # System configuration scripts
+│   ├── security/            # Security setup scripts (1Password, FileVault, etc.)
+│   ├── devices/             # Device-specific setup scripts
+│   ├── validation/          # Testing and validation scripts
+│   ├── utils/               # Maintenance and utility scripts
+│   └── lib/                 # Common library functions
 ├── dotfiles/               # chezmoi source directory
 └── tests/                  # BATS test files
 ```
@@ -73,8 +81,8 @@ macos-setupv2/
 
 1. Clone this repository
 2. Review device-specific configurations in `configs/`
-3. **Check for script conflicts**: `./scripts/detect-script-conflicts.zsh`
-4. Run the main setup script: `./scripts/setup.zsh`
+3. **Check for script conflicts**: `./scripts/utils/detect-script-conflicts.zsh`
+4. Run the main setup script: `./scripts/setup/setup.zsh`
 5. Follow the interactive prompts for your specific Mac model
 6. System will automatically detect Mac type and apply appropriate configurations
 
@@ -100,7 +108,7 @@ All scripts follow comprehensive zsh standards documented in `docs/macos-zsh-sta
 
 ```bash
 # Run all tests
-./scripts/run-tests.zsh
+./scripts/validation/run-tests.zsh
 
 # Run specific test file
 bats tests/test_setup_main.bats
@@ -143,7 +151,7 @@ bats tests/test_dotfiles.bats
 
 ## Implementation Status
 
-✅ **Complete** - All 10 phases implemented and tested:
+✅ **Complete** - All 11 phases implemented and tested:
 - Phase 1: Foundation Setup
 - Phase 2: Project Structure Creation
 - Phase 3: Core Brewfiles
@@ -154,25 +162,77 @@ bats tests/test_dotfiles.bats
 - Phase 8: Advanced Features
 - Phase 9: Testing and Documentation
 - Phase 10: Script Conflict Resolution
+- Phase 11: Script Organization and Optimization
 
-## Script Conflict Resolution
+## Script Organization
 
-This project includes comprehensive conflict detection and resolution:
+The project features a well-organized script structure with clear separation of concerns:
 
-### Conflict Detection
-- **Automated Analysis**: `detect-script-conflicts.zsh` identifies overlapping operations
-- **Detailed Reports**: Comprehensive conflict analysis with recommendations
-- **Regular Monitoring**: Tools to check for conflicts after script modifications
+### Script Categories
 
-### Conflict Resolution
-- **Script Refactoring**: Eliminated overlapping operations between scripts
-- **Clear Separation**: Each script has distinct responsibilities
-- **Execution Guidelines**: Safe script execution order and combinations
+#### 🔧 **Setup Scripts** (`scripts/setup/`)
+- `setup.zsh` - Main orchestrator script with device detection
+- `setup-family-environment.zsh` - Multi-user family configuration
+- `setup-users.zsh` - User account creation and management
+- `setup-dotfiles.zsh` - Dotfile deployment with chezmoi
+- `setup-theme.zsh` - Consistent theming across applications
+- `setup-mcp-servers.zsh` - Claude Code MCP server configuration
 
-### Key Resolutions
-- **User Management**: Separated user creation from family environment setup
-- **System Configuration**: Removed duplicate system preference settings
-- **Font Installation**: Standardised on Homebrew-only font installation
-- **Power Management**: Consolidated device-specific power settings
+#### 📦 **Installation Scripts** (`scripts/install/`)
+- `install-homebrew.zsh` - Homebrew package manager setup
+- `install-packages.zsh` - Device-specific package installation
+- `install-fonts.zsh` - Font installation and configuration
+- `install-claude-code.zsh` - Claude Code CLI installation
+- `install-linuxify.zsh` - Linux command compatibility tools
 
-> **Note**: Always run `detect-script-conflicts.zsh` before executing setup scripts to ensure no conflicts exist.
+#### ⚙️ **Configuration Scripts** (`scripts/config/`)
+- `configure-macos.zsh` - System preferences and defaults
+- `setup-network.zsh` - Network configuration (static/dynamic IP)
+- `setup-applescript.zsh` - AppleScript automation setup
+
+#### 🔒 **Security Scripts** (`scripts/security/`)
+- `setup-1password.zsh` - 1Password CLI integration
+- `setup-filevault.zsh` - FileVault disk encryption
+- `setup-firewall.zsh` - Firewall configuration
+- `setup-hardening.zsh` - System security hardening
+
+#### 🖥️ **Device-Specific Scripts** (`scripts/devices/`)
+- `setup-mac-studio-server.zsh` - Mac Studio server configuration
+- `setup-remote-access.zsh` - Remote access setup (Jump Desktop, SSH)
+
+#### ✅ **Validation Scripts** (`scripts/validation/`)
+- `validate-setup.zsh` - Comprehensive setup validation
+- `validate-brewfiles.zsh` - Brewfile integrity checking
+- `verify-tools.zsh` - Tool installation verification
+- `run-tests.zsh` - Complete test suite runner
+
+#### 🛠️ **Utility Scripts** (`scripts/utils/`)
+- `backup-restore.zsh` - System backup and restore operations
+- `system-maintenance.zsh` - Automated system maintenance
+- `detect-script-conflicts.zsh` - Script conflict detection
+- `performance-optimiser.zsh` - Performance analysis tools
+- `performance-cache.zsh` - Caching optimization
+- `code-review.zsh` - Code quality analysis
+
+### Execution Guidelines
+
+**Recommended execution order:**
+1. **Foundation**: `scripts/install/install-homebrew.zsh`
+2. **Packages**: `scripts/install/install-packages.zsh [device-type]`
+3. **Configuration**: `scripts/config/configure-macos.zsh [device-type]`
+4. **Security**: `scripts/security/setup-filevault.zsh`, `scripts/security/setup-firewall.zsh`
+5. **Setup**: `scripts/setup/setup-family-environment.zsh [device-type]`
+6. **Validation**: `scripts/validation/validate-setup.zsh [device-type]`
+
+**Or use the orchestrator**: `scripts/setup/setup.zsh` (handles all phases automatically)
+
+### Script Features
+
+- **Idempotent Operations**: Safe to run multiple times without side effects
+- **Device Detection**: Automatic Mac model detection and configuration
+- **Progress Tracking**: Visual progress indicators and detailed logging
+- **Error Handling**: Comprehensive error handling with rollback capabilities
+- **Conflict Prevention**: Built-in conflict detection and resolution
+- **Performance Optimised**: Parallel operations and caching for speed
+
+> **Note**: Always run `scripts/utils/detect-script-conflicts.zsh` before executing setup scripts to ensure no conflicts exist.

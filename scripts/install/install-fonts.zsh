@@ -5,7 +5,7 @@ readonly SCRIPT_NAME="${0:t}"
 readonly SCRIPT_DIR="${0:A:h}"
 
 # Load common library
-source "${SCRIPT_DIR}/lib/common.zsh"
+source "${SCRIPT_DIR}/../lib/common.zsh"
 
 # Check if font is installed
 check_font_installed() {

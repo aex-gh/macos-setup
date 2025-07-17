@@ -9,55 +9,55 @@ This document provides guidelines for safely executing setup scripts without con
 ### 1. Foundation Setup (Required First)
 ```bash
 # Install Homebrew and basic dependencies
-./scripts/install-homebrew.zsh
+./scripts/install/install-homebrew.zsh
 
 # Install all packages including fonts via Brewfiles
-./scripts/install-packages.zsh [device-type]
+./scripts/install/install-packages.zsh [device-type]
 ```
 
 ### 2. System Configuration (Core Setup)
 ```bash
 # Configure universal macOS defaults
-./scripts/configure-macos.zsh [device-type]
+./scripts/config/configure-macos.zsh [device-type]
 
 # Set up basic security (FileVault, firewall)
-./scripts/setup-filevault.zsh [device-type]
-./scripts/setup-firewall.zsh [device-type]
+./scripts/security/setup-filevault.zsh [device-type]
+./scripts/security/setup-firewall.zsh [device-type]
 ```
 
 ### 3. User Management (If Needed)
 ```bash
 # Create family user accounts (optional)
-./scripts/setup-users.zsh [device-type]
+./scripts/setup/setup-users.zsh [device-type]
 ```
 
 ### 4. Family Environment (If Applicable)
 ```bash
 # Configure family-specific features
-./scripts/setup-family-environment.zsh [device-type]
+./scripts/setup/setup-family-environment.zsh [device-type]
 ```
 
 ### 5. Device-Specific Features
 ```bash
 # Configure network settings
-./scripts/setup-network.zsh [device-type]
+./scripts/config/setup-network.zsh [device-type]
 
 # Set up remote access (headless systems)
-./scripts/setup-remote-access.zsh [device-type]
+./scripts/devices/setup-remote-access.zsh [device-type]
 
 # Configure Mac Studio server features (Mac Studio only)
-./scripts/setup-mac-studio-server.zsh
+./scripts/devices/setup-mac-studio-server.zsh
 ```
 
 ### 6. Advanced Configuration (Optional)
 ```bash
 # Set up dotfiles and theming
-./scripts/setup-dotfiles.zsh [device-type]
-./scripts/setup-theme.zsh [device-type]
+./scripts/setup/setup-dotfiles.zsh [device-type]
+./scripts/setup/setup-theme.zsh [device-type]
 
 # Install and configure specialized tools
-./scripts/install-claude-code.zsh
-./scripts/setup-mcp-servers.zsh
+./scripts/install/install-claude-code.zsh
+./scripts/setup/setup-mcp-servers.zsh
 ```
 
 ## Script Interaction Matrix
@@ -83,40 +83,40 @@ This document provides guidelines for safely executing setup scripts without con
 ### MacBook Pro (Portable Development)
 ```bash
 # Full setup sequence
-./scripts/install-homebrew.zsh
-./scripts/install-packages.zsh macbook-pro
-./scripts/configure-macos.zsh macbook-pro
-./scripts/setup-users.zsh macbook-pro          # Optional
-./scripts/setup-family-environment.zsh macbook-pro
-./scripts/setup-network.zsh macbook-pro
-./scripts/setup-dotfiles.zsh macbook-pro
-./scripts/setup-theme.zsh macbook-pro
+./scripts/install/install-homebrew.zsh
+./scripts/install/install-packages.zsh macbook-pro
+./scripts/config/configure-macos.zsh macbook-pro
+./scripts/setup/setup-users.zsh macbook-pro          # Optional
+./scripts/setup/setup-family-environment.zsh macbook-pro
+./scripts/config/setup-network.zsh macbook-pro
+./scripts/setup/setup-dotfiles.zsh macbook-pro
+./scripts/setup/setup-theme.zsh macbook-pro
 ```
 
 ### Mac Studio (Server Infrastructure)
 ```bash
 # Server-focused setup
-./scripts/install-homebrew.zsh
-./scripts/install-packages.zsh mac-studio
-./scripts/configure-macos.zsh mac-studio
-./scripts/setup-users.zsh mac-studio           # Required for server
-./scripts/setup-family-environment.zsh mac-studio
-./scripts/setup-network.zsh mac-studio
-./scripts/setup-remote-access.zsh mac-studio
-./scripts/setup-mac-studio-server.zsh
+./scripts/install/install-homebrew.zsh
+./scripts/install/install-packages.zsh mac-studio
+./scripts/config/configure-macos.zsh mac-studio
+./scripts/setup/setup-users.zsh mac-studio           # Required for server
+./scripts/setup/setup-family-environment.zsh mac-studio
+./scripts/config/setup-network.zsh mac-studio
+./scripts/devices/setup-remote-access.zsh mac-studio
+./scripts/devices/setup-mac-studio-server.zsh
 ```
 
 ### Mac Mini (Lightweight Development + Multimedia)
 ```bash
 # Balanced setup
-./scripts/install-homebrew.zsh
-./scripts/install-packages.zsh mac-mini
-./scripts/configure-macos.zsh mac-mini
-./scripts/setup-users.zsh mac-mini             # Optional
-./scripts/setup-family-environment.zsh mac-mini
-./scripts/setup-network.zsh mac-mini
-./scripts/setup-dotfiles.zsh mac-mini
-./scripts/setup-theme.zsh mac-mini
+./scripts/install/install-homebrew.zsh
+./scripts/install/install-packages.zsh mac-mini
+./scripts/config/configure-macos.zsh mac-mini
+./scripts/setup/setup-users.zsh mac-mini             # Optional
+./scripts/setup/setup-family-environment.zsh mac-mini
+./scripts/config/setup-network.zsh mac-mini
+./scripts/setup/setup-dotfiles.zsh mac-mini
+./scripts/setup/setup-theme.zsh mac-mini
 ```
 
 ## Conflict Prevention
@@ -141,25 +141,25 @@ This document provides guidelines for safely executing setup scripts without con
 ### Before Running Scripts
 ```bash
 # Check for conflicts
-./scripts/detect-script-conflicts.zsh
+./scripts/utils/detect-script-conflicts.zsh
 
 # Validate Brewfiles
-./scripts/validate-brewfiles.zsh
+./scripts/validation/validate-brewfiles.zsh
 
 # Verify system requirements
-./scripts/validate-setup.zsh
+./scripts/validation/validate-setup.zsh
 ```
 
 ### After Running Scripts
 ```bash
 # Verify installation
-./scripts/validate-setup.zsh
+./scripts/validation/validate-setup.zsh
 
 # Check for remaining conflicts
-./scripts/detect-script-conflicts.zsh
+./scripts/utils/detect-script-conflicts.zsh
 
 # Run tests
-./scripts/run-tests.zsh
+./scripts/validation/run-tests.zsh
 ```
 
 ## Error Recovery

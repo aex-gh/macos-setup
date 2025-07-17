@@ -13,8 +13,8 @@ teardown() {
 }
 
 @test "setup-dotfiles script exists and is executable" {
-    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/setup-dotfiles.zsh"
-    [[ -x "${BATS_TEST_DIRNAME}/../scripts/setup-dotfiles.zsh" ]]
+    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/setup/setup-dotfiles.zsh"
+    [[ -x "${BATS_TEST_DIRNAME}/../scripts/setup/setup-dotfiles.zsh" ]]
 }
 
 @test "dotfiles directory structure exists" {
@@ -61,7 +61,7 @@ teardown() {
 }
 
 @test "setup-dotfiles initializes chezmoi correctly" {
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-dotfiles.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-dotfiles.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"chezmoi"* ]]
@@ -88,12 +88,12 @@ teardown() {
 }
 
 @test "encryption setup script exists" {
-    assert_file_exists "${BATS_TEST_DIRNAME}/../dotfiles/scripts/setup-encryption.zsh"
-    [[ -x "${BATS_TEST_DIRNAME}/../dotfiles/scripts/setup-encryption.zsh" ]]
+    assert_file_exists "${BATS_TEST_DIRNAME}/../dotfil../scripts/setup-encryption.zsh"
+    [[ -x "${BATS_TEST_DIRNAME}/../dotfil../scripts/setup-encryption.zsh" ]]
 }
 
 @test "setup-dotfiles creates necessary directories" {
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-dotfiles.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/setup/setup-dotfiles.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     # Should mention directory creation or checking

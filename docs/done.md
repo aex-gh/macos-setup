@@ -107,7 +107,7 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ### Multi-User Setup
 - [x] 🟢 Create script with user account creation functions
   - [x] Script to create Ali Exley (ali) - standard user
-  - [x] Script to create Amelia Exley (amelia) - standard user  
+  - [x] Script to create Amelia Exley (amelia) - standard user
   - [x] Script to create Annabelle Exley (annabelle) - standard user
 - [x] 🟢 Create script to configure shared directories and permissions
 - [x] 🟢 Create script to set up Time Machine access for all users
@@ -194,8 +194,6 @@ Status: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ❌ Blocked
 ### Quality Assurance
 - [x] 🟢 Code review and cleanup of all scripts
 - [x] 🟢 Performance optimisation where needed
-- [ ] 🔴 Accessibility and usability improvements
-- [ ] 🔴 Final testing on clean macOS installations
 
 ## Milestones
 

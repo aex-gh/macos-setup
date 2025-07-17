@@ -18,18 +18,18 @@ teardown() {
 }
 
 @test "filevault setup script exists and is executable" {
-    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh"
-    [[ -x "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh" ]]
+    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh"
+    [[ -x "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh" ]]
 }
 
 @test "firewall setup script exists and is executable" {
-    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh"
-    [[ -x "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh" ]]
+    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh"
+    [[ -x "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh" ]]
 }
 
 @test "hardening setup script exists and is executable" {
-    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/setup-hardening.zsh"
-    [[ -x "${BATS_TEST_DIRNAME}/../scripts/setup-hardening.zsh" ]]
+    assert_file_exists "${BATS_TEST_DIRNAME}/../scripts/security/setup-hardening.zsh"
+    [[ -x "${BATS_TEST_DIRNAME}/../scripts/security/setup-hardening.zsh" ]]
 }
 
 @test "1password setup detects existing installation" {
@@ -54,7 +54,7 @@ teardown() {
     # Mock fdesetup command
     create_mock_command "fdesetup" 0 "FileVault is On."
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh" --status
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh" --status
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"FileVault"* ]]
@@ -63,14 +63,14 @@ teardown() {
 @test "firewall setup configures device-specific rules" {
     mock_mac_studio
     
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"firewall"* ]] || [[ "${output}" == *"rule"* ]]
 }
 
 @test "hardening script applies appropriate security settings" {
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-hardening.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-hardening.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     [[ "${output}" == *"security"* ]] || [[ "${output}" == *"hardening"* ]]
@@ -79,9 +79,9 @@ teardown() {
 @test "security scripts don't contain hardcoded credentials" {
     local security_scripts=(
         "${BATS_TEST_DIRNAME}/../scripts/setup-1password.zsh"
-        "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh"
-        "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh"
-        "${BATS_TEST_DIRNAME}/../scripts/setup-hardening.zsh"
+        "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh"
+        "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh"
+        "${BATS_TEST_DIRNAME}/../scripts/security/setup-hardening.zsh"
     )
     
     for script in "${security_scripts[@]}"; do
@@ -102,7 +102,7 @@ teardown() {
 }
 
 @test "filevault script requires admin privileges" {
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-filevault.zsh" --check-privileges
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-filevault.zsh" --check-privileges
     
     # Should check for admin privileges or sudo access
     [[ "${output}" == *"admin"* ]] || [[ "${output}" == *"sudo"* ]] || [[ "${output}" == *"privilege"* ]]
@@ -111,12 +111,12 @@ teardown() {
 @test "firewall rules are device-specific" {
     # Test MacBook Pro configuration
     mock_macbook_pro
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh" --dry-run
     local macbook_output="${output}"
     
     # Test Mac Studio configuration
     mock_mac_studio
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-firewall.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-firewall.zsh" --dry-run
     local studio_output="${output}"
     
     # Outputs should be different for different devices
@@ -127,7 +127,7 @@ teardown() {
 }
 
 @test "security configurations use Australian locale" {
-    run "${BATS_TEST_DIRNAME}/../scripts/setup-hardening.zsh" --dry-run
+    run "${BATS_TEST_DIRNAME}/../scripts/security/setup-hardening.zsh" --dry-run
     
     [[ "${status}" -eq 0 ]]
     # Should set Australian locale or mention it
